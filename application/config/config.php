@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://192.168.1.6/punto_de_venta/index.php';	// cambiar aqui jm
- $config['base_url'] = 'http://localhost/pdv/index.php';
+ $config['base_url'] = 'http://localhost/sisventas_leonel/index.php';
 
 /*
 |--------------------------------------------------------------------------

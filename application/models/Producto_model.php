@@ -35,9 +35,11 @@ class Producto_model extends CI_Model {
 			  p.pro_val_compra, 
 			  p.pro_val_venta, 
 			  p.pro_cantidad, 
+              p.pro_cantidad, 
 			  p.pro_cantidad_min, 
 			  p.est_id_estado, 
 			  p.pro_foto, 
+              P.pro_kilogramo as kilogramo,
 			  p.pro_perecible, 
 			  p.pro_xm_cantidad1, 
 			  p.pro_xm_valor1, 
@@ -69,7 +71,7 @@ class Producto_model extends CI_Model {
 			  p.pro_id_producto, 
 			  p.pro_codigo, 
 			  p.pro_nombre, 
-			  p.pro_cantidad 
+			  p.pro_cantidad
 			from producto p 
 			where p.pro_eliminado='NO' 
 			  and p.est_id_estado=11 ");

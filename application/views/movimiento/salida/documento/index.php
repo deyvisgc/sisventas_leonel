@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 ?>
 <style>
 .style_linea_der {
@@ -127,5 +128,11 @@ foreach ($list_salida_detalle as $salida_detalle) {
 <?php
 }
 ?>
+
+
+
+	<span class="style_linea_pie" ><?=$salida->sal_monto?></span>
+	<span class="style_linea_pie" ><?=$lista->kilo?></span>
+
 </div>
-<span class="style_linea_pie" ><?= $salida->sal_monto ?></span>
+

@@ -43,7 +43,9 @@ class Cobrar extends CI_Controller{
             $fecha =$value['sal_fecha_doc_cliente'];
             $deuda =$value['sal_deuda'];
             $buttons = '<button type="button" onclick="cargarDatosDeuda('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#disminuirDeuda"
-            class="btn btn-primary">Amortizar Deuda</button>';
+            class="btn btn-primary">Amortizar</button>
+            <button type="button" onclick="corregirDeuda('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#editDeuda"
+            class="btn btn-success">Corregir</button>';
             $result['data'][$key] = array(
                 $cliente,$fecha,$deuda,
                 $buttons

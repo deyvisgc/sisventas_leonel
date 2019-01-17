@@ -42,7 +42,10 @@ class Detalle extends CI_Controller {
 			'usu_id_usuario' => $usuario['usu_id_usuario'],
 			'pro_id_producto' => $this->input->post('pro_id_producto'),
 			'cantidad' => $this->input->post('cantidad'),
-			'precio' => $this->input->post('precio'));
+			'precio' => $this->input->post('precio'),
+            'totalganancia' => $this->input->post('totalganancia'),
+			'pro_sum_kilo' => $this->input->post('sumafinalkilo'));
+		
 		$result = $this->temp_salida_model->magregar($data);
 		
 		echo json_encode($result);
@@ -86,4 +89,11 @@ class Detalle extends CI_Controller {
 		$data = array('hecho' => 'SI', 'list_cliente' => $list_cliente);
 		echo json_encode($data);
 	}
+
+	public function cargarAnonimo(){
+        is_logged_in_or_exit($this);
+        $usuario = get_usuario($this);
+        $result = $this->temp_salida_model->mbuscar_clientes();
+        echo json_encode($result);
+    }
 }

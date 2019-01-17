@@ -38,7 +38,9 @@ class Pagar extends CI_Controller{
             $deuda =$value['ing_deuda'];
             $buttons = '
 			<button type="button" onclick="cargarDatosDeuda('.$value['ing_id_ingreso'].')" data-toggle="modal" data-target="#disminuirDeuda"
-			class="btn btn-md btn-danger">Amortizar Deuda</button>';
+			class="btn btn-md btn-danger">Amortizar</button>
+			<button type="button" onclick="corregirDeudaxPagar('.$value['ing_id_ingreso'].')" data-toggle="modal" data-target="#corregirDeudaxPagar"
+			class="btn btn-md btn-facebook">Corregir</button>';
             $result['data'][$key] = array(
                 $cliente,$fecha,$deuda,
                 $buttons

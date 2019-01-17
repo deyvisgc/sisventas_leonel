@@ -53,6 +53,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<span class="input-group-addon bg-gray">Cantidad:</span>
 																<input type="number" class="form-control cantidades" id="in_cantidad" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
 															</div>
+                                                            <div class="input-group">
+
+                                                                <input type="hidden"  readonly="readonly" class="form-control cantidades" id="pre_compra" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+                                                            </div><br>
+
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Kilogramos:</span>
+																<input type="number" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
+															</div>
+
 															<br>
 															<input type="hidden" id="in_pro_id_producto" value="">
 															<button class="btn btn-success btn-lg" id="bt_agregar_producto" disabled=""><i class="fa fa fa-edit"></i> Agregar</button>
@@ -101,7 +111,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													<!-- small box -->
 													<div class="small-box bg-aqua">
 														<div class="inner">
-															<h3><div>S/. <span class="sp_sum_total">0.00</span></div></h3>
+															<h3><div>S/. <span class="sp_sum_total"  id="pag_total">0.00</span></div></h3>
 															<p>Total</p>
 														</div>
 														<div class="icon">
@@ -115,7 +125,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														</a>
 													</div>
 													<div class="btn-group">
-														<button class="btn  btn-success" id="bt_show_pago" disabled=""><i class="fa fa-money"></i> Pagar</button>
+														<button class="btn  btn-success" id="bt_show_pago" onclick="cargarAnonim();" disabled=""><i class="fa fa-money"></i> Pagar</button>
 													</div>
 												</div><!-- ./col -->
 											</div>
@@ -136,6 +146,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																		<th>Cantidad</th>
 																		<th>Precio</th>
 																		<th>Monto</th>
+																		<th>Ganancias</th>
 																		<th>Operacion</th>
 																	</tr>
 																</thead>
@@ -182,6 +193,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<span class="input-group-addon bg-gray">Numero <i class="fa fa-barcode"></i></span>
 																<input type="text" class="form-control numero" id="in_sal_numero_doc_cliente" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" disabled="">
 															</div>
+                                                            <p></p>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon bg-gray">Motivo </span>
+                                                                <input type="text" class="form-control motivo" id="in_sal_motivo" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" disabled="">
+                                                            </div>
+                                                            <p></p>
 															<br>
 														</div>
 													</div>
@@ -197,23 +214,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Debito  S/. <i class="fa fa-credit-card"></i></span>
-																<input type="number" class="form-control descuento" id="in_sal_monto_tar_credito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<input type="number" class="form-control descuento" id="in_sal_monto_tar_debito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
 															<p></p>
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Credito  S/. <i class="fa fa-credit-card"></i></span>
-																<input type="number" class="form-control descuento" id="in_sal_monto_tar_debito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
-															</div>
+                                                                <span class="input-group-addon bg-gray">Credito  S/. <i class="fa fa-credit-card"></i></span>
+                                                                <input type="number" class="form-control descuento" onkeyup="calculardeuda();" id="in_sal_monto_tar_credito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+                                                            </div>
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Descuento S/. <i class="fa fa-money"></i></span>
 																<input type="number" class="form-control descuento" id="in_sal_descuento" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
 															<p></p>
-															<div class="input-group">
-																<span class="input-group-addon bg-gray">Motivo </span>
-																<input type="text" class="form-control motivo" id="in_sal_motivo" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" disabled="">
-															</div>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon bg-gray">Deuda  S/. <i class="fa fa-credit-card"></i></span>
+                                                                <input type="number" readonly="readonly" value="00.00" class="form-control deuda" id="id_deuda" name="id_deuda" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" >
+                                                            </div>
                                                             <p></p>
                                                             <div class="input-group">
                                                                 <span class="input-group-addon bg-gray">Tipo de Venta </span>
@@ -263,7 +280,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 			<script>
 			function init_salida() {
-				$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
+			    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 					var target = $(e.target).attr("href");
 					if(target === '#dv_panel_pago') {
 						$('#sl_tdo_id_tipo_documento').change();
@@ -312,6 +330,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					minLength: 1,
 					select: function( event, ui ) {
 						$('#in_valor').val(ui.item.pro_val_venta);
+                        $('#pre_compra').val(ui.item.pro_val_compra);
+						$('#pre_kilo').val(ui.item.kilo);
 						$('#in_cantidad').prop('disabled', false);
 						$('#in_cantidad').val('');
 						$('#in_pro_id_producto').val(ui.item.pro_id_producto);
@@ -382,11 +402,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						{data: "cantidad"},
 						{data: "precio"},
 						{data: "total"},
+						{data:"ganancias"},
 						{
 							data: null,
 							"render": function ( data, type, full, meta ) {
 								return '<button class="btn btn-danger  btn-sm" type="button" onclick="func_quitar_producto(event)"><i class="fa fa-times" aria-hidden="true"></i> Quitar</button>'+
-									'<input type="hidden" name="pro_id_producto" value="'+full.pro_id_producto+'">';
+									'<input type="hidden" name="pro_id_producto" value="'+full.pro_id_producto+'">'+'<input type="hidden" name="pro_id_kilo" value="'+full.kilogramo+'">';
 							}
 						}
 					],
@@ -405,7 +426,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				add_mensaje(null, 'OK ', ' Ingrese sus productos.', 'info');
 				func_reload_salcombo();
 			}
-			
+
+
+            function calculardeuda(){
+                var pagcredito=$('#in_sal_monto_tar_credito').val();
+                var pagototal=$('#pag_total').html();
+                var deuda=parseFloat(pagototal)-parseFloat(pagcredito);
+                $('#id_deuda').val(deuda.toFixed(2));
+            }
+
 			function func_reload_salcombo() {
 				$.ajax({
 					type: "POST",
@@ -466,6 +495,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				var pro_id_producto = $('#in_pro_id_producto').val();
 				var cantidad = $('#in_cantidad').val();
 				var precio = $('#in_valor').val();
+
+                var pagventa=document.getElementById('in_valor').value;
+                var pagcompra=document.getElementById('pre_compra').value;
+
+                var ganancias=parseFloat(pagventa)-parseFloat(pagcompra);
+                var ganancia1=parseFloat(ganancias)*cantidad;
+                var totalganancia= parseFloat(ganancia1).toFixed(2);
+
+/*calcular kilogramos*/
+				var cantidad1=document.getElementById('in_cantidad').value;
+				var kilogra=document.getElementById('pre_kilo').value;
+				var sumkilo=parseFloat(cantidad1)*parseFloat(kilogra);
+				var sumafinalkilo=parseFloat(sumkilo).toFixed(2);
+
+
 				if(pro_id_producto == '') {
 					add_mensaje(null, '!!! ', ' Ingrese producto.', 'warning');
 					return;
@@ -482,6 +526,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				data.pro_id_producto = pro_id_producto;
 				data.cantidad = cantidad;
 				data.precio=precio;
+                data.totalganancia=totalganancia;
+				data.sumafinalkilo=sumafinalkilo;
+
 				$.ajax({
 					type: "POST",
 					url: BASE_URL+"movimiento/salida/detalle/agregar_producto",
@@ -492,6 +539,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							add_mensaje(null, " Correcto. ", _msj_system[datos.estado], "success");
 							func_cancelar_producto(null);
 							$('#tb_salida_detalle').DataTable().ajax.reload();
+							$('#pre_kilo').val('');
 						}
 						else {
 							add_mensaje(null, " Alerta. ", _msj_system[datos.estado], "warning");
@@ -520,6 +568,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					}
 				});
 			}
+
 			
 			function func_show_pago(e) {
 				$('#a_panel_pago').tab('show');
@@ -562,6 +611,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					data.sal_descuento = '0.00';
 				}
 				data.sal_motivo = $('#in_sal_motivo').val();
+				data.sal_deuda = $('#id_deuda').val();
 				$.ajax({
 					type: "POST",
 					url: BASE_URL+"movimiento/salida/cliente/registrar",
@@ -574,6 +624,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							$('#tb_salida_detalle').DataTable().ajax.reload();
 							func_show_eleccion(null);
 							func_mostrar_documento(datos.sal_id_salida);
+							func_sumarkilo(datos.sal_id_salida);
+
+
+
 						}
 						else {
 							add_mensaje(null, " Alerta. ", _msj_system[datos.estado], "warning");
@@ -581,6 +635,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					}
 				});
 			}
+
+
+            function cargarAnonim(){
+                $.ajax({
+                    url: BASE_URL+"movimiento/salida/detalle/cargarAnonimo",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(response) {
+                        $.each(response,function (index,valor) {
+                            $('#in_texto_cliente').val(valor.emp_razon_social);
+                            $('#in_texto_ruc').val(valor.emp_ruc);
+                            $('#in_pcl_id_cliente').val(valor.pcl_id_pcliente);
+                        });
+                    }
+                });
+            }
 
 			function func_mostrar_documento(sal_id_salida) {
 				var data = {};

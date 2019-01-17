@@ -40,7 +40,8 @@ class Sangria extends CI_Controller{
         $data = array(
             'usu_id_usuario' => $usuario['usu_id_usuario'],
             'monto' => $this->input->post('monto_form'),
-            'tipo_sangria' => $this->input->post('tsangria_form')
+            'tipo_sangria' => $this->input->post('tsangria_form'),
+            'san_motivo' => $this->input->post('s_motivo')
         );
 
         $result = $this->Sangria_model->registrarSangria($data);
@@ -75,9 +76,10 @@ class Sangria extends CI_Controller{
             $monto =$value['monto'];
             $fecha =$value['fecha'];
             $tipo_sangria =$value['tipo_sangria'];
+            $motivo =$value['san_motivo'];
             $usuario =$value['usu_nombre'];
             $result['data'][$key] = array(
-                $caja,$monto,$fecha,$tipo_sangria,$usuario
+                $caja,$monto,$fecha,$tipo_sangria,$motivo,$usuario
             );
         }
         echo json_encode($result);

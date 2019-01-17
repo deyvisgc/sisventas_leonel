@@ -62,7 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </section><!-- /.content -->
 </div><!-- /.content-wrapper -->
 
-<!--MODAL RESTAR DEUDA-->
+<!--MODAL DISMINUIR DEUDA-->
 <div class="modal fade" id="disminuirDeuda" tabindex="-1" role="dialog" aria-labelledby="disminuirDeuda" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -104,6 +104,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="button" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--MODAL CORREGIR O EDITAR MONTO DE LA DEUDA-->
+<div class="modal fade" id="editDeuda" tabindex="-1" role="dialog" aria-labelledby="editDeuda" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" id="disminuirDeuda">Corregir deuda actual de <strong id="client" class="text-danger text-bold"> </strong></h3>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" hidden id="id_salida" name="sal_id_salida" class="form-control">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-gray ">Deuda: </span>
+                            <input type="text" id="edit_deuda" name="edit_deuda" class="form-control" value="" placeholder="Ingresar monto de la deuda">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-small btn-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" onclick="confirmarCorreciónDeuda();" class="btn btn-small btn-facebook">Modificar</button>
             </div>
         </div>
     </div>
@@ -197,6 +227,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     position: 'center',
                     type: 'success',
                     title: 'Deuda actualizada',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    }
+
+    function corregirDeuda(sal_id_salida=null){
+        if(sal_id_salida){
+            $.ajax({
+                url:BASE_URL+'movimiento/salida/Cobrar/cargarDataDeuda/'+sal_id_salida,
+                type:'post',
+                dataType:'json',
+                success:function(response){
+                    $('#client').html(response.emp_razon_social);
+                    $('#id_salida').val(response.sal_id_salida);
+                }
+            });
+            setInterval( function () {
+                table.ajax.reload( null, false ); // user paging is not reset on reload
+            }, 3500 )
+        }
+    }
+
+    function confirmarCorreciónDeuda(){
+        var ndeuda = $('#edit_deuda').val();
+        var id = $('#id_salida').val();
+        var data = {};
+        data.deuda = ndeuda;
+        data.iddeuda = id;
+
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url(); ?>movimiento/salida/Cobrar/editarDeuda",
+            dataType: 'json',
+            data: data,
+            success: function(datos) {
+                $('#edit_deuda').val('');
+                swal({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Monto de la deuda corregida',
                     showConfirmButton: false,
                     timer: 3000
                 });

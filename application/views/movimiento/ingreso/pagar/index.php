@@ -109,6 +109,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
 </div>
 
+<div class="modal fade" id="corregirDeudaxPagar" tabindex="-1" role="dialog" aria-labelledby="corregirDeudaxPagar" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" id="disminuirDeuda">Corregir deuda actual con <strong id="client" class="text-danger text-bold"> </strong></h3>
+            </div>
+            <div class="modal-body">
+
+                <input type="hidden" hidden id="id_salida" name="id_salida" class="form-control">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-gray ">Deuda: </span>
+                            <input type="text" id="corregir_debt" name="deuda_actual" class="form-control" value="" placeholder="Corregir deuda actual...">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" onclick="corregirDeuda();" class="btn btn-facebook">Modificar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 
@@ -197,6 +227,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     position: 'center',
                     type: 'success',
                     title: 'Deuda actualizada',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    }
+
+    function corregirDeudaxPagar(ing_id_ingreso=null){
+        if(ing_id_ingreso){
+            $.ajax({
+                url:BASE_URL+'movimiento/ingreso/pagar/cargarDataDeuda/'+ing_id_ingreso,
+                type:'post',
+                dataType:'json',
+                success:function(response){
+                    $('#client').html(response.emp_razon_social);
+                    $('#id_salida').val(response.ing_id_ingreso);
+                }
+            });
+            setInterval( function () {
+                table.ajax.reload( null, false ); // user paging is not reset on reload
+            }, 3500 )
+        }
+    }
+
+    function corregirDeuda(){
+        var deuda = $('#corregir_debt').val();
+        var id = $('#id_salida').val();
+        var data = {};
+        data.deuda = deuda;
+        data.iddeuda = id;
+
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url(); ?>movimiento/ingreso/pagar/editarDeudas",
+            dataType: 'json',
+            data: data,
+            success: function(datos) {
+                $('#corregir_debt').val('');
+                swal({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Monto de la deuda corregida',
                     showConfirmButton: false,
                     timer: 3000
                 });

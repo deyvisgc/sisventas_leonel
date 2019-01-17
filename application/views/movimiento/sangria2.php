@@ -28,13 +28,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <!-- TAB ELECCION -->
                         <div class="tab-pane active" id="dv_panel_eleccion">
                             <div class="row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <div class="input-group" style="padding-left: 20px;">
-                                        <span class="input-group-addon bg-gray ">Ingresar Cantidad: </span>
-                                        <input type="number" class="form-control col-md-4" required name="monto_form" autofocus id="monto_form">
+                                        <span class="input-group-addon bg-gray">Ingresar Cantidad: </span>
+                                        <input type="text" class="form-control col-md-4" required name="monto_form" autofocus id="monto_form">
                                     </div>
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <div class="input-group" style="padding-left: 20px;">
                                         <span class="input-group-addon bg-gray">Tipo de sangría: </span>
                                         <select class="form-control custom-select" required id="tsangria_form" name="tsangria_form">
@@ -43,13 +43,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <div class="input-group" style="padding-left: 20px;">
-                                        <button class="btn btn-danger" type="button" onclick="Registrar_Sangria();"> PROCEDER </button>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-center">
+                                        <div class="input-group" style="padding-left: 20px;">
+                                            <span class="input-group-addon bg-gray ">Escriba el Motivo: </span>
+                                            <textarea rows="2" cols="50" class="form-control col-md-4" placeholder="Ingresar el motivo" required name="motivo" autofocus id="motivo"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-center">
+                                        <br><br>
+                                        <button class="btn btn-danger btn-lg" onclick="Registrar_Sangria();"> PROCEDER </button>     <br><br>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,29 +78,44 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
     function Registrar_Sangria(){
-        var monto_form = $('#monto_form').val();
-        var tipo_form = $('#tsangria_form').val();
+        var motivo = $('#motivo').val();
+        if (motivo==''){
+            swal({
+                title: "Ups...",
+                text: "Al parecer no escribio el motivo de la sangria. Por favor escriba el motivo",
+                icon: "warning",
+                type:"warning",
+                buttons: true,
+                dangerMode: true,
+            });
+        }else {
+            var monto_form = $('#monto_form').val();
+            var tipo_form = $('#tsangria_form').val();
+            var motivo=$('#motivo').val();
 
-        var data ={};
-        data.monto_form = monto_form;
-        data.tsangria_form = tipo_form;
+            var data ={};
+            data.monto_form = monto_form;
+            data.tsangria_form = tipo_form;
+            data.s_motivo = motivo;
 
-        $.ajax({
-            type:'POST',
-            url: BASE_URL+'movimiento/sangria/agregarSangria',
-            dataType:'json',
-            data:data,
-            success:function(data){
-                swal({
-                    position: 'center',
-                    type: 'success',
-                    title: 'Sangría REGISTRADA correctamente...',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-                $('#monto_form').val('');
-            }
-        });
+            $.ajax({
+                type:'POST',
+                url: BASE_URL+'movimiento/sangria/agregarSangria',
+                dataType:'json',
+                data:data,
+                success:function(data){
+                    swal({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Sangría registrada correctamente...',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    $('#monto_form').val('');
+                    $('#motivo').val('');
+                }
+            });
+        }
     }
 
 

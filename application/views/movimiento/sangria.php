@@ -76,6 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     <th>Monto</th>
                                                     <th>Fecha</th>
                                                     <th>Tipo Sangría</th>
+                                                    <th>Motivo</th>
                                                     <th>Usuario</th>
                                                 </tr>
                                                 </thead>
@@ -281,6 +282,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             {data: "monto"},
             {data: "fecha"},
             {data: "tipo_sangria"},
+            {data: "san_motivo"},
             {data: "usu_nombre"}
         ];
 

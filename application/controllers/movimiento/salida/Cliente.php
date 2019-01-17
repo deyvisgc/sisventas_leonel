@@ -50,6 +50,7 @@ class Cliente extends CI_Controller {
 			'sal_descuento' => $this->input->post('sal_descuento'),
 			'sal_motivo' => $this->input->post('sal_motivo'),
 		    't_venta' => $this->input->post('t_venta'),
+            'sal_deuda' => $this->input->post('sal_deuda'),
             );
 		$result = $this->salida_model->mregistrar($data);
 		
@@ -61,14 +62,15 @@ class Cliente extends CI_Controller {
 		$sal_id_salida = $this->input->post('sal_id_salida');
 		$salida = $this->salida_model->mbuscar_one($sal_id_salida);
 		$list_salida_detalle = $this->salida_detalle_model->mbuscar_detalles($sal_id_salida);
-		
+		$totalkilos = $this->salida_detalle_model->sumarkilo($sal_id_salida);
 		$data['salida'] = $salida;
+		$data['lista'] = $totalkilos;
 		$data['list_salida_detalle'] = $list_salida_detalle;
 		
 		$this->load->view('movimiento/salida/documento/index', $data);
 	}
 	
-	public function cliente_registrar()	// DUDA
+	public function cliente_registrar()
 	{
 		esta_conectado($this);
 		

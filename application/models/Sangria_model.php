@@ -6,12 +6,13 @@ class Sangria_model extends CI_Model {
         $result = $this->db->query("call MANAGE_SANGRIA(
 			".$data['usu_id_usuario'].",
 			".$data['monto'].",
-			'".$data['tipo_sangria']."'
+			'".$data['tipo_sangria']."',
+			'".$data['san_motivo']."'
 			)");
         return $result;
     }
     function sangria_x_caja($caja){
-        $query="SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,u.usu_nombre 
+        $query="SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion 
         LIKE '%".$caja."%' ";
@@ -21,7 +22,7 @@ class Sangria_model extends CI_Model {
 
     function listar_sagria_x_fecha_caja($fecha_ini,$fecha_fin,$caja){
         $list=array();
-        $query=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,u.usu_nombre 
+        $query=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'
         AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')

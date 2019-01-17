@@ -166,5 +166,76 @@ class Reporte_model extends CI_Model {
 		}
 		return false;
 	}
+    function listar_cajas($texto){
+        $query="select c.caj_descripcion from caja as c";
+        $data=$this->db->query($query);
+        foreach ($data->result() as $row){
+            $row->value = $row->caj_descripcion;
+            $list[]=$row;
+        }
+        return $list;
+    }
+
+    function movimiento_efectivo_diario($fecha_ini, $fecha_fin) {
+        $list = array();
+        $query = $this->db->query("SELECT 
+			  sal_fecha_doc_cliente, 
+			  sal_fecha_registro, 
+			  tdo_id_tipo_documento, 
+			  IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre, 
+			  sal_numero_doc_cliente, 
+			  (SELECT emp.emp_razon_social FROM pcliente pcl INNER JOIN empresa emp ON pcl.emp_id_empresa=emp.emp_id_empresa WHERE pcl.pcl_id_pcliente=sal.pcl_id_cliente) emp_razon_social, 
+			  FORMAT(sal_monto, 2, 'de_DE') sal_monto 
+			FROM salida sal 
+			WHERE STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
+			ORDER BY sal_fecha_registro DESC ");
+        foreach ($query->result() as $row)
+        {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    function movimiento_efectivo_totales($fecha_ini, $fecha_fin) {
+        $query = $this->db->query("SELECT 
+			  FORMAT(IFNULL(sal_monto,0), 2, 'de_DE') sal_monto 
+			FROM (SELECT
+			  (SELECT 
+			      SUM(sal_monto) 
+			    FROM salida sal 
+			    WHERE STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
+			  ) sal_monto 
+			) tabla ");
+        foreach ($query->result() as $row)
+        {
+            return $row;
+        }
+        return array('ing_valor' => '0.00',
+            'sal_valor' => '0.00',
+            'total' => '0.00');
+    }
+
+	public function rporte_model_ganancias($fecha_ini, $fecha_fin){
+		$lis=array();
+		$query=$this->db->query("SELECT s.sal_fecha_doc_cliente,s.sal_fecha_registro,sd.sad_cantidad,sd.sad_valor,sd.pro_id_producto,
+       producto.pro_nombre,sd.sad_ganancias,caja.caj_descripcion FROM salida_detalle as sd , salida as s , caja ,producto
+WHERE sd.sal_id_salida=s.sal_id_salida and s.caj_id_caja=caja.caj_id_caja and sd.pro_id_producto=producto.pro_id_producto 
+  and STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY sal_fecha_doc_cliente DESC");
+		foreach ($query->result() as $row){
+			$lis[]=$row;
+		}
+		return $lis;
+	}
+	public function sumganancias($fecha_ini, $fecha_fin){
+		$query = $this->db->query("SELECT FORMAT(ROUND(IFNULL(SUM(sd.sad_ganancias),0),1),2) as monto_final FROM  salida_detalle as sd , salida as s WHERE sd.sal_id_salida=s.sal_id_salida and STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY sal_fecha_doc_cliente DESC");
+		foreach ($query->result() as $row)
+		{
+			return $row;
+		}
+		return array('ing_valor' => '0.00',
+			'sal_valor' => '0.00',
+			'total' => '0.00');
+	}
+
 }
 ?>

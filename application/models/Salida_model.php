@@ -2,8 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Salida_model extends CI_Model {
-	function mregistrar($data) {
-		$result = $this->db->query("call proc_salida_registrar( 
+    function mregistrar($data) {
+        $result = $this->db->query("call proc_salida_registrar( 
 			@out_hecho, 
 			@out_estado, 
 			@out_sal_id_salida, 
@@ -16,11 +16,12 @@ class Salida_model extends CI_Model {
 			".$data['sal_monto_tar_debito'].", 
 			".$data['sal_descuento'].",
 			'".$data['sal_motivo']."',
-			'".$data['t_venta']."'
+			'".$data['t_venta']."',
+			'".$data['sal_deuda']."'
 			)");
-		$result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado, @out_sal_id_salida as sal_id_salida");
-		return $result->row();
-	}
+        $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado, @out_sal_id_salida as sal_id_salida");
+        return $result->row();
+    }
 	function mbuscar_one($sal_id_salida) {
 		$query = $this->db->query("
 			SELECT 
@@ -93,6 +94,16 @@ cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
 			".$data['sal_id_salida']." 
 		)");
         return $result;
+    }
+
+    public function listarVentas(){
+        $consulta = "SELECT e.emp_razon_social,s.sal_id_salida,s.sal_fecha_doc_cliente,s.sal_monto
+        FROM pcliente as c, empresa as e, salida as s 
+        WHERE e.emp_id_empresa=c.emp_id_empresa 
+        AND c.pcl_id_pcliente=s.pcl_id_cliente 
+        ORDER BY s.sal_id_salida DESC ";
+        $datos = $this->db->query($consulta);
+        return $datos->result_array();
     }
 }
 ?>

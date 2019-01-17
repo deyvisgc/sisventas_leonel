@@ -33,19 +33,4 @@ class Sangria2 extends CI_Controller{
         $this->load->view('footer',$data_footer);
     }
 
-    public function agregarSangria(){
-        is_logged_in_or_exit($this);
-        $usuario = get_usuario($this);
-
-        $data = array(
-            'usu_id_usuario' => $usuario['usu_id_usuario'],
-            'monto' => $this->input->post('monto_form'),
-            'tipo_sangria' => $this->input->post('tsangria_form')
-        );
-
-        $result = $this->Sangria_model->registrarSangria($data);
-
-        echo json_encode($result);
-    }
-
 }

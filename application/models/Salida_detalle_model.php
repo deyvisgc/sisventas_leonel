@@ -18,6 +18,7 @@ class Salida_detalle_model extends CI_Model {
 		$result = $this->db->delete('salida_detalle');
 		return $result;
 	}
+
 	function mbuscar_detalles($sal_id_salida) {
 		$list = array();
 		$query = $this->db->query("
@@ -27,6 +28,7 @@ class Salida_detalle_model extends CI_Model {
 			  sad.sad_cantidad, 
 			  sad.sad_valor, 
 			  sad.sad_monto, 
+			       
 			  p.pro_nombre, 
 			  um.unm_nombre_corto 
 			FROM salida_detalle sad 
@@ -40,6 +42,18 @@ class Salida_detalle_model extends CI_Model {
 			$list[] = $row;
 		}
 		return $list;
+	}
+	public function sumarkilo($sal_id_salida){
+		$query = $this->db->query("
+			SELECT sum(sad.sad_sum_kilo) as kilo FROM salida_detalle sad WHERE sad.sal_id_salida=$sal_id_salida");
+		foreach ($query->result() as $row)
+		{
+			return $row;
+		}
+		return array('kilo' => '00.00');
+
+
+
 	}
 	
 	// DUDA

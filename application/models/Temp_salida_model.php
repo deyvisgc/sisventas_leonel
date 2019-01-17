@@ -8,7 +8,11 @@ class Temp_salida_model extends CI_Model {
 			".$data['usu_id_usuario'].", 
 			".$data['pro_id_producto'].", 
 			".$data['cantidad'].", 
-			".$data['precio'].")");
+			".$data['precio'].",
+			".$data['totalganancia'].",
+			".$data['pro_sum_kilo']."
+			)");
+
 		$result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado");
 		return $result->row();
 	}
@@ -31,6 +35,8 @@ class Temp_salida_model extends CI_Model {
 			  pro.pro_nombre descripcion, 
 			  unm.unm_nombre_corto uni_med, 
 			  t.temp_cantidad cantidad, 
+			  t.pro_ganancias ganancias, 
+			  t.pro_sum_kilo as kilogramo,
 			  t.temp_valor precio, 
 			  (t.temp_cantidad*t.temp_valor) total 
 			FROM temp t 
@@ -72,7 +78,9 @@ class Temp_salida_model extends CI_Model {
 			  unm.unm_nombre_corto, 
 			  pro.pro_val_venta, 
 			  pro.pro_cantidad, 
-			  pro.pro_foto, 
+			  pro.pro_foto,
+              pro.pro_kilogramo as kilo,
+			  pro.pro_val_compra, 
 			  pro.pro_xm_cantidad1, 
 			  pro.pro_xm_valor1, 
 			  pro.pro_xm_cantidad2, 
@@ -157,5 +165,28 @@ class Temp_salida_model extends CI_Model {
 		}
 		return $list;
 	}
+
+
+    function mbuscar_clientes() {
+        $list = array();
+        $query = $this->db->query("SELECT 
+			  pc.pcl_id_pcliente, 
+			  e.emp_ruc, 
+			  e.emp_razon_social, 
+			  e.emp_direccion, 
+			  e.emp_nombre_contacto 
+			FROM pcliente pc 
+			INNER JOIN empresa e 
+			ON pc.emp_id_empresa=e.emp_id_empresa 
+			where (pc.pcl_tipo='1' or pc.pcl_tipo='3') and 
+			  (e.emp_razon_social ='ANONIMO') 
+			  and pc.pcl_eliminado='NO' ");
+        foreach ($query->result() as $row)
+        {
+            $row->value = $row->emp_razon_social;
+            $list[] = $row;
+        }
+        return $list;
+    }
 }
 ?>
