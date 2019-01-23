@@ -49,6 +49,7 @@ class Cliente extends CI_Controller {
 			'sal_monto_tar_debito' => $this->input->post('sal_monto_tar_debito'),
 			'sal_descuento' => $this->input->post('sal_descuento'),
 			'sal_motivo' => $this->input->post('sal_motivo'),
+			'sal_vuelto'=>$this->input->post('sal_vuelto'),
 		    't_venta' => $this->input->post('t_venta'),
             'sal_deuda' => $this->input->post('sal_deuda'),
             );

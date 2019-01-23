@@ -209,7 +209,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														<div class="box-body">
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Efectivo  S/. <i class="fa fa-money"></i></span>
-																<input type="number" class="form-control descuento" id="in_sal_monto_efectivo" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<input type="number" class="form-control descuento" id="in_sal_monto_efectivo" onkeyup="calcularvuelto();" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
 															<p></p>
 															<div class="input-group">
@@ -225,6 +225,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Descuento S/. <i class="fa fa-money"></i></span>
 																<input type="number" class="form-control descuento" id="in_sal_descuento" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+															</div>
+															<p></p>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Vuelto</span>
+																<input   type="number" class="form-control vuelto" id="vuelto" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" placeholder="0.00" readonly="readonly">
 															</div>
 															<p></p>
                                                             <div class="input-group">
@@ -279,6 +284,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</div><!-- /.content-wrapper -->
 			
 			<script>
+				function calcularvuelto(){
+					var pago=document.getElementById('in_sal_monto_efectivo').value;
+					var vuelto=$('#pag_total').html();
+					var pagototal=parseFloat(pago)-parseFloat(vuelto);
+
+					$('#vuelto').val(pagototal.toFixed(2));
+
+				}
 			function init_salida() {
 
 			    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -291,6 +304,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$('#sp_etiqueta').text('Eleccion de productos.');
 					}
 				});
+
 				
 				$('#bt_agregar_producto').prop('disabled', false);
 				$('#bt_cancelar_producto').prop('disabled', false);
@@ -503,7 +517,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 var ganancia1=parseFloat(ganancias)*cantidad;
                 var totalganancia= parseFloat(ganancia1).toFixed(2);
 
-/*calcular kilogramos*/
+
 				var cantidad1=document.getElementById('in_cantidad').value;
 				var kilogra=document.getElementById('pre_kilo').value;
 				var sumkilo=parseFloat(cantidad1)*parseFloat(kilogra);
@@ -594,6 +608,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				data.tdo_id_tipo_documento = $('#sl_tdo_id_tipo_documento').val();
 				data.sal_monto_efectivo = $('#in_sal_monto_efectivo').val();
 				data.t_venta = $('#t_venta').val();
+				data.sal_vuelto=$('#vuelto').val();
 
 				if(data.sal_monto_efectivo == '') {
 					data.sal_monto_efectivo = '0.00';
@@ -624,14 +639,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							$('#tb_salida_detalle').DataTable().ajax.reload();
 							func_show_eleccion(null);
 							func_mostrar_documento(datos.sal_id_salida);
-							func_sumarkilo(datos.sal_id_salida);
-
-
-
 						}
 						else {
 							add_mensaje(null, " Alerta. ", _msj_system[datos.estado], "warning");
 						}
+						$('#vuelto').val("");
 					}
 				});
 			}

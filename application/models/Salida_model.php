@@ -16,6 +16,7 @@ class Salida_model extends CI_Model {
 			".$data['sal_monto_tar_debito'].", 
 			".$data['sal_descuento'].",
 			'".$data['sal_motivo']."',
+			'".$data['sal_vuelto']."',
 			'".$data['t_venta']."',
 			'".$data['sal_deuda']."'
 			)");
@@ -33,6 +34,7 @@ class Salida_model extends CI_Model {
 			  IFNULL(sal_numero_doc_cliente, '') sal_numero_doc_cliente, 
 			  IFNULL(sal_descuento, 0.00) sal_descuento, 
 			  IFNULL(sal_motivo, '') sal_motivo, 
+			   IFNULL(sal_vuelto, 0.00) sal_vuelto,
 			  IFNULL(sal_monto, 0.00) sal_monto, 
 			  IFNULL(emp_ruc, '') emp_ruc, 
 			  IFNULL(emp_razon_social, '') emp_razon_social, 
