@@ -78,8 +78,10 @@ class Sangria extends CI_Controller{
             $tipo_sangria =$value['tipo_sangria'];
             $motivo =$value['san_motivo'];
             $usuario =$value['usu_nombre'];
+            $option = '<button type="button" onclick="corregirMontoSangria('.$value['id_sangria'].')" data-toggle="modal" data-target="#editSangriaMonto"
+            class="btn btn-success">Corregir</button>';
             $result['data'][$key] = array(
-                $caja,$monto,$fecha,$tipo_sangria,$motivo,$usuario
+                $caja,$monto,$fecha,$tipo_sangria,$motivo,$usuario,$option
             );
         }
         echo json_encode($result);
@@ -113,6 +115,23 @@ class Sangria extends CI_Controller{
 
         $data = array('hecho' => 'SI', 'data' => $list,'total_venta'=>$list_totales,'tsingreso'=>$tsangria_ingreso,'tssalida'=>$tsangria_salida);
 
+        echo json_encode($data);
+    }
+
+
+    public function editarSangria(){
+        $data_sangria = array(
+            'id_sangria' =>$this->input->post('id'),
+            'tipo_sangria' => $this->input->post('tsangria'),
+            'monto' => $this->input->post('monto'),
+            'san_motivo' => $this->input->post('motivo')
+        );
+        $data=$this->Sangria_model->editar_monto_sangria($data_sangria);
+        echo json_encode($data);
+    }
+
+    public function cargar_data_sangria($id_sangria){
+        $data = $this->Sangria_model->cargaData($id_sangria);
         echo json_encode($data);
     }
 }

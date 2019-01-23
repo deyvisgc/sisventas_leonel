@@ -57,15 +57,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <th>CLIENTE</th>
                                                 <th>DOC.</th>
                                                 <th>NRO.</th>
-                                                <th>S/. VENTA</th>
+                                                <th>S/. VENTA TOTAL</th>
+                                                <th>S/. PAGO EFECTIVO</th>
+                                                <th>S/. PAGO CRÉDITO</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <th colspan="4" class=" alinear_derecha">&nbsp;Total Venta:</th>
-                                                <th class=" alinear_derecha"><span id="sp_total_salida"></span></th>
+                                                <th colspan="4" class="alinear_derecha">&nbsp;Total:</th>
+                                                <th  class="alinear_derecha"><span id="sp_total_salida"></span></th>
+                                                <th  class="alinear_derecha"><span id="total_efectivo"></span></th>
+                                                <th  class="alinear_derecha"><span id="total_credito"></span></th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="6" class="alinear_derecha">Total ingreso efectivo:</th>
+                                                <th  class="alinear_derecha"><span id="monto_ingreso"></span></th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="6" class="alinear_derecha">Total salida efectivo:</th>
+                                                <th  class="alinear_derecha"><span id="monto_retiro"></span></th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="6" class="alinear_derecha">Efectivo en caja:</th>
+                                                <th  class="alinear_derecha"><span id="t_efectivo"></span></th>
                                             </tr>
                                             </tfoot>
                                         </table>
@@ -89,6 +105,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var mov_diario_url2 = "<?php echo base_url(); ?>reporte/efectivo/Caja/movimiento_efectivo";
         var mov_diario_dataSrc2 = function(res){
             $('#sp_total_salida').text(res.data_totales.sal_monto);
+            $('#total_efectivo').text(res.total_efec.total_efectivo);
+            $('#total_credito').text(res.total_cre.total_credito);
+            $('#monto_ingreso').text(res.tsangria_ingreso.monto_ingreso);
+            $('#monto_retiro').text(res.tsangria_salida.monto_retiro);
+            $('#t_efectivo').text(res.efectivo_caja.proc_efectivo_caja);
             return res.data;
         }
         var mov_diario_data2 = function() {
@@ -102,7 +123,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             {data: "emp_razon_social"},
             {data: "tdo_nombre"},
             {data: "sal_numero_doc_cliente"},
-            {data: "sal_monto", className: "alinear_derecha"}
+            {data: "sal_monto"},
+            {data: "sal_monto_efectivo"},
+            {data: "sal_monto_tar_credito", className: "alinear_derecha"}
         ];
         generar_tabla_ajx3(mov_diario_id_tabla2, mov_diario_url2, 'POST', mov_diario_data2, mov_diario_dataSrc2, mov_diario_columns2);
 
@@ -116,6 +139,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     text: 'Imprimir'
                 }
             ],
+            order:( [ 0, 'desc' ] ),
             ajax: {
                 url: url,
                 type: type,

@@ -185,7 +185,7 @@ class Reporte_model extends CI_Model {
 			  IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre, 
 			  sal_numero_doc_cliente, 
 			  (SELECT emp.emp_razon_social FROM pcliente pcl INNER JOIN empresa emp ON pcl.emp_id_empresa=emp.emp_id_empresa WHERE pcl.pcl_id_pcliente=sal.pcl_id_cliente) emp_razon_social, 
-			  FORMAT(sal_monto, 2, 'de_DE') sal_monto 
+			  FORMAT(sal_monto, 2, 'de_DE') sal_monto,sal.sal_monto_efectivo,sal.sal_monto_tar_credito  
 			FROM salida sal 
 			WHERE STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
 			ORDER BY sal_fecha_registro DESC ");
@@ -236,6 +236,41 @@ WHERE sd.sal_id_salida=s.sal_id_salida and s.caj_id_caja=caja.caj_id_caja and sd
 			'sal_valor' => '0.00',
 			'total' => '0.00');
 	}
+    function movimiento_efectivo_total_credito($fecha_ini, $fecha_fin) {
+
+        $query = $this->db->query("SELECT SUM(s.sal_monto_tar_credito) AS total_credito
+        FROM salida AS s WHERE STR_TO_DATE(s.sal_fecha_doc_cliente, '%Y-%m-%d') 
+        BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')");
+        foreach ($query->result() as $row)
+        {
+            return $row;
+        }
+        return array(
+            'total_credito' => '00.00');
+    }
+
+    function movimiento_efectivo_total_contado($fecha_ini, $fecha_fin){
+        $query = $this->db->query("SELECT SUM(s.sal_monto_efectivo) AS total_efectivo 
+        FROM salida AS s WHERE STR_TO_DATE(s.sal_fecha_doc_cliente, '%Y-%m-%d')
+        BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin','%Y-%m-%d')");
+        foreach ($query->result() as $row)
+        {
+            return $row;
+        }
+        return array(
+            'total_efectivo' => '00.00');
+    }
+
+    function efectivo_caja($fecha_ini,$fecha_fin){
+        $consulta = $this->db->query( "SELECT proc_efectivo_caja('$fecha_ini','$fecha_fin') AS proc_efectivo_caja");
+        foreach ($consulta->result() as $row)
+        {
+            return $row;
+        }
+        return array(
+            'efectivo_caja' => '00.00');
+    }
+
 
 }
 ?>

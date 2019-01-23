@@ -65,7 +65,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	font-style:normal;
 	font-size:30px;
 }
-
+.kilos{
+    display: inline-block;
+    margin-left: 300px;
+    width: 270px;
+    margin-top: -35px;
+    font-family: Arial;
+    font-weight: bold;
+    font-style:normal;
+    font-size:30px;
+}
 .style_espacio_0 {
 	display: block;
 	margin-top: 170px;
@@ -130,9 +139,11 @@ foreach ($list_salida_detalle as $salida_detalle) {
 ?>
 
 
+    <div>
 
+    </div>
 	<span class="style_linea_pie" ><?=$salida->sal_monto?></span>
-	<span class="style_linea_pie" ><?=$lista->kilo?></span>
+	<span class="kilos" ><?=$lista->kilo?> Kg</span>
 
 </div>
 

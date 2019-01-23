@@ -30,59 +30,60 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="tab-pane active" id="dv_panel_eleccion">
                             <div class="row">
                                 <div class="col-md-12">
-                                            <br>
-                                            <div class="row">
-                                                <h4 class="text-capitalize" style="padding-left: 20px;">SANGRÍA POR FECHAS</h4>
-                                                <div class="form-group col-md-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon bg-gray ">Desde: </span>
-                                                        <input type="date" id="in_fecha_ini2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <div class="input-group" >
-                                                        <span class="input-group-addon bg-gray ">Hasta: </span>
-                                                        <input type="date" id="in_fecha_fin2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <div class="input-group" style="padding-left: 20px;">
-                                                        <span class="input-group-addon bg-gray">Caja: </span>
-                                                        <select class="form-control custom-select" required id="fcaja" name="caja_form">
+                                    <br>
+                                    <div class="row">
+                                        <h4 class="text-capitalize" style="padding-left: 20px;">SANGRÍA POR FECHAS</h4>
+                                        <div class="form-group col-md-3">
+                                            <div class="input-group">
+                                                <span class="input-group-addon bg-gray ">Desde: </span>
+                                                <input type="date" id="in_fecha_ini2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <div class="input-group" >
+                                                <span class="input-group-addon bg-gray ">Hasta: </span>
+                                                <input type="date" id="in_fecha_fin2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <div class="input-group" style="padding-left: 20px;">
+                                                <span class="input-group-addon bg-gray">Caja: </span>
+                                                <select class="form-control custom-select" required id="fcaja" name="caja_form">
 
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <div class="input-group" style="padding-left: 20px;">
-                                                        <button class="btn btn-facebook" type="button" onclick="cargar_sangria_x_fecha();"> Consultar </button>
-                                                    </div>
-                                                </div>
+                                                </select>
                                             </div>
-                                            <div class="row">
-                                                <h4 class="text-capitalize" style="padding-left: 20px;">SANGRÍA POR CAJAS</h4>
-                                                <div class="col-md-3">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon bg-gray ">Caja:</span>
-                                                        <input type="text" class="form-control" name="search_caja" autofocus id="search_caja">
-                                                    </div>
-                                                    <br><br>
-                                                </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <div class="input-group" style="padding-left: 20px;">
+                                                <button class="btn btn-facebook" type="button" onclick="cargar_sangria_x_fecha();"> Consultar </button>
                                             </div>
-                                            <table id="tb_sangria_cajas" class="table table-striped">
-                                                <thead>
-                                                <tr>
-                                                    <th>Caja</th>
-                                                    <th>Monto</th>
-                                                    <th>Fecha</th>
-                                                    <th>Tipo Sangría</th>
-                                                    <th>Motivo</th>
-                                                    <th>Usuario</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <h4 class="text-capitalize" style="padding-left: 20px;">SANGRÍA POR CAJAS</h4>
+                                        <div class="col-md-3">
+                                            <div class="input-group">
+                                                <span class="input-group-addon bg-gray ">Caja:</span>
+                                                <input type="text" class="form-control" name="search_caja" autofocus id="search_caja">
+                                            </div>
+                                            <br><br>
+                                        </div>
+                                    </div>
+                                    <table id="tb_sangria_cajas" class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Caja</th>
+                                            <th>Monto</th>
+                                            <th>Fecha</th>
+                                            <th>Tipo Sangría</th>
+                                            <th>Motivo</th>
+                                            <th>Usuario</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -164,6 +165,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
     </section><!-- /.content -->
 </div><!-- /.content-wrapper -->
+
+<div class="modal fade" id="editSangriaMonto" tabindex="-1" role="dialog" aria-labelledby="editSangriaMonto" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"><strong id="t_sangria" class="text-danger text-bold"> </strong> Sangria</h3>
+            </div>
+            <div class="modal-body">
+
+                <input type="hidden" hidden id="id_sangria" name="id_sangria" class="form-control">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-gray">Monto: </span>
+                            <input type="text" class="form-control col-md-4" required name="monto_form" autofocus id="monto_e">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group" style="padding-left: 20px;">
+                            <span class="input-group-addon bg-gray">Tipo de sangría: </span>
+                            <select class="form-control custom-select" required id="tsangria_e" name="tsangria_form">
+                                <option value="retiro">Retiro</option>
+                                <option value="ingreso">Ingreso</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <div class="input-group">
+                                <span class="input-group-addon bg-gray ">Motivo: </span>
+                                <textarea rows="2" cols="50" class="form-control col-md-4" placeholder="Ingresar el motivo" required name="motivo" autofocus id="motivo_e"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            <button type="button" onclick="editar_monto_sangria();filtrar_movimiento_diario_salida();" class="btn btn-facebook">Corregir</button>
+        </div>
+    </div>
+</div>
+</div>
+
 <script>
     function init_ingreso(){
         $(document).ready(function () {
@@ -196,6 +247,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 text: 'Imprimir'
                             }
                         ],
+                        order:([2,'desc']),
                         'ajax':{
                             url: BASE_URL + 'movimiento/sangria/sangriaCajas/'+caja,
                             type:'POST'
@@ -394,6 +446,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         });
     }
+
+    function corregirMontoSangria(id_sangria=null) {
+        if(id_sangria!=null){
+            $.ajax({
+                url:BASE_URL+'movimiento/sangria/cargar_data_sangria/'+id_sangria,
+                type:'post',
+                dataType:'json',
+                success:function(response){
+                    $('#id_sangria').val(response.id_sangria);
+                    $('#tsangria_e').val(response.tipo_sangria);
+                    $('#monto_e').val(response.monto);
+                    $('#motivo_e').val(response.san_motivo);
+                }
+            });
+        }
+    }
+
+    function editar_monto_sangria(){
+        var id = $('#id_sangria').val();
+        var tsangria = $('#tsangria_e').val();
+        var monto = $('#monto_e').val();
+        var motivo = $('#motivo_e').val();
+
+        var data = {};
+        data.id = id;
+        data.tsangria = tsangria;
+        data.monto = monto;
+        data.motivo = motivo;
+
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url(); ?>movimiento/Sangria/editarSangria",
+            dataType: 'json',
+            data: data,
+            success: function(datos) {
+                swal({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Detalles de sangria actualizada',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    }
     function calculartotal(){
         var totals= parseFloat($('#sp_total_salida2').html());
         var singreso= parseFloat($('#t_sangria_ingreso2').html());
@@ -404,6 +501,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         $('#sp_total_salida3').html(calculado.toFixed(2));
 
+    }
+
+    function filtrar_movimiento_diario_salida() {
+        $('#tb_sangria_cajas').DataTable().ajax.reload();
     }
 
     function imprimir() {

@@ -12,7 +12,7 @@ class Sangria_model extends CI_Model {
         return $result;
     }
     function sangria_x_caja($caja){
-        $query="SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+        $query="SELECT s.id_sangria, c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion 
         LIKE '%".$caja."%' ";
@@ -141,4 +141,21 @@ class Sangria_model extends CI_Model {
     }
 
 
+    function editar_monto_sangria($data){
+        $result = $this->db->query("call editar_monto_sangria
+        (   ".$data["id_sangria"].", 
+			'".$data["tipo_sangria"]."', 
+			".$data["monto"].", 
+			'".$data["san_motivo"]."' 
+		)");
+        return $result;
+    }
+
+    public function cargaData($data)
+    {
+        $consulta = "SELECT s.id_sangria,s.monto,s.tipo_sangria,s.san_motivo FROM sangria as s WHERE id_sangria='$data'";
+
+        $data = $this->db->query($consulta,array($data));
+        return $data->row_array();
+    }
 }

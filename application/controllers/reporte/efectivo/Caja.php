@@ -6,6 +6,7 @@ class Caja extends CI_Controller{
         $this->load->library('session');
         $this->load->database();
         $this->load->model('reporte_model');
+        $this->load->model('Sangria_model');
         $this->load->model('rol_has_privilegio_model');
         $this->load->helper('seguridad');
         $this->load->helper('util');
@@ -32,8 +33,26 @@ class Caja extends CI_Controller{
         $fecha_ini = $this->input->post('fecha_ini');
         $fecha_fin = $this->input->post('fecha_fin');
         $list = $this->reporte_model->movimiento_efectivo_diario($fecha_ini, $fecha_fin);
+
         $list_totales = $this->reporte_model->movimiento_efectivo_totales($fecha_ini, $fecha_fin);
-        $data = array('hecho' => 'SI', 'data' => $list, 'data_totales' => $list_totales);
+
+        $list_totales_cre = $this->reporte_model->movimiento_efectivo_total_credito($fecha_ini, $fecha_fin);
+        $list_totales_efec = $this->reporte_model->movimiento_efectivo_total_contado($fecha_ini, $fecha_fin);
+
+        $total_sangria_ingreso =$this->Sangria_model->sumar_total_ingreso_sangria_x_fecha($fecha_ini,$fecha_fin);
+        $total_sangria_salida = $this->Sangria_model->sumar_total_salida_sangria_x_fecha($fecha_ini,$fecha_fin);
+
+        $efectivo_caja = $this->reporte_model->efectivo_caja($fecha_ini,$fecha_fin);
+
+        $data = array(
+            'hecho' => 'SI', 'data' => $list,
+            'data_totales' => $list_totales,
+            'total_efec'=>$list_totales_efec,
+            'total_cre'=>$list_totales_cre,
+            'tsangria_ingreso'=>$total_sangria_ingreso,
+            'tsangria_salida'=>$total_sangria_salida,
+            'efectivo_caja'=>$efectivo_caja
+        );
         echo json_encode($data);
     }
 }
