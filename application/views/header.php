@@ -88,7 +88,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 		
 		.wrapper {
-			background: #00507d;
+            background:#1f2d4a  !important;
+            /*#d4e2e0 #337ab7*/
 		}
 		</style>
 	</head>
@@ -97,14 +98,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<!-- Main Header -->
 			<header class="main-header">
 				<!-- Logo -->
-				<a href="<?= base_url() ?>bienvenida" class="logo">
+				<a href="<?= base_url() ?>bienvenida" class="logo" style="background-color:#1f2d4a; ">
 					<!-- mini logo for sidebar mini 50x50 pixels -->
 					<span class="logo-mini"><b>S</b>M</span>
 					<!-- logo for regular state and mobile devices -->
 					<span class="logo-lg"><b>PUNTO</b> DE VENTA</span>
 				</a>
 				<!-- Header Navbar -->
-				<nav class="navbar navbar-static-top" role="navigation">
+				<nav class="navbar navbar-static-top" role="navigation" style="background-color:#337ab7; ">
 					<!-- Sidebar toggle button-->
 					<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
 						<span class="sr-only">Toggle navigation</span>
@@ -230,23 +231,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</header>
 			
 			<!-- Left side column. contains the logo and sidebar -->
-			<aside class="main-sidebar">
+			<aside class="main-sidebar" style="background-color: #1f2d4a !important;">
 				<!-- sidebar: style can be found in sidebar.less -->
-				<section class="sidebar">
+				<section class="sidebar" style="background-color: #1f2d4a !important;">
 					<!-- Sidebar user panel (optional) -->
-					<div class="user-panel">
+					<div class="user-panel" style="background-color: #25476a !important;">
 						<div class="pull-left image">
 							<img src="<?= base_url() ?>../resources/sy_file_repository/<?= $usuario['per_foto'] ?>" class="img-circle" alt="User Image">
 						</div>
 						<div class="pull-left info">
 							<p><?= $usuario['per_nombre'] ?> <?= $usuario['per_apellido'] ?></p>
 							<!-- Status -->
-							<a href="#"><i class="fa fa-circle text-success"></i> Conectado</a>
+							<a href="#"><i class="fa fa-circle"></i> Conectado</a>
 						</div>
 					</div>
 					<!-- Sidebar Menu -->
 					<ul class="sidebar-menu">
-						<li class="header">MENU</li>
+						<li class="header"><i class="fa fa-home"></i>   MENU</li>
 						<!-- Optionally, you can add icons to the links -->
 						<?php
 						$treeview_menu = "";
