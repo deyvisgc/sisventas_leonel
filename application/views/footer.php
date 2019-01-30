@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<!-- Main Footer -->
 			<footer class="main-footer">
 				<!-- To the right -->
-				<div class="pull-right hidden-xs">GRUPOSYSTEM V&V.</div>
+				<div class="pull-right hidden-xs">GRUPO SYSTEM V&V.</div>
 				<!-- Default to the left -->
 				<strong>Copyright &copy; 2018 | <a href=''></a></strong> Derechos reservados.
 			</footer>

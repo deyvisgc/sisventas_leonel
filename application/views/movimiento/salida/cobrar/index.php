@@ -157,7 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     }
                 ],
                 'ajax':BASE_URL+'movimiento/salida/Cobrar/listarClientes',
-
+                order:([1,'desc']),
                 language: {
                     "decimal": "",
                     "emptyTable": "No hay información",
