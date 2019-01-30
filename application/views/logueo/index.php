@@ -26,55 +26,59 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="stylesheet" href="<?= base_url() ?>../resources/plugins/iCheck/square/blue.css">
 
     <style>
+        html, body{
+            background-color: white;
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100%;
+            align-content: center;
+            background-color: #d4e2e0;
+        }
         form {
             max-width: 360px;
             border: 2px solid #dedede;
             padding: 38px;
             margin-top: 120px;
             border-radius: 25px;
-            background-color: rgba(0,0,0,0.4) !important;
-        }
-        html,body{
-            background-color: white;
-            background-size: cover;
-            background-repeat: no-repeat;
-            height: 100%;
-            align-content: center;
+            background-color: white !important;
         }
 
 
         form h1{
-            color: white;
+            color: black;
             font-size: 30px;
         }
 
         .footer{
-            color:white ;
+            color:black ;
         }
         .footer .link{
-            color:white;
+            color:black;
             font-size:20px;
 
         }
 
         .form #span{
             width: 40px;
-            background-color: #FFC312;
+            background-color: #1eb8ff;
             color: black;
             border:0 !important;
         }
 
 
         .login_btn{
-            color: black;
-            background-color: #FFC312;
+            color: whitesmoke;
+            font-weight: bold;
+            font-size: 20px;
+            background-color:rgba(31,5,212,0.79);
             width: 200px;
             margin-top: 20px;
             margin-bottom: 15px;
         }
 
-        .login_btn hover{
-            background-color: white;
+        .login_btn:hover{
+            background-color: #1f2d4a;
+            color:white;
         }
 
     </style>
@@ -82,20 +86,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
 <center>
     <form class="form-signin" action="<?php echo base_url(); ?>logueo/acceder" method="POST">
-        <h1>PUNTO DE VENTA</h1>
+        <h1 style="color: black;">PUNTO DE VENTA</h1>
         <hr>
         <br>
 
         <div class="form-group col-md-12">
             <div class="input-group">
-                <span class="input-group-addon" style="background-color: #FFC312;color: #0f0f0f"><i class="fa fa-user"></i></span>
+                <span class="input-group-addon" style="background-color: rgba(31,5,212,0.79);color: white"><i class="fa fa-user"></i></span>
                 <input type="text" id="in_usu_nombre" autofocus name="usu_nombre" class="form-control col-md-12" placeholder="Usuario" required >
             </div>
         </div>
 
         <div class="form-group col-md-12">
             <div class="input-group">
-                <span class="input-group-addon" style="background-color: #FFC312; color: #0f0f0f"><i class="fa fa-lock"></i></span>
+                <span class="input-group-addon" style="background-color: rgba(31,5,212,0.79); color: white"><i class="fa fa-lock"></i></span>
                 <input type="password" id="in_usu_clave" name="usu_clave" class="form-control" placeholder="Contraseña" required>
             </div>
         </div>
@@ -105,7 +109,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <hr>
         <a class="footer">
             <br>Copyright © 2018 Derechos reservados  <br>
-            Implementado por:<a href="http://gruposystemvv.com/" class="link" style="color: yellow; font-family: 'Segoe UI Semilight', 'Open Sans', Verdana, Arial, Helvetica, sans-serif; font-weight: bold;"> GSVV</a>
+            Implementado por:<a href="http://gruposystemvv.com/" class="link" style="color: #2a6189; font-family: 'Segoe UI Semilight', 'Open Sans', Verdana, Arial, Helvetica, sans-serif; font-weight: bold;"> GSVV</a>
         </a>
     </form>
 </center>

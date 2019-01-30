@@ -28,7 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
     html,body{
-        background-image: url('imagen/ventas.jpg');
+        background-image: url('<?= base_url() ?>/imagen/logo.png ');
         background-size: cover;
         background-repeat: no-repeat;
         height: 100%;
