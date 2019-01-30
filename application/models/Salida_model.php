@@ -18,7 +18,10 @@ class Salida_model extends CI_Model {
 			'".$data['sal_motivo']."',
 			'".$data['sal_vuelto']."',
 			'".$data['t_venta']."',
-			'".$data['sal_deuda']."'
+			'".$data['sal_deuda']."',
+			'".$data['sal_chofer']."',
+			'".$data['sal_camion']."',
+			'".$data['sal_observacion']."'
 			)");
         $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado, @out_sal_id_salida as sal_id_salida");
         return $result->row();

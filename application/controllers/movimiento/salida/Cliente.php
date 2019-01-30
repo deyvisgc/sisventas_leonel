@@ -52,6 +52,9 @@ class Cliente extends CI_Controller {
 			'sal_vuelto'=>$this->input->post('sal_vuelto'),
 		    't_venta' => $this->input->post('t_venta'),
             'sal_deuda' => $this->input->post('sal_deuda'),
+			'sal_chofer'=>$this->input->post('sal_chofer'),
+			'sal_camion' => $this->input->post('sal_camion'),
+			'sal_observacion' => $this->input->post('sal_observacion'),
             );
 		$result = $this->salida_model->mregistrar($data);
 		
