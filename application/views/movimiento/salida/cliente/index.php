@@ -200,6 +200,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                             </div>
                                                             <p></p>
 															<br>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Observacion</span>
+																<textarea rows="2" cols="50" class="form-control motivo" id="sal_observacion" name="sal_observacion" placeholder="detalles de la venta hecha "></textarea>
+															</div>
+															<p></p>
+															<br>
 														</div>
 													</div>
 												</div>
@@ -237,6 +243,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                                 <input type="number" readonly="readonly" value="00.00" class="form-control deuda" id="id_deuda" name="id_deuda" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" >
                                                             </div>
                                                             <p></p>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Chofer <i class="fa fa-user" aria-hidden="true"></i> </span>
+																<input   type="text" class="form-control" id="sal_chofer" name="sal_chofer" placeholder="nombre" >
+															</div>
+															<p></p>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">N° de camion <i class="fa fa-car" aria-hidden="true"></i></span>
+																<input type="number" placeholder="numero"  class="form-control" id="sal_camion" name="sal_camion" >
+															</div>
+															<p></p>
                                                             <div class="input-group">
                                                                 <span class="input-group-addon bg-gray">Tipo de Venta </span>
                                                                 <select class="form-control custom-select" id="t_venta" name="t_venta">
@@ -609,6 +625,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				data.sal_monto_efectivo = $('#in_sal_monto_efectivo').val();
 				data.t_venta = $('#t_venta').val();
 				data.sal_vuelto=$('#vuelto').val();
+				data.sal_chofer=$('#sal_chofer').val();
+				data.sal_camion=$('#sal_camion').val();
+				data.sal_observacion=$('#sal_observacion').val();
 
 				if(data.sal_monto_efectivo == '') {
 					data.sal_monto_efectivo = '0.00';
@@ -644,6 +663,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							add_mensaje(null, " Alerta. ", _msj_system[datos.estado], "warning");
 						}
 						$('#vuelto').val("");
+						$('#sal_observacion').val("");
+						$('#sal_camion').val("");
+						$('#sal_chofer').val("");
 					}
 				});
 			}
