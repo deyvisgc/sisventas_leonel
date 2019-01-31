@@ -74,7 +74,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-body">
 
-                <input type="hidden" hidden id="sal_id_salida" name="sal_id_salida" class="form-control">
+                <input type="hidden"  id="sal_id_salida" name="sal_id_salida" class="form-control">
+                <input type="text"  id="id_cliente" name="id_cliente" class="form-control">
                 <div class="row">
                     <div class="form-group col-md-12">
                         <div class="input-group">
@@ -95,6 +96,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="row">
                     <div class="form-group col-md-12">
                         <div class="input-group" >
+                            <span class="input-group-addon bg-gray ">Descripción: </span>
+                            <textarea rows="2" cols="50" class="form-control" placeholder="Ingresar el motivo" required name="descripcion_pago" autofocus id="descripcion_pago"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group" >
                             <span class="input-group-addon bg-gray ">Deuda Actualizada: </span>
                             <input type="text" id="monto_restante" readonly name="monto_restante" class="form-control" value="" placeholder="SALDO ACTUAL">
                         </div>
@@ -103,7 +112,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
+                <button type="button" id="movimiento_deuda" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
@@ -181,6 +190,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             });
         });
+        $('#movimiento_deuda').click(function () {
+            var mpago = $('#monto_pagado').val();
+            var descripcion = $('#descripcion_pago').val();
+            var saldo = $('#monto_restante').val();
+            var id = $('#sal_id_salida').val();
+            var id_cliente = $('#id_cliente').val();
+
+            var data = {};
+            data.monto_pago = mpago;
+            data.descripcion = descripcion;
+            data.saldo = saldo;
+            data.id_salida = id;
+            data.idcliente = id_cliente;
+
+            $.ajax({
+                type:'POST',
+                url:'<?php echo base_url();?>movimiento/salida/Cobrar/registrar_movimiento_pago',
+                dataType:'JSON',
+                data:data,
+                success:function (datos) {
+
+                }
+            });
+        });
     }
 
     function descontarDeuda(){
@@ -200,6 +233,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $('#deuda_actual').val(response.sal_deuda);
                     $('#cliente').html(response.emp_razon_social);
                     $('#sal_id_salida').val(response.sal_id_salida);
+                    $('#id_cliente').val(response.pcl_id_cliente);
                 }
             });
             setInterval( function () {
@@ -223,6 +257,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             success: function(datos) {
                 $('#monto_pagado').val('');
                 $('#monto_restante').val('');
+                $('#descripcion_pago').val('');
                 swal({
                     position: 'center',
                     type: 'success',

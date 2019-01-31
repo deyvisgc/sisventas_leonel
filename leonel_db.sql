@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-01-2019 a las 21:00:52
+-- Tiempo de generación: 31-01-2019 a las 23:05:49
 -- Versión del servidor: 10.1.33-MariaDB
 -- Versión de PHP: 7.2.6
 
@@ -30,6 +30,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `editar_monto_sangria` (IN `in_id` I
     COMMENT 'Actualizar monto de sangria'
 UPDATE sangria SET tipo_sangria=in_tipo,monto=in_monto,san_motivo=in_motivo
 WHERE id_sangria=in_id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `INSERTAR_MOVIMIENTO_CLIENTE` (IN `monto_pagado` DOUBLE(15,2), IN `descripcion` VARCHAR(250), IN `saldo` DOUBLE(15,2), IN `id_salida` INT, IN `idcliente` INT, IN `monto_compra` DOUBLE(15,2))  NO SQL
+INSERT INTO mayor
+(
+	ma_fecha,
+   ma_descripcion,
+   ma_debe,
+   ma_haber,
+   ma_saldo,
+   sal_id_salida,
+   pcl_id_cliente
+)
+VALUES
+(
+	NOW(),
+   descripcion,
+   monto_pagado,
+   monto_compra,
+   saldo,
+   id_salida,
+   idcliente
+)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MANAGE_SANGRIA` (IN `in_idusuario` INT(11), IN `in_monto` DOUBLE(15,2), IN `in_tipo_sangria` VARCHAR(150), IN `in_motivo` VARCHAR(250))  BEGIN
     DECLARE var_caj_id INT(15);
@@ -406,7 +428,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_movimiento_registrar` (IN `in_
     
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), OUT `out_sal_id_salida` INT, IN `in_usu_id_usuario` INT, IN `in_pcl_id_cliente` INT, IN `in_sal_fecha_doc_cliente` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_sal_monto_efectivo` DOUBLE(15,2), IN `in_sal_monto_tar_credito` DOUBLE(15,2), IN `in_sal_monto_tar_debito` DOUBLE(15,2), IN `in_sal_descuento` DOUBLE(15,2), IN `in_sal_motivo` VARCHAR(60), IN `in_tipo_venta` VARCHAR(150), IN `in_deuda` DOUBLE(15,2))  cuerpo: BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), OUT `out_sal_id_salida` INT, IN `in_usu_id_usuario` INT, IN `in_pcl_id_cliente` INT, IN `in_sal_fecha_doc_cliente` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_sal_monto_efectivo` DOUBLE(15,2), IN `in_sal_monto_tar_credito` DOUBLE(15,2), IN `in_sal_monto_tar_debito` DOUBLE(15,2), IN `in_sal_descuento` DOUBLE(15,2), IN `in_sal_motivo` VARCHAR(60), IN `in_sal_vuelto` VARCHAR(150), IN `in_tipo_venta` VARCHAR(60), IN `in_deuda` DOUBLE(15,2))  cuerpo: BEGIN
     DECLARE var_count_productos DOUBLE(15,2);
     DECLARE var_sum_total DOUBLE(15,2);
     DECLARE var_sum_total_entrante DOUBLE(15,2);
@@ -499,6 +521,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_he
         sal_monto_tar_debito,
         sal_descuento,
         sal_motivo,
+        sal_vuelto,
         usu_id_usuario,
         caj_id_caja,
         caj_codigo,
@@ -520,6 +543,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_he
         in_sal_monto_tar_debito,
         in_sal_descuento,
         in_sal_motivo,
+        in_sal_vuelto,
         in_usu_id_usuario,
         var_caj_id_caja,
         var_caj_codigo,
@@ -1273,6 +1297,37 @@ INSERT INTO `ingreso_detalle` (`ind_id_ingreso_detalle`, `pro_id_producto`, `ing
 (22, 19, 11, 5.00, 45.00, 225.00, '45', 'NO', '0000-00-00', 1),
 (23, 1, 12, 10.00, 20.00, 200.00, 'dsdsdsds', 'NO', '0000-00-00', 1),
 (24, 19, 13, 4.00, 2.00, 8.00, '414', 'NO', '0000-00-00', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mayor`
+--
+
+CREATE TABLE `mayor` (
+  `id_mayor` int(11) NOT NULL,
+  `ma_fecha` date NOT NULL,
+  `ma_descripcion` varchar(250) NOT NULL,
+  `ma_debe` double(15,2) DEFAULT '0.00',
+  `ma_haber` double(15,2) DEFAULT '0.00',
+  `ma_saldo` double(15,2) NOT NULL,
+  `sal_id_salida` int(11) NOT NULL,
+  `pcl_id_cliente` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `mayor`
+--
+
+INSERT INTO `mayor` (`id_mayor`, `ma_fecha`, `ma_descripcion`, `ma_debe`, `ma_haber`, `ma_saldo`, `sal_id_salida`, `pcl_id_cliente`) VALUES
+(1, '2019-01-31', 'dasda', 20.00, 20.00, 780.00, 599, 0),
+(2, '2019-01-31', '', 0.00, 0.00, 0.00, 0, 0),
+(3, '2019-01-31', 'fvnm,.', 20.00, 20.00, 760.00, 0, 0),
+(4, '2019-01-31', 'hjkllkjhgvc', 2.00, 2.00, 4.00, 0, 0),
+(5, '2019-01-31', 'sadasd', 20.00, 20.00, 740.00, 0, 0),
+(6, '2019-01-31', 'asdasda', 45.00, 45.00, 695.00, 599, 0),
+(7, '2019-01-31', 'asda asmd aks dmaksd', 20.00, 20.00, 410.00, 598, 0),
+(8, '2019-01-31', 'sdaij sakjdna ksdakj skad', 20.00, 20.00, 675.00, 599, 0);
 
 -- --------------------------------------------------------
 
@@ -4308,7 +4363,9 @@ INSERT INTO `movimiento` (`mov_id_movimiento`, `ind_id_ingreso_detalle`, `sad_id
 (3003, NULL, NULL, NULL, 597, 'SAC', 0.00, 2.00, -2.00, 20, 2, 3),
 (3004, NULL, NULL, NULL, 598, 'SAC', 416.00, 2.00, 414.00, 22, 2, 3),
 (3005, NULL, NULL, NULL, 598, 'SAC', 44.00, 2.00, 42.00, 89, 2, 3),
-(3006, NULL, NULL, 13, NULL, 'INP', 53.00, 4.00, 57.00, 19, 2, 3);
+(3006, NULL, NULL, 13, NULL, 'INP', 53.00, 4.00, 57.00, 19, 2, 3),
+(3007, NULL, NULL, NULL, 599, 'SAC', 414.00, 2.00, 412.00, 22, 2, 3),
+(3008, NULL, NULL, NULL, 600, 'SAC', 42.00, 2.00, 40.00, 89, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -4562,7 +4619,9 @@ INSERT INTO `privilegio` (`pri_id_privilegio`, `pri_nombre`, `pri_acceso`, `pri_
 (24, 'Mis Ventas', 'reporte/miventa', 'REPORTE', 50, 1, 'money', 'cog'),
 (25, 'Imprimir ventas', 'movimiento/imprimir/imprimir', 'MOVIMIENTO', 60, 1, 'print', 'cog'),
 (26, 'Efectivo en caja', 'reporte/efectivo/caja', 'REPORTE', 51, 1, 'money', 'cog'),
-(27, 'Ganancias', 'reporte/ganancias', 'REPORTE', 61, 1, 'chart-line	', 'cog');
+(27, 'Ganancias', 'reporte/ganancias', 'REPORTE', 61, 1, 'chart-line	', 'cog'),
+(28, 'Movimiento cliente', 'reporte/mcliente', 'REPORTE', 70, 1, 'line-chart', 'cog'),
+(29, 'Movimiento proveedor', 'reporte/proveedor', 'REPORTE', 71, 1, 'line-chart', 'cog');
 
 -- --------------------------------------------------------
 
@@ -4614,7 +4673,7 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (19, '180810172243', 67, 69, 'AFRECHO X 40', 2.00, 32.00, 57.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 5.00, 0.273, 8.00, 0.374, 9.00, 0.386, 0.00, 11, 'NO', 20.00),
 (20, '180810173417', 67, 69, 'REPASO X 50', 40.00, 45.00, 12.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/faYPcol9h8sGDBE0TdQx.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 20.00),
 (21, '180810173956', 37, 38, 'MEZCLA PAJ MAIZ', 54.00, 100.00, 147.00, 10.00, 3, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(22, '180823165028', 67, 69, 'AFRECHO X 30', 22.80, 25.00, 414.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(22, '180823165028', 67, 69, 'AFRECHO X 30', 22.80, 25.00, 412.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (23, '180823172439', 67, 69, 'CONEJO COGORNO X 40', 57.60, 62.00, 422.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (24, '180823172555', 67, 69, 'BB MYCIN X 40', 82.20, 93.00, 132.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (25, '180823172731', 67, 69, 'PICO & NAVAJA X 40', 79.57, 90.00, 335.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -4681,7 +4740,7 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (86, '180925173054', 84, 86, 'MIMASKOT RAZA PEQUEÑA', 60.00, 65.00, 27.00, 5.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (87, '180925173257', 84, 86, 'MIMASKOT ADULTO', 60.00, 68.00, 0.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (88, '180925173335', 67, 69, 'BABYCAN AZUL', 64.00, 65.00, 194.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(89, '180925175629', 84, 86, 'BABYCAN ADULTO VERDE', 64.00, 68.00, 42.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(89, '180925175629', 84, 86, 'BABYCAN ADULTO VERDE', 64.00, 68.00, 40.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (90, '180925175706', 67, 69, 'MULTISABOR', 64.00, 68.00, 92.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (91, '180925175755', 67, 69, 'RICOCAN CORDERO', 64.00, 68.00, 189.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (92, '180925183743', 84, 86, 'RICOCAN CLASICO', 82.62, 83.00, 74.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -4826,6 +4885,8 @@ INSERT INTO `rol_has_privilegio` (`rol_id_rol`, `pri_id_privilegio`) VALUES
 (1, 21),
 (1, 26),
 (1, 27),
+(1, 28),
+(1, 29),
 (2, 2),
 (2, 3),
 (2, 4),
@@ -4840,7 +4901,9 @@ INSERT INTO `rol_has_privilegio` (`rol_id_rol`, `pri_id_privilegio`) VALUES
 (2, 20),
 (2, 23),
 (2, 25),
-(2, 26);
+(2, 26),
+(2, 28),
+(2, 29);
 
 -- --------------------------------------------------------
 
@@ -4869,52 +4932,58 @@ CREATE TABLE `salida` (
   `usu_id_usuario` int(11) DEFAULT NULL,
   `est_id_estado` int(10) UNSIGNED DEFAULT NULL,
   `t_venta` varchar(150) NOT NULL,
-  `sal_deuda` double(15,2) NOT NULL DEFAULT '0.00'
+  `sal_deuda` double(15,2) NOT NULL DEFAULT '0.00',
+  `sal_vuelto` double(15,2) NOT NULL,
+  `sal_camion` varchar(150) NOT NULL,
+  `sal_chofer` varchar(150) NOT NULL,
+  `sal_observacion` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `salida`
 --
 
-INSERT INTO `salida` (`sal_id_salida`, `pcl_id_proveedor`, `pcl_id_cliente`, `tdo_id_tipo_documento`, `sal_fecha_doc_cliente`, `sal_numero_doc_cliente`, `sal_fecha_registro`, `sal_tipo`, `sal_monto_base`, `sal_monto`, `sal_monto_efectivo`, `sal_monto_tar_credito`, `sal_monto_tar_debito`, `sal_descuento`, `sal_motivo`, `caj_id_caja`, `caj_codigo`, `usu_id_usuario`, `est_id_estado`, `t_venta`, `sal_deuda`) VALUES
-(561, NULL, 93, 1823, '2019-01-16', '0000001', '2019-01-16', 'C', 308.40, 308.40, 308.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(562, NULL, 93, 1823, '2019-01-16', '0000002', '2019-01-16', 'C', 390.90, 390.90, 390.90, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(563, NULL, 93, 1823, '2019-01-16', '0000003', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(564, NULL, 93, 1823, '2019-01-16', '0000004', '2019-01-16', 'C', 175.00, 175.00, 175.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(565, NULL, 93, 1823, '2019-01-16', '0000005', '2019-01-16', 'C', 197.40, 197.40, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(566, NULL, 93, 1823, '2019-01-16', '0000006', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(567, NULL, 93, 1823, '2019-01-16', '0000007', '2019-01-16', 'C', 96.00, 96.00, 96.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(568, NULL, 93, 1823, '2019-01-16', '0000008', '2019-01-16', 'C', 268.00, 268.00, 268.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(569, NULL, 93, 1823, '2019-01-16', '0000009', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(570, NULL, 93, 1823, '2019-01-16', '0000010', '2019-01-16', 'C', 261.40, 261.40, 261.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(571, NULL, 93, 1823, '2019-01-16', '0000011', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(572, NULL, 93, 1823, '2019-01-16', '0000012', '2019-01-16', 'C', 229.40, 229.40, 229.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(573, NULL, 93, 1823, '2019-01-16', '0000013', '2019-01-16', 'C', 229.40, 229.40, 229.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(574, NULL, 93, 1823, '2019-01-16', '0000014', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(575, NULL, 93, 1823, '2019-01-16', '0000015', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(576, NULL, 93, 1823, '2019-01-16', '0000016', '2019-01-16', 'C', 254.00, 254.00, 254.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(577, NULL, 93, 1823, '2019-01-16', '0000017', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(578, NULL, 93, 1823, '2019-01-16', '0000018', '2019-01-16', 'C', 254.00, 254.00, 254.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(579, NULL, 93, 1823, '2019-01-16', '0000019', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(580, NULL, 93, 1823, '2019-01-16', '0000020', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(581, NULL, 93, 1823, '2019-01-16', '0000021', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(582, NULL, 93, 1823, '2019-01-16', '0000022', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(583, NULL, 93, 1823, '2019-01-16', '0000023', '2019-01-16', 'C', 182.50, 182.50, 182.50, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(584, NULL, 93, 1823, '2019-01-16', '0000024', '2019-01-16', 'C', 254.00, 254.00, 254.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(585, NULL, 93, 1823, '2019-01-16', '0000025', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(586, NULL, 93, 1823, '2019-01-16', '0000026', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(587, NULL, 93, 1823, '2019-01-16', '0000027', '2019-01-16', 'C', 143.00, 143.00, 143.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(588, NULL, 93, 1823, '2019-01-16', '0000028', '2019-01-16', 'C', 143.00, 143.00, 143.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(589, NULL, 93, 1823, '2019-01-16', '0000029', '2019-01-16', 'C', 143.00, 143.00, 143.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(590, NULL, 93, 1823, '2019-01-16', '0000030', '2019-01-16', 'C', 103.50, 103.50, 103.50, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(591, NULL, 93, 1823, '2019-01-16', '0000031', '2019-01-16', 'C', 604.40, 604.40, 604.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(592, NULL, 93, 1823, '2019-01-16', '0000032', '2019-01-16', 'C', 224.00, 224.00, 224.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(593, NULL, 93, 1823, '2019-01-16', '0000033', '2019-01-16', 'C', 224.00, 224.00, 224.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(594, NULL, 93, 1823, '2019-01-16', '0000034', '2019-01-16', 'C', 326.00, 326.00, 326.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(595, NULL, 93, 1823, '2019-01-16', '0000035', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(596, NULL, 93, 1823, '2019-01-16', '0000036', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(597, NULL, 93, 1823, '2019-01-16', '0000037', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00),
-(598, NULL, 93, 1823, '2019-01-17', '0000038', '2019-01-17', 'C', 186.00, 186.00, 0.00, 180.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 6.00);
+INSERT INTO `salida` (`sal_id_salida`, `pcl_id_proveedor`, `pcl_id_cliente`, `tdo_id_tipo_documento`, `sal_fecha_doc_cliente`, `sal_numero_doc_cliente`, `sal_fecha_registro`, `sal_tipo`, `sal_monto_base`, `sal_monto`, `sal_monto_efectivo`, `sal_monto_tar_credito`, `sal_monto_tar_debito`, `sal_descuento`, `sal_motivo`, `caj_id_caja`, `caj_codigo`, `usu_id_usuario`, `est_id_estado`, `t_venta`, `sal_deuda`, `sal_vuelto`, `sal_camion`, `sal_chofer`, `sal_observacion`) VALUES
+(561, NULL, 93, 1823, '2019-01-16', '0000001', '2019-01-16', 'C', 308.40, 308.40, 308.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(562, NULL, 93, 1823, '2019-01-16', '0000002', '2019-01-16', 'C', 390.90, 390.90, 390.90, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(563, NULL, 93, 1823, '2019-01-16', '0000003', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(564, NULL, 93, 1823, '2019-01-16', '0000004', '2019-01-16', 'C', 175.00, 175.00, 175.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(565, NULL, 93, 1823, '2019-01-16', '0000005', '2019-01-16', 'C', 197.40, 197.40, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(566, NULL, 93, 1823, '2019-01-16', '0000006', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(567, NULL, 93, 1823, '2019-01-16', '0000007', '2019-01-16', 'C', 96.00, 96.00, 96.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(568, NULL, 93, 1823, '2019-01-16', '0000008', '2019-01-16', 'C', 268.00, 268.00, 268.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(569, NULL, 93, 1823, '2019-01-16', '0000009', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(570, NULL, 93, 1823, '2019-01-16', '0000010', '2019-01-16', 'C', 261.40, 261.40, 261.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(571, NULL, 93, 1823, '2019-01-16', '0000011', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(572, NULL, 93, 1823, '2019-01-16', '0000012', '2019-01-16', 'C', 229.40, 229.40, 229.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(573, NULL, 93, 1823, '2019-01-16', '0000013', '2019-01-16', 'C', 229.40, 229.40, 229.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(574, NULL, 93, 1823, '2019-01-16', '0000014', '2019-01-16', 'C', 197.40, 197.40, 197.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(575, NULL, 93, 1823, '2019-01-16', '0000015', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(576, NULL, 93, 1823, '2019-01-16', '0000016', '2019-01-16', 'C', 254.00, 254.00, 254.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(577, NULL, 93, 1823, '2019-01-16', '0000017', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(578, NULL, 93, 1823, '2019-01-16', '0000018', '2019-01-16', 'C', 254.00, 254.00, 254.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(579, NULL, 93, 1823, '2019-01-16', '0000019', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(580, NULL, 93, 1823, '2019-01-16', '0000020', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(581, NULL, 93, 1823, '2019-01-16', '0000021', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(582, NULL, 93, 1823, '2019-01-16', '0000022', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(583, NULL, 93, 1823, '2019-01-16', '0000023', '2019-01-16', 'C', 182.50, 182.50, 182.50, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(584, NULL, 93, 1823, '2019-01-16', '0000024', '2019-01-16', 'C', 254.00, 254.00, 254.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(585, NULL, 93, 1823, '2019-01-16', '0000025', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(586, NULL, 93, 1823, '2019-01-16', '0000026', '2019-01-16', 'C', 222.00, 222.00, 222.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(587, NULL, 93, 1823, '2019-01-16', '0000027', '2019-01-16', 'C', 143.00, 143.00, 143.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(588, NULL, 93, 1823, '2019-01-16', '0000028', '2019-01-16', 'C', 143.00, 143.00, 143.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(589, NULL, 93, 1823, '2019-01-16', '0000029', '2019-01-16', 'C', 143.00, 143.00, 143.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(590, NULL, 93, 1823, '2019-01-16', '0000030', '2019-01-16', 'C', 103.50, 103.50, 103.50, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(591, NULL, 93, 1823, '2019-01-16', '0000031', '2019-01-16', 'C', 604.40, 604.40, 604.40, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(592, NULL, 93, 1823, '2019-01-16', '0000032', '2019-01-16', 'C', 224.00, 224.00, 224.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(593, NULL, 93, 1823, '2019-01-16', '0000033', '2019-01-16', 'C', 224.00, 224.00, 224.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(594, NULL, 93, 1823, '2019-01-16', '0000034', '2019-01-16', 'C', 326.00, 326.00, 326.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(595, NULL, 93, 1823, '2019-01-16', '0000035', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(596, NULL, 93, 1823, '2019-01-16', '0000036', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(597, NULL, 93, 1823, '2019-01-16', '0000037', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
+(598, NULL, 93, 1823, '2019-01-17', '0000038', '2019-01-17', 'C', 186.00, 186.00, 0.00, 180.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 410.00, 0.00, '', '', ''),
+(599, NULL, 93, 1823, '2019-01-23', '0000039', '2019-01-23', 'C', 50.00, 50.00, 0.00, 25.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 675.00, 0.00, '', '', ''),
+(600, NULL, 93, 1823, '2019-01-24', '0000040', '2019-01-24', 'C', 136.00, 136.00, 136.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'contado', 0.00, 0.00, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -5016,7 +5085,9 @@ INSERT INTO `salida_detalle` (`sad_id_salida_detalle`, `pro_id_producto`, `sal_i
 (2279, 19, 597, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
 (2280, 20, 597, 2.00, 10.00, 40.00, 45.00, 90.00, 1),
 (2281, 22, 598, 2.00, 4.40, 0.00, 25.00, 50.00, 1),
-(2282, 89, 598, 2.00, 8.00, 0.00, 68.00, 136.00, 1);
+(2282, 89, 598, 2.00, 8.00, 0.00, 68.00, 136.00, 1),
+(2283, 22, 599, 2.00, 4.40, 0.00, 25.00, 50.00, 1),
+(2284, 89, 600, 2.00, 8.00, 0.00, 68.00, 136.00, 1);
 
 -- --------------------------------------------------------
 
@@ -5145,7 +5216,7 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`usu_id_usuario`, `usu_nombre`, `usu_clave`, `rol_id_rol`, `est_id_estado`) VALUES
 (1, 'admin', '$2y$12$.5eVZRxrEzu6NYFD3CkrI.vMy1ASiQja2/8.fcf3SdwZini3lCWi.', 1, 12),
 (2, 'leonel', '$2y$12$TuYRyrArnPsMyKN2FwM94Or2dhcJvsBs6NbqPYrfdPscaqqrbDLoq', 2, 11),
-(3, 'soporte', '$2y$12$Ybi.Bevhd6AQPuLdG2.SF.q9yHSYP073MKW1lyOap8Uc5krnVVKOm', 1, 11),
+(3, 'soporte', '$2y$12$T889H6wQJIHgXX0InZV1Qu.bWNqSe9yMjcFyqHvc6BTUzEBVpAjry', 2, 11),
 (4, 'colorado', '$2y$12$vJCwXLIw9IzhA0GT2AVbJubNa6MEGjJxiDju2GKbjPrpVwAy5CjEK', 2, 12);
 
 --
@@ -5200,6 +5271,14 @@ ALTER TABLE `ingreso_detalle`
   ADD PRIMARY KEY (`ind_id_ingreso_detalle`),
   ADD KEY `ingreso_detalle_fk_ingreso` (`ing_id_ingreso`),
   ADD KEY `ingreso_detalle_fk_producto` (`pro_id_producto`);
+
+--
+-- Indices de la tabla `mayor`
+--
+ALTER TABLE `mayor`
+  ADD PRIMARY KEY (`id_mayor`),
+  ADD KEY `sal_id_salida` (`sal_id_salida`) USING BTREE,
+  ADD KEY `pcl_id_cliente` (`pcl_id_cliente`);
 
 --
 -- Indices de la tabla `movimiento`
@@ -5337,10 +5416,16 @@ ALTER TABLE `ingreso_detalle`
   MODIFY `ind_id_ingreso_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
+-- AUTO_INCREMENT de la tabla `mayor`
+--
+ALTER TABLE `mayor`
+  MODIFY `id_mayor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT de la tabla `movimiento`
 --
 ALTER TABLE `movimiento`
-  MODIFY `mov_id_movimiento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3007;
+  MODIFY `mov_id_movimiento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3009;
 
 --
 -- AUTO_INCREMENT de la tabla `pcliente`
@@ -5358,7 +5443,7 @@ ALTER TABLE `persona`
 -- AUTO_INCREMENT de la tabla `privilegio`
 --
 ALTER TABLE `privilegio`
-  MODIFY `pri_id_privilegio` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `pri_id_privilegio` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -5376,13 +5461,13 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `salida`
 --
 ALTER TABLE `salida`
-  MODIFY `sal_id_salida` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=599;
+  MODIFY `sal_id_salida` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=601;
 
 --
 -- AUTO_INCREMENT de la tabla `salida_detalle`
 --
 ALTER TABLE `salida_detalle`
-  MODIFY `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2283;
+  MODIFY `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2285;
 
 --
 -- AUTO_INCREMENT de la tabla `sangria`

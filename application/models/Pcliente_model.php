@@ -79,5 +79,15 @@ class Pcliente_model extends CI_Model {
 		}
 		return $list;
 	}
+
+	function listarCliente(){
+            $consulta = 'SELECT cli.pcl_id_pcliente, em.emp_ruc,em.emp_razon_social FROM pcliente as cli, 
+            empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND cli.pcl_tipo=1 AND cli.est_id_estado=11 AND cli.pcl_eliminado=\'NO\'';
+
+	    $datos = $this->db->query($consulta);
+
+        return $datos->result_array();
+
+    }
 }
 ?>

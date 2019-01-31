@@ -174,7 +174,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				var mov_diario_dataSrc2 = function(res){
 					$('#sp_total_salida').text(res.data_totales.sal_monto);
 					return res.data;
-				}
+				};
 				var mov_diario_data2 = function() {
 					var data = {};
 					data.fecha_ini = $("#in_fecha_ini2").val();

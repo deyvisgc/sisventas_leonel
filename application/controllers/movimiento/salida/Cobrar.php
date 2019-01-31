@@ -46,6 +46,7 @@ class Cobrar extends CI_Controller{
             class="btn btn-primary">Amortizar</button>
             <button type="button" onclick="corregirDeuda('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#editDeuda"
             class="btn btn-success">Corregir</button>';
+
             $result['data'][$key] = array(
                 $cliente,$fecha,$deuda,
                 $buttons
@@ -65,6 +66,20 @@ class Cobrar extends CI_Controller{
             'sal_id_salida' => $this->input->post('iddeuda')
         );
         $data=$this->salida_model->ajustar_deuda($data_deuda);
+        echo json_encode($data);
+    }
+
+    public function registrar_movimiento_pago(){
+        $data_movimiento = array(
+            'monto_pagado' => $this->input->post('monto_pago'),
+            'monto_compra' => '00.00',
+            'descripcion' => $this->input->post('descripcion'),
+            'saldo' => $this->input->post('saldo'),
+            'id_salida' => $this->input->post('id_salida'),
+            'idcliente' => $this->input->post('idcliente')
+        );
+
+        $data = $this->salida_model->insert_movimiento_pago($data_movimiento);
         echo json_encode($data);
     }
 }

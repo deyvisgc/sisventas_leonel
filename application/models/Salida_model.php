@@ -61,9 +61,9 @@ class Salida_model extends CI_Model {
 	
 	public function listarCliente(){
         $consulta = "SELECT s.sal_fecha_doc_cliente, s.sal_deuda, 
-s.sal_id_salida, em.emp_razon_social FROM salida as s, pcliente as cli, 
-empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND 
-cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
+        s.sal_id_salida, em.emp_razon_social FROM salida as s, pcliente as cli, 
+        empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND 
+        cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
         $datos = $this->db->query($consulta);
         return $datos->result_array();
     }
@@ -73,7 +73,7 @@ cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
     public function cargaData($sal_id_salida)
     {
         $consulta = "SELECT s.sal_fecha_doc_cliente, s.sal_deuda, 
-        s.sal_id_salida, em.emp_razon_social FROM salida as s, pcliente as cli, 
+        s.sal_id_salida, em.emp_razon_social,s.pcl_id_cliente FROM salida as s, pcliente as cli, 
         empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND 
         cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" 
         AND s.sal_id_salida=$sal_id_salida";
@@ -98,7 +98,7 @@ cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
         return $result;
     }
 
-    public function listarVentas(){
+    function listarVentas(){
         $consulta = "SELECT e.emp_razon_social,s.sal_id_salida,s.sal_fecha_doc_cliente,s.sal_monto
         FROM pcliente as c, empresa as e, salida as s 
         WHERE e.emp_id_empresa=c.emp_id_empresa 
@@ -106,6 +106,44 @@ cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
         ORDER BY s.sal_id_salida DESC ";
         $datos = $this->db->query($consulta);
         return $datos->result_array();
+    }
+
+    function listar_compras_x_cliente($id){
+        $consulta="SELECT sa.sal_id_salida,  sa.sal_fecha_doc_cliente,sa.sal_monto 
+        FROM salida as sa WHERE sa.pcl_id_cliente='$id'";
+        $data = $this->db->query($consulta);
+        return $data->result_array();
+
+    }
+
+    function detalle_compra_x_cliente($id_compra){
+        $list = array();
+        $consulta="SELECT p.pro_nombre,sd.sad_cantidad, sd.sad_valor,sd.sad_monto,sd.sad_ganancias  
+        FROM producto as p, salida_detalle as sd,salida as sal 
+        WHERE p.pro_id_producto=sd.pro_id_producto 
+        AND sal.sal_id_salida=sd.sal_id_salida  
+        AND sd.sal_id_salida=$id_compra";
+        $data = $this->db->query($consulta);
+        foreach ($data -> result() as $row){
+            $list[] = $row;
+        }
+        return $list;
+    }
+    function detalle_compra_x_cliente_totales($id_compra){
+        $consulta="SELECT sal.sal_monto  FROM salida as sal WHERE sal.sal_id_salida=$id_compra";
+        $data = $this->db->query($consulta);
+        return $data->row_array();
+    }
+    function insert_movimiento_pago($data_movimiento){
+        $result = $this->db->query("call INSERTAR_MOVIMIENTO_CLIENTE( 
+			'".$data_movimiento['monto_pagado']."',
+			'".$data_movimiento['monto_compra']."',
+			'".$data_movimiento['descripcion']."',
+			'".$data_movimiento['saldo']."',
+			'".$data_movimiento['id_salida']."',
+			'".$data_movimiento['idcliente']."'
+			)");
+        return $result;
     }
 }
 ?>
