@@ -162,7 +162,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<tr>
 								<th>PRODUCTO</th>
 								<th>CANTIDAD</th>
-								<th>PRECIO VENTA</th>
+								<th>PRECIO COMPRA</th>
 								<th>MONTO</th>
 							</tr>
 							</thead>
@@ -170,7 +170,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							</tbody>
 							<tfoot>
 							<tr>
-								<th colspan="3" class=" alinear_derecha">&nbsp;Total Venta:</th>
+								<th colspan="3" class=" alinear_derecha">&nbsp;Total Compra:</th>
 								<th class=" alinear_derecha"><span id="sp_total_ingreso"></span></th>
 							</tr>
 							</tfoot>

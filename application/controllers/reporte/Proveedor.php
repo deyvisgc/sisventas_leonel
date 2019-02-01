@@ -66,7 +66,7 @@ class Proveedor extends CI_Controller
 			$buttons = '
             <div class="text-center">
             <button type="button" onclick="Detalles('.$value['ing_id_ingreso'].')" data-toggle="modal" data-target="#detalles_compras"
-            class="btn btn-danger">Detalles</button>
+            class="btn btn-danger">Detalle Compra</button>
             </div>';
 
 			$result['data'][$key]=array(
