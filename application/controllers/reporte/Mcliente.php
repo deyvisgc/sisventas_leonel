@@ -13,6 +13,7 @@ class Mcliente extends CI_Controller
         $this->load->model('rol_has_privilegio_model');
         $this->load->model('pcliente_model');
         $this->load->model('salida_model');
+        $this->load->model('mayor_model');
 
         $this->load->helper('seguridad');
         $this->load->helper('util');
@@ -89,6 +90,28 @@ class Mcliente extends CI_Controller
         is_logged_in_or_exit($this);
         $list_totales = $this->salida_model->detalle_compra_x_cliente_totales($id_salida);
         echo json_encode($list_totales);
-
     }
+
+    public function datos_movimiento_pagos_x_cliente($id_cliente){
+        is_logged_in_or_exit($this);
+        $result = array('data'=>array());
+        $data = $this->mayor_model->cargar_movimiento_pagos_x_cliente($id_cliente);
+        foreach($data as $key =>$value){
+            $fecha=$value['ma_fecha'];
+            $descripcion=$value['ma_descripcion'];
+            $debe=$value['ma_debe'];
+            $haber=$value['ma_haber'];
+            $saldo=$value['ma_saldo'];
+
+            $result['data'][$key]=array(
+                $fecha,
+                $descripcion,
+                $debe,
+                $haber,
+                $saldo
+            );
+        }
+        echo json_encode($result);
+    }
+
 }

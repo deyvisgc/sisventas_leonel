@@ -140,13 +140,13 @@ class Salida_model extends CI_Model {
     function insert_movimiento_pago($data_movimiento){
         $result = $this->db->query("call INSERTAR_MOVIMIENTO_CLIENTE( 
 			'".$data_movimiento['monto_pagado']."',
-			'".$data_movimiento['monto_compra']."',
 			'".$data_movimiento['descripcion']."',
-			'".$data_movimiento['saldo']."',
 			'".$data_movimiento['id_salida']."',
-			'".$data_movimiento['idcliente']."'
+			'".$data_movimiento['idcliente']."',
+			'".$data_movimiento['monto_compra']."'
 			)");
         return $result;
     }
+
 }
 ?>

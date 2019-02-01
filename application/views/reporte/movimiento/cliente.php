@@ -59,7 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h3 class="modal-title text-center" id="disminuirDeuda">Movimientos de Compras</h3>
+                <h3 class="modal-title text-center" id="disminuirDeuda">Movimiento de clientes</h3>
             </div>
             <div class="modal-body">
                 <section class="content">
@@ -96,25 +96,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                                     <div class="tab-pane" id="dv_pagos">
                                         <hr>
-                                        <div class="row">
-                                            <div class="form-group col-md-12">
-                                                <label for="" class="col-sm-1 control-label">Inicio</label>
-                                                <div class="col-sm-3">
-                                                    <input type="date" id="in_fecha_ini2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
-                                                </div>
-                                                <label for="" class="col-sm-1 control-label">Fin</label>
-                                                <div class="col-sm-3">
-                                                    <input type="date" id="in_fecha_fin2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <button type="button" class="btn btn-primary" onclick="" id="btn-altas"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <hr>
 
                                         <div class="row" style="margin: 16px;">
-                                            <div class="col-sm-12 box-body table-responsive">
+                                            <div class="col-sm-12 table-responsive">
                                                 <table class="table table-bordered" id="tb_mov_pagos">
                                                     <thead>
                                                         <tr>
@@ -226,6 +211,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         tb = $('#tb_mov_compras').DataTable({
             'ajax':BASE_URL+'reporte/Mcliente/listar_compras_x_cliente/'+id_cliente,
             order:([0,'desc']),
+            language: {
+                "decimal": "",
+                "emptyTable": "No hay información",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ Datos",
+                "infoEmpty": "Mostrando 0 to 0 of 0 Datos",
+                "infoFiltered": "(Filtrado de _MAX_ total datos)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ Entradas",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar: ",
+                "zeroRecords": "No se encontraron datos",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Ultimo",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            },
+            destroy:true
+        });
+
+        $('#tb_mov_pagos').DataTable({
+            'ajax':BASE_URL+'reporte/Mcliente/datos_movimiento_pagos_x_cliente/'+id_cliente,
+            order:([0,'asc']),
             language: {
                 "decimal": "",
                 "emptyTable": "No hay información",

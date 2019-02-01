@@ -250,7 +250,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">N° de camion <i class="fa fa-car" aria-hidden="true"></i></span>
-																<input type="number" placeholder="numero"  class="form-control" id="sal_camion" name="sal_camion" >
+																<input type="text" placeholder="placa"  class="form-control" id="sal_camion" name="sal_camion" >
 															</div>
 															<p></p>
                                                             <div class="input-group">
@@ -669,6 +669,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					}
 				});
 			}
+
+			function Enviar_Data_Movimiento_Compra_Cliente(){
+                var id_cliente = $('#in_pcl_id_cliente').val();
+            }
 
 
             function cargarAnonim(){

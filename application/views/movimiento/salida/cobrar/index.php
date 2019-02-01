@@ -75,7 +75,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="modal-body">
 
                 <input type="hidden"  id="sal_id_salida" name="sal_id_salida" class="form-control">
-                <input type="text"  id="id_cliente" name="id_cliente" class="form-control">
+                <input type="hidden"  id="id_cliente" name="id_cliente" class="form-control">
                 <div class="row">
                     <div class="form-group col-md-12">
                         <div class="input-group">

@@ -72,11 +72,10 @@ class Cobrar extends CI_Controller{
     public function registrar_movimiento_pago(){
         $data_movimiento = array(
             'monto_pagado' => $this->input->post('monto_pago'),
-            'monto_compra' => '00.00',
             'descripcion' => $this->input->post('descripcion'),
-            'saldo' => $this->input->post('saldo'),
             'id_salida' => $this->input->post('id_salida'),
-            'idcliente' => $this->input->post('idcliente')
+            'idcliente' => $this->input->post('idcliente'),
+            'monto_compra' => '00.00'
         );
 
         $data = $this->salida_model->insert_movimiento_pago($data_movimiento);
