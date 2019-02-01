@@ -89,5 +89,32 @@ class Pcliente_model extends CI_Model {
         return $datos->result_array();
 
     }
+
+     function listarProveedor(){
+		$sql="SELECT pcl_id_pcliente, emp_ruc, emp_razon_social FROM pcliente pc INNER JOIN empresa e ON pc.emp_id_empresa=e.emp_id_empresa where (pc.pcl_tipo='2' or pc.pcl_tipo='3') and pc.pcl_eliminado='NO' and pc.est_id_estado='11'";
+		$datos = $this->db->query($sql);
+		return $datos->result_array();
+	}
+	function Buscar_compras_provedor($pcl_id_pcliente){
+		$sql="SELECT ing.ing_id_ingreso,ing.ing_monto,ing.ing_fecha_doc_proveedor FROM ingreso as ing ,pcliente as pc WHERE
+                      ing.pcl_id_proveedor=pc.pcl_id_pcliente and ing.pcl_id_proveedor=$pcl_id_pcliente";
+		$datos = $this->db->query($sql);
+		return $datos->result_array();
+	}
+	function Buscar_detalle_compra($ing_id_ingreso){
+		$sql="SELECT ingdt.ind_monto,ingdt.ind_cantidad,p.pro_nombre,p.pro_val_compra FROM ingreso_detalle as ingdt , ingreso as ing , producto as p WHERE ingdt.ing_id_ingreso = ing.ing_id_ingreso and ingdt.pro_id_producto=p.pro_id_producto and ingdt.ing_id_ingreso=$ing_id_ingreso";
+		$datos = $this->db->query($sql);
+		return $datos->result_array();
+	}
+	public function suma_compras($ing_id_ingreso){
+		$query = $this->db->query("SELECT FORMAT(ROUND(IFNULL(SUM(ingdt.ind_monto),0),1),2)
+  as monto_final FROM ingreso_detalle as ingdt , ingreso as ing WHERE ingdt.ing_id_ingreso=ing.ing_id_ingreso
+                    and ingdt.ing_id_ingreso= $ing_id_ingreso");
+		foreach ($query->result() as $row)
+		{
+			return $row;
+		}
+		return array('monto_final' => '0.00');
+	}
 }
 ?>
