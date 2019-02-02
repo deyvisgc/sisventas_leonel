@@ -96,26 +96,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 									<div class="tab-pane" id="dv_pagos">
 										<hr>
-										<div class="row">
-											<div class="form-group col-md-12">
-												<label for="" class="col-sm-1 control-label">Inicio</label>
-												<div class="col-sm-3">
-													<input type="date" id="in_fecha_ini2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
-												</div>
-												<label for="" class="col-sm-1 control-label">Fin</label>
-												<div class="col-sm-3">
-													<input type="date" id="in_fecha_fin2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
-												</div>
-												<div class="col-sm-2">
-													<button type="button" class="btn btn-primary" onclick="" id="btn-altas"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
-												</div>
-											</div>
-										</div>
-										<hr>
-
 										<div class="row" style="margin: 16px;">
 											<div class="col-sm-12 box-body table-responsive">
-												<table class="table table-bordered" id="tb_mov_pagos">
+												<table class="table table-bordered" id="tb_pagos_provedor">
 													<thead>
 													<tr>
 														<th class="text-center">FECHA</th>
@@ -214,11 +197,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			destroy:true
 		});
 
-		var fecha_actual_hoy = get_fhoy();
-		$('#in_fecha_ini').val(fecha_actual_hoy);
-		$('#in_fecha_fin').val(fecha_actual_hoy);
-		$('#in_fecha_ini2').val(fecha_actual_hoy);
-		$('#in_fecha_fin2').val(fecha_actual_hoy);
+
+
+
+
+
 	}
 
 	function Movimiento_Provedor(pcl_id_pcliente) {
@@ -251,6 +234,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		} else {
 			alert('Error al cargar las compras del provedor');
 		}
+
+
+		tb = $('#tb_pagos_provedor').DataTable({
+			'ajax':BASE_URL+'reporte/proveedor/listar_pagos_provedor/'+pcl_id_pcliente,
+			order:([1,'desc']),
+			language: {
+				"decimal": "",
+				"emptyTable": "No hay información",
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ Datos",
+				"infoEmpty": "Mostrando 0 to 0 of 0 Datos",
+				"infoFiltered": "(Filtrado de _MAX_ total datos)",
+				"infoPostFix": "",
+				"thousands": ",",
+				"lengthMenu": "Mostrar _MENU_ Entradas",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"search": "Buscar: ",
+				"zeroRecords": "No se encontraron datos",
+				"paginate": {
+					"first": "Primero",
+					"last": "Ultimo",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				}
+			},
+			destroy:true
+		});
 
 
 	}

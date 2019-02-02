@@ -53,5 +53,19 @@ class Ingreso_model extends CI_Model {
 		)");
         return $result;
     }
+
+    function registra_pago($data_ingreso_pago){
+
+			$result = $this->db->query("call registrar_ingresos_pagos( 
+			'".$data_ingreso_pago['id_ingreso']."',
+			'".$data_ingreso_pago['ma_debe']."',
+			'".$data_ingreso_pago['ma_descripcion']."',
+			'".$data_ingreso_pago['idprovedor']."',
+			'".$data_ingreso_pago['ma_haber']."'
+			)");
+			return $result;
+
+
+	}
 }
 ?>

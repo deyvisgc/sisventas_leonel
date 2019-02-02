@@ -62,5 +62,17 @@ class Pagar extends CI_Controller{
         $data=$this->ingreso_model->ajustar_deuda($data_deuda);
         echo json_encode($data);
     }
+    public function registrar_pago(){
+		$data_ingreso_pago = array(
+			'id_ingreso' => $this->input->post('id_ingreso'),
+			'ma_debe' =>$this->input->post('ma_debe'),
+			'ma_descripcion' => $this->input->post('ma_descripcion'),
+			'idprovedor'=>$this->input->post('idprovedor'),
+			'ma_haber'=>'0.0',
+
+		);
+		$data=$this->ingreso_model->registra_pago($data_ingreso_pago);
+		echo json_encode($data);
+	}
 
 }
