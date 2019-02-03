@@ -229,8 +229,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                             </div>
 															<p></p>
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Descuento S/. <i class="fa fa-money"></i></span>
-																<input type="number" class="form-control descuento" id="in_sal_descuento" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<span class="input-group-addon bg-gray">Porcentaje Descuento:</span>
+																<input type="text" class="form-control" value="" placeholder="0.00" id="in_des_porcentaje" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
+															</div>
+															<p></p>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Monto Descuento S/. <i class="fa fa-money"></i></span>
+																<input type="number" class="form-control descuento" id="in_sal_descuento" readonly="readonly" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
 															</div>
 															<p></p>
 															<div class="input-group">
@@ -285,6 +290,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													<div class="btn-group">
 														<button class="btn  btn-success btn-lg" id="bt_pagar_productos" disabled=""><i class="fa fa-money"></i> Pagar</button>
 													</div>
+
+                                                    <button class="btn  btn-danger btn-lg" onclick="calcularDescuento();" id="btn_descuento"><i class="fa fa-money"></i> Calcular Descuento</button>
 												</div><!-- ./col -->
 											</div>
 											<br>
@@ -463,6 +470,37 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 var pagototal=$('#pag_total').html();
                 var deuda=parseFloat(pagototal)-parseFloat(pagcredito);
                 $('#id_deuda').val(deuda.toFixed(2));
+            }
+
+            function calcularDescuento(){
+                var des_porcentaje = $('#in_des_porcentaje').val();
+                var total_compra = $('.sp_sum_total').text();
+
+                if(des_porcentaje > 0){
+
+                    console.log(des_porcentaje);
+
+                    var monto_descuento = parseFloat(total_compra) * parseFloat(des_porcentaje+0);
+                    var redondeo = Math.round(monto_descuento*10)/10;
+                    $('#in_sal_descuento').val(redondeo.toFixed(2));
+
+                    var new_sum_total=null;
+                    new_sum_total = parseFloat(total_compra)- parseFloat(monto_descuento.toFixed(2));
+                    var redondeo2=Math.round(new_sum_total*10)/10;
+                    $('.sp_sum_total').text(redondeo2.toFixed(2));
+
+                }else if (des_porcentaje == 0){
+
+                    $.ajax({
+                        url: BASE_URL+'movimiento/salida/detalle/buscar_productos_elejidos',
+                        type: 'POST',
+                        dataType:'json',
+                        success: function ( json ) {
+                            $('.sp_sum_total').text(json.tventa.sum_total);
+                            $('#in_sal_descuento').val('');
+                        }
+                    });
+                }
             }
 
 			function func_reload_salcombo() {

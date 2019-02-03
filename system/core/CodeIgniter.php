@@ -97,7 +97,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * The subclass prefix allows CI to know if a core class is
  * being extended via a library in the local application
  * "libraries" folder. Since CI allows config items to be
- * overridden via data set in the main index.php file,
+ * overridden via data set in the main boletas.php file,
  * before proceeding we need to know if a subclass_prefix
  * override exists. If so, we will set this value now,
  * before any classes are loaded
@@ -153,7 +153,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 	$CFG =& load_class('Config', 'core');
 
-	// Do we have any manually set config items in the index.php file?
+	// Do we have any manually set config items in the boletas.php file?
 	if (isset($assign_to_config) && is_array($assign_to_config))
 	{
 		foreach ($assign_to_config as $key => $value)
