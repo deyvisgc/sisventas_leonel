@@ -70,7 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h3 class="modal-title" id="disminuirDeuda">Deuda Actual con <strong id="cliente" class="text-danger text-bold"> </strong></h3>
+                <h3 class="modal-title" id="disminuirDeuda">Deuda Actual con <strong id="cliente" class="text-danger text-bold"> </strong></h3><p id="idprovedor" hidden ></p>
             </div>
             <div class="modal-body">
 
@@ -88,10 +88,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="form-group col-md-12">
                         <div class="input-group" >
                             <span class="input-group-addon bg-gray ">Monto pagado: </span>
-                            <input type="text" id="monto_pagado" onkeypress="descontarDeuda();" autofocus="autofocus" name="monto_pagado" class="form-control" value="" placeholder="Ingresar Monto Pagado">
+                            <input type="text" id="monto_pagado" onkeyup="descontarDeuda();" autofocus="autofocus" name="monto_pagado" class="form-control" value="" placeholder="Ingresar Monto Pagado">
                         </div>
                     </div>
                 </div>
+				<div class="row">
+					<div class="form-group col-md-12">
+						<div class="input-group" >
+							<span class="input-group-addon bg-gray ">Descripción: </span>
+							<textarea rows="2" cols="50" class="form-control" placeholder="Ingresar el motivo" required name="descripcion_pago" autofocus id="descripcion_cobrar"></textarea>
+						</div>
+					</div>
+				</div>
                 <div class="row">
                     <div class="form-group col-md-12">
                         <div class="input-group" >
@@ -103,7 +111,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
+                <button type="button" id="registrar_pago" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
@@ -180,15 +188,43 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             });
         });
+		$('#registrar_pago').click(function () {
+			var ma_saldo = $('#monto_restante').val();
+			var id_ingreso = $('#sal_id_salida').val();
+			var ma_debe=$("#monto_pagado").val();
+			var ma_descripcion =$('#descripcion_cobrar').val();
+			var idprovedor=$('#idprovedor').html();
+			var data = {};
+			data.ma_saldo = ma_saldo;
+			data.id_ingreso = id_ingreso;
+			data.ma_debe = ma_debe;
+			data.ma_descripcion = ma_descripcion;
+			data.idprovedor = idprovedor;
+			$.ajax({
+				type: "POST",
+				url: "<?php echo base_url(); ?>movimiento/ingreso/pagar/registrar_pago",
+				dataType: 'json',
+				data: data,
+				success: function(datos) {
+					$('#monto_restante').val("");
+					$('#monto_pagado').val("");
+					$('#monto_restante').val("");
+					$('#descripcion_cobrar').val("");
+					$('#disminuirDeuda').modal('hide');
+					swal({
+						position: 'center',
+						type: 'success',
+						title: 'pagado',
+						showConfirmButton: false,
+						timer: 3000
+					});
+				}
+			});
+
+		});
     }
 
 
-    function descontarDeuda(){
-        var deuda_actual = $('#deuda_actual').val();
-        var monto_pagado = $('#monto_pagado').val();
-        var total = parseFloat(deuda_actual) - parseFloat(monto_pagado);
-        $('#monto_restante').val(total.toFixed(2));
-    }
 
     function cargarDatosDeuda(ing_id_ingreso=null){
         if(ing_id_ingreso){
@@ -200,6 +236,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $('#deuda_actual').val(response.ing_deuda);
                     $('#cliente').html(response.emp_razon_social);
                     $('#sal_id_salida').val(response.ing_id_ingreso);
+                    $("#idprovedor").html(response.pcl_id_proveedor);
                 }
             });
             setInterval( function () {
@@ -207,14 +244,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }, 3500 )
         }
     }
+	function descontarDeuda(){
+		var deuda_actual = $('#deuda_actual').val();
+		var monto_pagado = $('#monto_pagado').val();
+		var total = parseFloat(deuda_actual) - parseFloat(monto_pagado);
+		$('#monto_restante').val(total.toFixed(2));
+	}
 
-    function editarDeuda(){
+
+	function editarDeuda(){
         var deuda = $('#monto_restante').val();
         var id = $('#sal_id_salida').val();
+        var observacion =$('#descripcion_cobrar').val();
         var data = {};
         data.deuda = deuda;
         data.iddeuda = id;
-
         $.ajax({
             type: "POST",
             url: "<?php echo base_url(); ?>movimiento/ingreso/pagar/editarDeudas",
@@ -233,6 +277,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
+
 
     function corregirDeudaxPagar(ing_id_ingreso=null){
         if(ing_id_ingreso){

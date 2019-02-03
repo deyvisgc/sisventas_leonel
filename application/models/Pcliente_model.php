@@ -116,5 +116,10 @@ class Pcliente_model extends CI_Model {
 		}
 		return array('monto_final' => '0.00');
 	}
+	public function Listar_pagos_provedor($pcl_id_pcliente){
+		$consulta="call listar_pagos_proveedor($pcl_id_pcliente)";
+		$datos = $this->db->query($consulta);
+		return $datos->result_array();
+	}
 }
 ?>

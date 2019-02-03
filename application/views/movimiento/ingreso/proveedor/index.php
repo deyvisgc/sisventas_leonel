@@ -209,12 +209,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Debito  S/. <i class="fa fa-credit-card"></i></span>
-																<input type="number" class="form-control descuento" id="in_ing_monto_tar_credito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<input type="number" class="form-control descuento" id="in_ing_monto_tar_debito"  style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Credito  S/. <i class="fa fa-credit-card"></i></span>
-																<input type="number" class="form-control descuento" id="in_ing_monto_tar_debito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<input type="number" class="form-control descuento" id="in_ing_monto_tar_credito"  style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
                                                             <p></p>
                                                             <div class="input-group">
@@ -551,6 +551,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				if(data.ing_monto_tar_debito == '') {
 					data.ing_monto_tar_debito = '0.00';
 				}
+				alert(data.ing_monto_tar_credito);
 				$.ajax({
 					type: "POST",
 					url: BASE_URL+"movimiento/ingreso/proveedor/registrar",

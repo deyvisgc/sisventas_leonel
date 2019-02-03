@@ -101,6 +101,28 @@ class Proveedor extends CI_Controller
 */
 		echo json_encode($data);
 	}
+	public function listar_pagos_provedor($pcl_id_pcliente){
+
+		is_logged_in_or_exit($this);
+		$result = array('data'=>array());
+		$data = $this->pcliente_model->Listar_pagos_provedor($pcl_id_pcliente);
+
+		foreach ($data as $key => $value){
+			$fecha=$value['ma_fecha'];
+			$descripcion=$value['ma_descripcion'];
+			$debe=$value['ma_debe'];
+			$haber=$value['ma_haber'];
+			$saldo=$value['ma_saldo'];
+			$result['data'][$key]=array(
+				$fecha,
+				$descripcion,
+				$debe,
+				$haber,
+				$saldo
+			);
+		}
+		echo json_encode($result);
+	}
 
 
 
