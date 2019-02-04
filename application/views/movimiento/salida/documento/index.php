@@ -1,151 +1,162 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 ?>
 <style>
+.style_linea_der {
+	display: inline-block;
+	margin-left: 460px;
+	margin-top:"-30px";
+}
 
-	* {
-		font-size: 12px;
-		font-family: 'Times New Roman';
-	}
-
-	.centrado {
-		text-align: center;
-		align-content: center;
-	}
-
-	.ticket {
-		width: 155px;
-		max-width: 155px;
-	}
-
-	img {
-		max-width: inherit;
-		width: inherit;
-	}
-	.cliente{
-		font-size: 12px;
-		size: 10px;
-		text-align: left;
-	}
-	hr {
-		color: #000000;
-		font-size: 10px;
-		width:200px;
-	}
-	.style_linea_tab1{
-		font-size: 12px;
-		size: 10px;
-		text-align: left;
-	}
-	.clearfix{
-		font-size: 12px;
-		size: 10px;
-		text-align: left;
-	}
-	.style_tabla{
-		width: 50%;
-		height: auto;
-	}
-
+.style_linea_dat {
+	display: inline-block;
+	margin-left: 40px;
+	width: 260px;
+	font-family: Arial;
+	font-style:normal;	
+	font-weight: bold;
+	font-size:20px;
+}
+.style_linea_dat2 {
+    display: inline-block;
+    margin-left: 50px;
+    width: 200px;
+    margin-top: -120px !important;
+    font-family: Arial;
+    font-style:normal;
+    font-weight: bold;
+    font-size:20px;
+}
+.style_linea_tab1 {
+	display: inline-block;
+	width: 80px;
+	font-family: Arial;
+	font-style:normal;
+	font-weight: bold;
+	font-size:20px;
+}
+.style_linea_tab2 {
+	display: inline-block;
+	margin-left: 0;
+	width: 410px;
+	font-family: Arial;
+	font-style:normal;
+	font-weight: bold;
+	font-size:20px;
+}
+.style_linea_tab3 {
+	display: inline-block;
+	width: 120px;
+	margin-left:100px;
+	font-family: Arial;
+	font-style:normal;
+	font-weight: bold;
+	font-size:20px;
+}
+.style_linea_tab4 {
+	display: inline-block;
+	width: 120px;	
+	margin-left:15px;
+	font-family: Arial;
+	font-weight: bold;
+	font-style:normal;
+	font-size:20px;
+}
+.style_linea_pie {
+	display: inline-block;
+	margin-left: 740px;
+	width: 270px;
+	margin-top: 130px;
+	font-family: Arial;
+	font-weight: bold;
+	font-style:normal;
+	font-size:30px;
+}
+.kilos{
+    display: inline-block;
+    margin-left: 530px;
+    width: 150px;
+    margin-top: -55px !important;
+    font-family: Arial;
+    font-weight: bold;
+    font-style:normal;
+    font-size:20px;
+}
+.observacion{
+    display: inline-block;
+    margin-left: 20px;
+    width: 450px;
+    margin-top: -40px;
+    font-family: Arial;
+    font-style:normal;
+    font-size:15px;
+}
+.style_espacio_0 {
+	display: block;
+	margin-top: 170px;
+}
+.style_espacio_1 {
+	display: block;
+	height: 10px;
+}
+.style_espacio_2 {
+	display: block;
+	height: 20px;
+}
+.style_espacio_3 {
+	display: block;
+	height: 10px;
+}
+.style_espacio_4 {
+	display: block;
+	height: 40px;
+}
+/* .style_espacio_5 {
+	display: block;
+	height: 30px;
+} */
+.style_espacio_6 {
+	display: block;
+	height: 6px;
+}
+.style_tabla {
+	display: block;
+	height: 480px;
+}
 </style>
+<p></p>
+<div class="style_espacio_0"></div>
+<span class="style_linea_der">&nbsp;</span>
+
+<div class="style_espacio_1"></div>
+<span class="style_linea_der"></span>
+
+<div class="style_espacio_2"></div>
+<span class="style_linea_dat" style="margin-left: 80px;"><?= $salida->emp_razon_social ?></span>
+<span class="style_linea_dat2"><?= $salida->emp_ruc ?></span>
+<span class="style_linea_dat" style="margin-left: 700px;margin-top: -25px;"><?= $salida->sal_chofer ?></span>
+<div class="style_espacio_3"></div>
+<span class="style_linea_dat" style="margin-left: 80px;"><?= $salida->emp_direccion ?></span>
+<span class="style_linea_dat2"><?= $salida->sal_fecha_doc_cliente ?></span>
+<span class="style_linea_dat" style="margin-left: 700px;margin-top: -25px;"><?= $salida->sal_camion ?></span>
+<div class="style_espacio_4"></div>
 
 
-<div class="ticket">
-	<img class="centrado" src="<?= base_url() ?>../imagen/logo.png" style="width: 100px ;height: auto;" alt="Logotipo">
-	<p class="centrado">PUNTO DE VENTAS</p>
-	<p class="centrado"><?= $salida->sal_fecha_doc_cliente ?></p><hr>
+<div class="style_tabla">
+<?php
 
-	<div class="row">
-		<p  class="clearfix">
-			<span class="float-left">Cliente</span>:
-			<span class="cliente"><?= $salida->emp_razon_social ?></span>
-		</p>
-		<p  class="clearfix">
-			<span class="float-left">Ruc</span>:
-			<span class="cliente "><?= $salida->emp_ruc ?></span>
-		</p>
-		<p  class="clearfix">
-			<span class="float-left">Doc cliente</span>:
-			<span class="cliente "><?= $salida->sal_numero_doc_cliente ?></span>
-		</p>
-		<p class="clearfix">
-			<span class="float-left">Direcion</span>:
-			<span class="cliente "><?= $salida->emp_direccion ?></span>
-		</p><hr>
-	</div>
-
-	<div class="style_tabla">
-		<table >
-			<thead>
-			<th>Productos</th>
-			<th>cantidad</th>
-			<th>Precio</th>
-			<th>Monto</th>
-
-			</thead>
-			<tbody>
-			<?php
-
-			foreach ($list_salida_detalle as $salida_detalle) {
-				?>
-				<tr>
-					<td width="5" heigth="5"> <span class="style_linea_tab1" style="width: 100px ;height: auto;"><?= $salida_detalle->pro_nombre ?></span></td>
-					<td width="5" heigth="5"><span class="style_linea_tab1"><?= $salida_detalle->sad_cantidad ?></span></td>
-					<td > <span class="style_linea_tab1" style="width: 100px ;height: auto;"><?= $salida_detalle->sad_valor ?></span></td>
-					<td><span class="style_linea_tab1" style="width: 100px ;height: auto;"><?= $salida_detalle->sad_monto ?></span></td>
-				</tr>
-
-
-
-
-				<?php
-			}
-			?>
-			</tbody>
-		</table><hr>
-		<td >TOTAL<span style="margin-left: 50%;margin-top: 10px" class="style_linea_pie"><?= $salida->sal_monto ?></span></td>
-		<td >VUELTO<span style="margin-left: 50%" class="label label-default pull-right "><?= $salida->sal_vuelto ?></span></td>
-		<td >KILO<span style="margin-left: 50%" class="kilos" ><?=$lista->kilo?>Kg</span></td>
-	</div>
-
-	<p class="centrado">¡GRACIAS POR SU COMPRA!</p><hr>
-	<p class="centrado">DETALLE DE VENTA</p>
-	<div class="row">
-		<p  class="clearfix">
-			<span class="float-left">Compovante</span>:
-			<span class="cliente "><?= $salida->tdo_nombre?></span>
-		</p>
-		<p class="clearfix">
-			<span class="float-left">N# Comprobante</span>:
-			<span class="cliente "><?= $salida->sal_numero_doc_cliente?></span>
-		</p><hr>
-	</div>
-	<div class="style_tabla">
-		<table>
-			<thead>
-			<th>Cantidad</th>
-			<th>Descripcion</th>
-			<th>monto</th>
-			</thead>
-			<tbody>
-			<?php
-
-			foreach ($list_salida_detalle as $salida_detalle) {
-				?>
-				<tr>
-					<td> <span class="style_linea_tab2" style=""></span><?= $salida_detalle->sad_cantidad ?></td>
-					<td><span class="style_linea_tab1" style=""><?= $salida_detalle->pro_nombre ?></span></td>
-					<td><span class="style_linea_tab4" style=""><?= $salida_detalle->sad_monto ?></span></td>
-				</tr>
-
-				<?php
-			}
-			?>
-			</tbody>
-		</table><hr>
-		<td class = "text-left">TOTAL <span style="margin-left: 50%" class="label label-default pull-right "><?= $salida->sal_monto ?></span></td>
-	</div><br>
-
+foreach ($list_salida_detalle as $salida_detalle) {
+?>
+<span class="style_linea_tab1" style=""><?= $salida_detalle->sad_cantidad ?></span>
+<span class="style_linea_tab2" style=""><?= $salida_detalle->pro_nombre ?></span>
+<span class="style_linea_tab3" style=""><?= $salida_detalle->sad_valor ?></span>
+<span class="style_linea_tab4" style=""><?= $salida_detalle->sad_monto ?></span>
+<div class="style_espacio_6"></div>
+<?php
+}
+?>
 </div>
-
-
+<span class="style_linea_pie" ><?= $salida->sal_monto ?></span>
+<span class="observacion" ><?=$salida->sal_observacion ?></span>
+<span class="kilos" ><?=$lista->kilo ?> Kg</span>

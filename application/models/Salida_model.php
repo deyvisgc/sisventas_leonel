@@ -30,6 +30,9 @@ class Salida_model extends CI_Model {
 		$query = $this->db->query("
 			SELECT 
 			  sal_id_salida, 
+			  sal_camion, 
+			  sal_chofer,
+			  sal_observacion, 
 			  IFNULL(pcl_id_cliente, 0) pcl_id_cliente, 
 			  IFNULL(DATE_FORMAT(sal_fecha_doc_cliente, '%d/%m/%Y'), '') sal_fecha_doc_cliente, 
 			  IFNULL(td.tdo_id_tipo_documento, 0) tdo_id_tipo_documento, 

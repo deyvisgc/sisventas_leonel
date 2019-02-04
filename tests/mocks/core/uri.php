@@ -9,7 +9,7 @@ class Mock_Core_URI extends CI_URI {
 
 		// set predictable config values
 		$test->ci_set_config(array(
-			'index_page'		=> 'index.php',
+			'index_page'		=> 'boletas.php',
 			'base_url'		=> 'http://example.com/',
 			'subclass_prefix'	=> 'MY_',
 			'enable_query_strings'	=> FALSE,
