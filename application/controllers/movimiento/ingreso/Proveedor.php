@@ -45,7 +45,8 @@ class Proveedor extends CI_Controller {
 			'ing_monto_efectivo' => $this->input->post('ing_monto_efectivo'),
 			'ing_monto_tar_credito' => $this->input->post('ing_monto_tar_credito'),
 			'ing_monto_tar_debito' => $this->input->post('ing_monto_tar_debito'),
-            'in_tipo' => $this->input->post('in_tipo')
+			'ing_deuda'=> $this->input->post('ing_monto_deudas'),
+			'in_tipo' => $this->input->post('in_tipo')
 			);
 		$result = $this->ingreso_model->mregistrar($data);
 		

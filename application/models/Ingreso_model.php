@@ -14,6 +14,7 @@ class Ingreso_model extends CI_Model {
 			".$data['ing_monto_efectivo'].", 
 			".$data['ing_monto_tar_credito'].", 
 			".$data['ing_monto_tar_debito'].",
+			".$data['ing_deuda'].",
 			'".$data['in_tipo']."'
 			)");
 		$result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado");

@@ -214,9 +214,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Credito  S/. <i class="fa fa-credit-card"></i></span>
-																<input type="number" class="form-control descuento" id="in_ing_monto_tar_credito"  style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<input type="number" onkeyup="restardeuda();" class="form-control descuento" id="in_ing_monto_tar_credito"  style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
                                                             <p></p>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Deuda  S/. <i class="fa fa-credit-card"></i></span>
+																<input type="number" readonly class="form-control descuento" id="in_ing_monto_deuda"  style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="0.00"  disabled="">
+															</div>
+															<p></p>
                                                             <div class="input-group">
                                                                 <span class="input-group-addon bg-gray">Tipo de Compra </span>
                                                                 <select class="form-control custom-select" id="in_tipo" name="in_tipo">
@@ -262,6 +267,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</div><!-- /.content-wrapper -->
 			
 			<script>
+				function restardeuda(){
+					var credito=document.getElementById('in_ing_monto_tar_credito').value;
+					var pagototal=$('.sp_sum_total').html();
+					var saldodeuda=parseFloat(pagototal)-parseFloat(credito);
+					$('#in_ing_monto_deuda').val(saldodeuda.toFixed(2));
+
+				}
 			function init_ingreso() {
 				$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 					var target = $(e.target).attr("href");
@@ -272,6 +284,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$('#sp_etiqueta').text('Eleccion de productos.');
 					}
 				});
+
 				$('#bt_agregar_producto').prop('disabled', false);
 				$('#bt_cancelar_producto').prop('disabled', false);
 				$('#bt_descripcion').prop('disabled', false);
@@ -539,6 +552,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				data.tdo_id_tipo_documento = $('#sl_tdo_id_tipo_documento').val();
 				data.ing_numero_doc_proveedor = ing_numero_doc_proveedor;
 				data.ing_monto_efectivo = $('#in_ing_monto_efectivo').val();
+				data.ing_monto_deudas=$('#in_ing_monto_deuda').val();
 				data.in_tipo = $('#in_tipo').val();
 				if(data.ing_monto_efectivo == '') {
 					data.ing_monto_efectivo = '0.00';
@@ -550,6 +564,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				data.ing_monto_tar_debito = $('#in_ing_monto_tar_debito').val();
 				if(data.ing_monto_tar_debito == '') {
 					data.ing_monto_tar_debito = '0.00';
+				}
+				if (data.ing_monto_deudas == ''){
+					data.ing_monto_deudas = '0.00';
 				}
 				alert(data.ing_monto_tar_credito);
 				$.ajax({
