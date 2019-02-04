@@ -230,7 +230,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Porcentaje Descuento:</span>
-																<input type="text" class="form-control" value="" placeholder="0.00" id="in_des_porcentaje" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
+																<input type="text" class="form-control" value=""  onkeyup="calcularDescuento2();" placeholder="0.00" id="in_des_porcentaje" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
 															</div>
 															<p></p>
 															<div class="input-group">
@@ -490,6 +490,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $('.sp_sum_total').text(redondeo2.toFixed(2));
 
                 }else if (des_porcentaje == 0){
+
+                    $.ajax({
+                        url: BASE_URL+'movimiento/salida/detalle/buscar_productos_elejidos',
+                        type: 'POST',
+                        dataType:'json',
+                        success: function ( json ) {
+                            $('.sp_sum_total').text(json.tventa.sum_total);
+                            $('#in_sal_descuento').val('');
+                        }
+                    });
+                }
+            }
+
+            function calcularDescuento2() {
+
+                var des_porcentaje = $('#in_des_porcentaje').val();
+                if (des_porcentaje == 0){
 
                     $.ajax({
                         url: BASE_URL+'movimiento/salida/detalle/buscar_productos_elejidos',
