@@ -97,7 +97,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div class="tab-pane" id="dv_pagos">
 										<hr>
 										<div class="row" style="margin: 16px;">
-											<div class="col-sm-12 box-body table-responsive">
+											<div class="col-sm-12 table-responsive">
 												<table class="table table-bordered" id="tb_pagos_provedor">
 													<thead>
 													<tr>
@@ -238,7 +238,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		tb = $('#tb_pagos_provedor').DataTable({
 			'ajax':BASE_URL+'reporte/proveedor/listar_pagos_provedor/'+pcl_id_pcliente,
-			order:([1,'desc']),
+			order:([0,'asc']),
 			language: {
 				"decimal": "",
 				"emptyTable": "No hay información",
