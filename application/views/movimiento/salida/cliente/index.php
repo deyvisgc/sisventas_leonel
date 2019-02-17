@@ -44,23 +44,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<input type="text" class="form-control" id="in_descripcion" placeholder="Descripcion..." style="font-size:20px; text-align:center; color: blue; font-weight: bold;" disabled="">
 															</div>
 															<p></p>
-															<div class="input-group">
-																<span class="input-group-addon bg-gray">Precio:</span>
-																<input type="text" class="form-control precios" id="in_valor" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
-															</div>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon bg-gray">Cantidad:</span>
+                                                                <input type="number" class="form-control cantidades" id="in_cantidad" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+                                                            </div>
 															<p></p>
-															<div class="input-group">
-																<span class="input-group-addon bg-gray">Cantidad:</span>
-																<input type="number" class="form-control cantidades" id="in_cantidad" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
-															</div>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon bg-gray">Precio:</span>
+                                                                <input type="text" class="form-control precios" id="in_valor" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+                                                            </div>
                                                             <div class="input-group">
 
                                                                 <input type="hidden"  readonly="readonly" class="form-control cantidades" id="pre_compra" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
                                                             </div><br>
 
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Kilogramos:</span>
-																<input type="number" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
+																<input type="hidden" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
 															</div>
 
 															<br>
@@ -191,20 +190,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<p></p>
 															<div class="input-group">
 																<span class="input-group-addon bg-gray">Numero <i class="fa fa-barcode"></i></span>
-																<input type="text" class="form-control numero" id="in_sal_numero_doc_cliente" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" disabled="">
+																<input type="text" class="form-control numero" id="in_sal_numero_doc_cliente" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
 															</div>
                                                             <p></p>
                                                             <div class="input-group">
-                                                                <span class="input-group-addon bg-gray">Motivo </span>
-                                                                <input type="text" class="form-control motivo" id="in_sal_motivo" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" disabled="">
+                                                                <span class="input-group-addon bg-gray">Tipo de Venta </span>
+                                                                <select class="form-control custom-select" id="t_venta" name="t_venta">
+                                                                    <option value="contado">Al contado</option>
+                                                                    <option value="deuda">Por pagar</option>
+                                                                </select>
                                                             </div>
                                                             <p></p>
-															<br>
-															<div class="input-group">
-																<span class="input-group-addon bg-gray">Observacion</span>
-																<textarea rows="2" cols="50" class="form-control motivo" id="sal_observacion" name="sal_observacion" placeholder="detalles de la venta hecha "></textarea>
-															</div>
-															<p></p>
+                                                            <div class="input-group">
+                                                                <!--<span class="input-group-addon bg-gray">Motivo </span>-->
+                                                                <input type="hidden" class="form-control motivo" id="in_sal_motivo" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" disabled="">
+                                                            </div>
+                                                            <p></p>
 															<br>
 														</div>
 													</div>
@@ -217,30 +218,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<span class="input-group-addon bg-gray">Efectivo  S/. <i class="fa fa-money"></i></span>
 																<input type="number" class="form-control descuento" id="in_sal_monto_efectivo" onkeyup="calcularvuelto();" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
-															<p></p>
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Debito  S/. <i class="fa fa-credit-card"></i></span>
-																<input type="number" class="form-control descuento" id="in_sal_monto_tar_debito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
+																<!--<span class="input-group-addon bg-gray">Debito  S/. <i class="fa fa-credit-card"></i></span>
+																-->
+                                                                <input type="hidden" class="form-control descuento" id="in_sal_monto_tar_debito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
 															</div>
 															<p></p>
 															<div class="input-group">
                                                                 <span class="input-group-addon bg-gray">Credito  S/. <i class="fa fa-credit-card"></i></span>
                                                                 <input type="number" class="form-control descuento" onkeyup="calculardeuda();" id="in_sal_monto_tar_credito" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" value="" placeholder="0.00" disabled="">
                                                             </div>
-															<p></p>
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Porcentaje Descuento:</span>
-																<input type="text" class="form-control" value=""  onkeyup="calcularDescuento2();" placeholder="0.00" id="in_des_porcentaje" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
+																<!--<span class="input-group-addon bg-gray">Porcentaje Descuento:</span>-->
+																<input type="hidden" class="form-control" value=""  onkeyup="calcularDescuento2();" placeholder="0.00" id="in_des_porcentaje" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
 															</div>
-															<p></p>
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Monto Descuento S/. <i class="fa fa-money"></i></span>
-																<input type="number" class="form-control descuento" id="in_sal_descuento" readonly="readonly" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
+																<!--<span class="input-group-addon bg-gray">Monto Descuento S/. <i class="fa fa-money"></i></span>
+																-->
+                                                                <input type="hidden" class="form-control descuento" id="in_sal_descuento" readonly="readonly" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;">
 															</div>
-															<p></p>
 															<div class="input-group">
-																<span class="input-group-addon bg-gray">Vuelto</span>
-																<input   type="number" class="form-control vuelto" id="vuelto" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" placeholder="0.00" readonly="readonly">
+																<!--<span class="input-group-addon bg-gray">Vuelto</span>-->
+																<input  type="hidden" class="form-control vuelto" id="vuelto" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" placeholder="0.00" readonly="readonly">
 															</div>
 															<p></p>
                                                             <div class="input-group">
@@ -259,11 +258,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															</div>
 															<p></p>
                                                             <div class="input-group">
-                                                                <span class="input-group-addon bg-gray">Tipo de Venta </span>
-                                                                <select class="form-control custom-select" id="t_venta" name="t_venta">
-                                                                    <option value="contado">Al contado</option>
-                                                                    <option value="deuda">Por pagar</option>
-                                                                </select>
+                                                                <span class="input-group-addon bg-gray">Observacion</span>
+                                                                <textarea rows="2" cols="50" class="form-control motivo" id="sal_observacion" name="sal_observacion" placeholder="detalles de la venta hecha "></textarea>
                                                             </div>
 															<br>
 														</div>
@@ -546,7 +542,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					data: {tdo_id_tipo_documento: tdo_id_tipo_documento},
 					success: function(datos) {
 						if(datos.hecho == 'SI') {
-							$('#in_sal_numero_doc_cliente').val(datos.row.numero);
 						}
 					}
 				});
@@ -701,6 +696,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				}
 				data.sal_motivo = $('#in_sal_motivo').val();
 				data.sal_deuda = $('#id_deuda').val();
+				data.in_sal_numero_doc_cliente = $('#in_sal_numero_doc_cliente').val();
 				$.ajax({
 					type: "POST",
 					url: BASE_URL+"movimiento/salida/cliente/registrar",

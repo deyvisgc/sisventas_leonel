@@ -69,7 +69,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     }
                 ],
                 'order': [[ 1, "desc" ]],
-                'ajax':BASE_URL+'movimiento/imprimir/imprimir/listarVentas',
+                'ajax':BASE_URL+'reporte/imprimir/imprimir/listarVentas',
 
                 language: {
                     "decimal": "",
@@ -99,7 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         data.sal_id_salida = sal_id_salida;
         $.ajax({
             type: "POST",
-            url: BASE_URL+"movimiento/salida/cliente/mostrar_documento",
+            url: BASE_URL+"reporte/salida/cliente/mostrar_documento",
             data: data,
             success: function(datos) {
                 $('#dv_contenedor_impresion').empty();

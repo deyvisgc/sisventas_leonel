@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-02-2019 a las 01:56:16
+-- Tiempo de generación: 17-02-2019 a las 13:26:19
 -- Versión del servidor: 10.1.33-MariaDB
 -- Versión de PHP: 7.2.6
 
@@ -459,7 +459,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_movimiento_registrar` (IN `in_
     
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), OUT `out_sal_id_salida` INT, IN `in_usu_id_usuario` INT, IN `in_pcl_id_cliente` INT, IN `in_sal_fecha_doc_cliente` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_sal_monto_efectivo` DOUBLE(15,2), IN `in_sal_monto_tar_credito` DOUBLE(15,2), IN `in_sal_monto_tar_debito` DOUBLE(15,2), IN `in_sal_descuento` DOUBLE(15,2), IN `in_sal_motivo` VARCHAR(60), IN `in_sal_vuelto` VARCHAR(150), IN `in_tipo_venta` VARCHAR(60), IN `in_deuda` DOUBLE(15,2), IN `in_sal_chofer` VARCHAR(150), IN `in_sal_camion` VARCHAR(150), IN `in_sal_observación` VARCHAR(250))  cuerpo: BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), OUT `out_sal_id_salida` INT, IN `in_usu_id_usuario` INT, IN `in_pcl_id_cliente` INT, IN `in_sal_fecha_doc_cliente` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_sal_monto_efectivo` DOUBLE(15,2), IN `in_sal_monto_tar_credito` DOUBLE(15,2), IN `in_sal_monto_tar_debito` DOUBLE(15,2), IN `in_sal_descuento` DOUBLE(15,2), IN `in_sal_motivo` VARCHAR(60), IN `in_sal_vuelto` VARCHAR(150), IN `in_tipo_venta` VARCHAR(60), IN `in_deuda` DOUBLE(15,2), IN `in_sal_chofer` VARCHAR(150), IN `in_sal_camion` VARCHAR(150), IN `in_sal_observación` VARCHAR(250), IN `in_sal_numero_doc_cliente` INT)  cuerpo: BEGIN
     DECLARE var_count_productos DOUBLE(15,2);
     DECLARE var_sum_total DOUBLE(15,2);
     DECLARE var_sum_total_entrante DOUBLE(15,2);
@@ -569,7 +569,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_he
         in_pcl_id_cliente,
         in_tdo_id_tipo_documento,
         in_sal_fecha_doc_cliente,
-        var_sal_numero_doc_cliente,
+        in_sal_numero_doc_cliente,
         NOW(),
         'C',
         var_sum_total,
@@ -1427,7 +1427,9 @@ INSERT INTO `mayor` (`id_mayor`, `ma_fecha`, `ma_descripcion`, `ma_debe`, `ma_ha
 (30, '2019-02-01', 'Por la deuda del 2019-02-01', 320.00, 0.00, 186.00, 612, 25),
 (31, '2019-02-03', 'POR LA COMPRA DE PRODUCTOS', 0.00, 0.00, 12268.00, 613, 93),
 (32, '2019-02-04', 'hola', 500.00, 0.00, 11768.00, 608, 93),
-(33, '2019-02-04', 'POR LA COMPRA DE PRODUCTOS', 500.00, 1061.35, 12829.35, 614, 93);
+(33, '2019-02-04', 'POR LA COMPRA DE PRODUCTOS', 500.00, 1061.35, 12829.35, 614, 93),
+(34, '2019-02-17', 'POR LA COMPRA DE PRODUCTOS', 0.00, 520.00, 13349.35, 615, 93),
+(35, '2019-02-17', 'POR LA COMPRA DE PRODUCTOS', 0.00, 0.00, 13349.35, 616, 93);
 
 -- --------------------------------------------------------
 
@@ -4526,7 +4528,9 @@ INSERT INTO `movimiento` (`mov_id_movimiento`, `ind_id_ingreso_detalle`, `sad_id
 (3029, NULL, NULL, 17, NULL, 'INP', 47.00, 26.00, 73.00, 19, 2, 3),
 (3030, NULL, NULL, NULL, 614, 'SAC', 8.00, 3.00, 5.00, 114, 2, 3),
 (3031, NULL, NULL, NULL, 614, 'SAC', 73.00, 5.00, 68.00, 19, 2, 3),
-(3032, NULL, NULL, 18, NULL, 'INP', 391.00, 5.00, 396.00, 22, 2, 3);
+(3032, NULL, NULL, 18, NULL, 'INP', 391.00, 5.00, 396.00, 22, 2, 3),
+(3033, NULL, NULL, NULL, 615, 'SAC', 5.00, 1.00, 4.00, 114, 2, 3),
+(3034, NULL, NULL, NULL, 616, 'SAC', 4.00, 2.00, 2.00, 114, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -4778,7 +4782,7 @@ INSERT INTO `privilegio` (`pri_id_privilegio`, `pri_nombre`, `pri_acceso`, `pri_
 (22, 'Ventas del dia', 'reporte/ventas', 'REPORTE', 41, 1, 'money', 'cog'),
 (23, 'Registrar Sangria', 'movimiento/sangria2', 'MOVIMIENTO', 45, 1, 'fire', 'cog'),
 (24, 'Mis Ventas', 'reporte/miventa', 'REPORTE', 50, 1, 'money', 'cog'),
-(25, 'Imprimir ventas', 'movimiento/imprimir/imprimir', 'MOVIMIENTO', 60, 1, 'print', 'cog'),
+(25, 'Administrar ventas', 'reporte/imprimir/imprimir', 'REPORTE', 60, 1, 'print', 'cog'),
 (26, 'Efectivo en caja', 'reporte/efectivo/caja', 'REPORTE', 51, 1, 'money', 'cog'),
 (27, 'Ganancias', 'reporte/ganancias', 'REPORTE', 61, 1, 'chart-line	', 'cog'),
 (28, 'Movimiento cliente', 'reporte/mcliente', 'REPORTE', 70, 1, 'line-chart', 'cog'),
@@ -4926,7 +4930,7 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (111, '181005164534', 82, 83, 'CONCHUELA GRUESA', 25.00, 28.00, 119.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (112, '181005164614', 82, 83, 'CALCIO', 8.50, 8.50, 384.00, 30.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (113, '181005165409', 82, 83, 'SOYA', 80.00, 90.00, 474.00, 20.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(114, '181005165444', 82, 83, 'ACEITE DE SOYA', 25.00, 520.00, 5.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(114, '181005165444', 82, 83, 'ACEITE DE SOYA', 25.00, 520.00, 2.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (115, '181005165523', 82, 83, 'SAL INDUSTRIAL', 12.50, 12.50, 0.00, 0.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (116, '181005165600', 82, 83, 'GRANZA X 50', 42.50, 42.50, 112.00, 20.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (117, '181005165638', 67, 69, 'GRANZA X 60', 51.00, 70.00, 162.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -5054,6 +5058,7 @@ INSERT INTO `rol_has_privilegio` (`rol_id_rol`, `pri_id_privilegio`) VALUES
 (2, 5),
 (2, 7),
 (2, 8),
+(2, 11),
 (2, 12),
 (2, 14),
 (2, 15),
@@ -5158,7 +5163,9 @@ INSERT INTO `salida` (`sal_id_salida`, `pcl_id_proveedor`, `pcl_id_cliente`, `td
 (611, NULL, 25, 1823, '2019-02-01', '0000051', '2019-02-01', 'C', 180.00, 180.00, 0.00, 20.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 160.00, 0.00, '313', 'ASS', 'ASAS'),
 (612, NULL, 25, 1823, '2019-02-01', '0000052', '2019-02-01', 'C', 346.00, 346.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 26.00, 0.00, 'ASA5S5A5', 'FERNANDEZ', 'SE VA SOPA COMO PARA PODER SEMBARR TODO LO BUENO POR EL BARRIO MAS FICHO DE PERU. sysetms grupo SAC superu sac'),
 (613, NULL, 93, 1823, '2019-02-03', '0000053', '2019-02-03', 'C', 1176.00, 940.80, 2000.00, 0.00, 0.00, 235.20, '', '1801', '20190117030514', 3, 2, 'contado', 0.00, 1059.20, 'as5', 'asda', 'asdasd'),
-(614, NULL, 93, 1823, '2019-02-04', '0000054', '2019-02-04', 'C', 1561.35, 1561.35, 0.00, 500.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 1061.35, 0.00, '45-AS', 'JAIMITO EL CARTERO', 'kdkdkdk');
+(614, NULL, 93, 1823, '2019-02-04', '0000054', '2019-02-04', 'C', 1561.35, 1561.35, 0.00, 500.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 1061.35, 0.00, '45-AS', 'JAIMITO EL CARTERO', 'kdkdkdk'),
+(615, NULL, 93, 1822, '2019-02-17', '120', '2019-02-17', 'C', 520.00, 520.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 520.00, 0.00, '', '', ''),
+(616, NULL, 93, 1821, '2019-02-17', '125', '2019-02-17', 'C', 1040.00, 1040.00, 1040.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'contado', 0.00, 0.00, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -5282,7 +5289,9 @@ INSERT INTO `salida_detalle` (`sad_id_salida_detalle`, `pro_id_producto`, `sal_i
 (2301, 22, 613, 20.00, 44.00, 0.00, 25.00, 500.00, 1),
 (2302, 89, 613, 9.00, 36.00, 0.00, 68.00, 612.00, 1),
 (2303, 114, 614, 3.00, 1485.00, 0.00, 520.00, 1560.00, 1),
-(2304, 19, 614, 5.00, -90.00, 100.00, 0.27, 1.35, 1);
+(2304, 19, 614, 5.00, -90.00, 100.00, 0.27, 1.35, 1),
+(2305, 114, 615, 1.00, 495.00, 0.00, 520.00, 520.00, 1),
+(2306, 114, 616, 2.00, 990.00, 0.00, 520.00, 1040.00, 1);
 
 -- --------------------------------------------------------
 
@@ -5411,7 +5420,7 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`usu_id_usuario`, `usu_nombre`, `usu_clave`, `rol_id_rol`, `est_id_estado`) VALUES
 (1, 'admin', '$2y$12$.5eVZRxrEzu6NYFD3CkrI.vMy1ASiQja2/8.fcf3SdwZini3lCWi.', 1, 12),
 (2, 'leonel', '$2y$12$TuYRyrArnPsMyKN2FwM94Or2dhcJvsBs6NbqPYrfdPscaqqrbDLoq', 2, 11),
-(3, 'soporte', '$2y$12$T889H6wQJIHgXX0InZV1Qu.bWNqSe9yMjcFyqHvc6BTUzEBVpAjry', 1, 11),
+(3, 'soporte', '$2y$12$T889H6wQJIHgXX0InZV1Qu.bWNqSe9yMjcFyqHvc6BTUzEBVpAjry', 2, 11),
 (4, 'colorado', '$2y$12$vJCwXLIw9IzhA0GT2AVbJubNa6MEGjJxiDju2GKbjPrpVwAy5CjEK', 2, 12);
 
 --
@@ -5614,13 +5623,13 @@ ALTER TABLE `ingreso_detalle`
 -- AUTO_INCREMENT de la tabla `mayor`
 --
 ALTER TABLE `mayor`
-  MODIFY `id_mayor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id_mayor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento`
 --
 ALTER TABLE `movimiento`
-  MODIFY `mov_id_movimiento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3033;
+  MODIFY `mov_id_movimiento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3035;
 
 --
 -- AUTO_INCREMENT de la tabla `pcliente`
@@ -5656,13 +5665,13 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `salida`
 --
 ALTER TABLE `salida`
-  MODIFY `sal_id_salida` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=615;
+  MODIFY `sal_id_salida` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=617;
 
 --
 -- AUTO_INCREMENT de la tabla `salida_detalle`
 --
 ALTER TABLE `salida_detalle`
-  MODIFY `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2305;
+  MODIFY `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2307;
 
 --
 -- AUTO_INCREMENT de la tabla `sangria`

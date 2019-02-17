@@ -25,15 +25,15 @@ class imprimir extends CI_Controller
     {
         is_logged_in_or_exit($this);
         $data_header['list_privilegio'] = get_privilegios($this);
-        $data_header['pri_grupo'] = 'MOVIMIENTO';
-        $data_header['pri_nombre'] = 'Imprimir ventas';
+        $data_header['pri_grupo'] = 'REPORTE';
+        $data_header['pri_nombre'] = 'Administrar ventas';
         $data_header['usuario'] = get_usuario($this);
         $data_header['title'] = "Reimprimir";
 
         $data_footer['inits_function'] = array("init_salida");
 
         $this->load->view('header', $data_header);
-        $this->load->view('movimiento/salida/imprimir/reimprimir');
+        $this->load->view('reporte/imprimir/reimprimir');
         $this->load->view('footer', $data_footer);
     }
 
