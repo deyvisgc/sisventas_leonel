@@ -29,28 +29,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<div class="tab-content">
 									<div class="tab-pane active" id="dv_mov_diario_ingreso">
 										<div class="row">
-											<div class="form-group">
-												<label for="" class="col-sm-2 control-label">FECHA INICIO</label>
-												<div class="col-sm-3">
-													<input type="date" id="in_fecha_ini" name="fecha_ini" class="form-control" value="" placeholder="Fecha inicio">
-												</div>
-												<label for="" class="col-sm-2 control-label">FECHA FIN</label>
-												<div class="col-sm-3">
-													<input type="date" id="in_fecha_fin" name="fecha_fin" class="form-control" value="" placeholder="Fecha fin">
-												</div>
+											<div class="form-group" style="margin-left: 20px">
+                                                <div class="row"><br><br>
+                                                    <label for="" class="col-sm-2 col-lg-2 control-label">FECHA INICIO</label>
+                                                    <div class="col-sm-3">
+                                                        <input type="date" id="in_fecha_ini" name="fecha_ini" class="form-control" value="" placeholder="Fecha inicio">
+                                                    </div>
+                                                    <label for="" class="col-sm-2 col-lg-2 control-label">FECHA FIN</label>
+                                                    <div class="col-sm-3">
+                                                        <input type="date" id="in_fecha_fin" name="fecha_fin" class="form-control" value="" placeholder="Fecha fin">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-3 col-lg-1">
+                                                            <button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_ingreso();" id="btn-altas"><i class="fa fa-calendar"></i> Filtar por Fecha</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
 											</div>
 											<br>
-											<hr>
-											<div class="form-group">
-												<div class="col-sm-3">
-													<button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_ingreso();" id="btn-altas"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
-												</div>
-											</div>
-											<br>
-											<br>
-											<hr>
 											<div class="row" style="margin: 16px;">
-												<div class="col-sm-12 box-body table-responsive">
+												<div class="col-sm-12 table-responsive">
 													<table class="table table-bordered" id="tb_mov_diario_ingreso">
 														<thead>
 															<tr>
@@ -78,47 +76,54 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div class="tab-pane" id="dv_mov_diario_salida">
 										<div class="row">
 											<div class="form-group">
-												<label for="" class="col-sm-2 control-label">FECHA INICIO</label>
-												<div class="col-sm-3">
-													<input type="date" id="in_fecha_ini2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
-												</div>
-												<label for="" class="col-sm-2 control-label">FECHA INICIO</label>
-												<div class="col-sm-3">
-													<input type="date" id="in_fecha_fin2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
-												</div>
+                                                <div class="row" style="margin-left: 20px"><br><br>
+                                                    <label for="" class="col-sm-2 col-lg-2 control-label">FECHA INICIO</label>
+                                                    <div class="col-sm-3">
+                                                        <input type="date" id="in_fecha_ini2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
+                                                    </div>
+                                                    <label for="" class="col-sm-2 col-lg-2 control-label">FECHA INICIO</label>
+                                                    <div class="col-sm-3">
+                                                        <input type="date" id="in_fecha_fin2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-3 col-lg-2">
+                                                            <button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_salida();" id="btn-altas"><i class="fa fa-calendar"></i> Filtar por Fecha</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
 											</div>
 											<br>
 											<hr>
-											<div class="form-group">
-												<div class="col-sm-3">
-													<button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_salida();" id="btn-altas"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
-												</div>
-											</div>
-											<br>
-											<br>
-											<hr>
+                                            <div class="form-group col-md-12">
+                                                <button type="button" class="btn btn-danger pull-right" onclick="imprimir();"><i class="fa fa-print"></i> IMPRIMIR </button>
+                                            </div>
+                                            <div id="imprimir">
 											<div class="row" style="margin: 16px;">
-												<div class="col-sm-12 box-body table-responsive">
-													<table class="table table-bordered" id="tb_mov_diario_salida">
+												<div class="col-sm-12 table-responsive">
+													<table class="table table-bordered" id="tb_mov_diario_salida" style="width: 100%">
+                                                        <caption id="titulo" hidden>REPORTE DE VENTAS</caption><br><br>
 														<thead>
 															<tr>
-																<th>FECHA</th>
+                                                                <th>FECHA</th>
 																<th>CLIENTE</th>
 																<th>DOC.</th>
 																<th>NRO.</th>
+                                                                <th>PRODUCTO</th>
+                                                                <th>CANTIDAD</th>
 																<th>S/. VENTA</th>
-															</tr>
+                                                            </tr>
 														</thead>
-														<tbody>
+														<tbody id="cabecera">
 														</tbody>
-														<tfoot>
+														<tfoot id="pie">
 															<tr>
-																<th colspan="4" class=" alinear_derecha">&nbsp;Total Venta:</th>
+																<th colspan="6" class=" alinear_derecha">&nbsp;Total Venta:</th>
 																<th class=" alinear_derecha"><span id="sp_total_salida"></span></th>
 															</tr>
 														</tfoot>
 													</table>
 												</div>
+											</div>
 											</div>
 										</div>
 									</div>
@@ -182,10 +187,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					return data;
 				};
 				var mov_diario_columns2 = [
-					{data: "sal_fecha_registro"},
+                    {data: "sal_fecha_registro"},
 					{data: "emp_razon_social"},
 					{data: "tdo_nombre"},
 					{data: "sal_numero_doc_cliente"},
+					{data: "PRODUCTO"},
+					{data: "CANTIDAD"},
 					{data: "sal_monto", className: "alinear_derecha"}
 				];
 				
@@ -225,7 +232,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						"lengthMenu": "Mostrar _MENU_ entradas",
 						"loadingRecords": "Cargando...",
 						"processing": "Procesando...",
-						"search": "Buscar",
+						"search": "Buscar ",
 						"zeroRecords": "No se encontraron registros coincidentes.",
 						"paginate": {
 							"first": "Primero",
@@ -244,13 +251,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 			function generar_tabla_ajx3(id_tabla, url, type, data, dataSrc, columns) {
 				$('#'+id_tabla).DataTable({
-					    dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'print',
-                        text: 'Imprimir'
-                    }
-                ],
 					ajax: {
 						url: url,
 						type: type,
@@ -269,7 +269,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						"lengthMenu": "Mostrar _MENU_ entradas",
 						"loadingRecords": "Cargando...",
 						"processing": "Procesando...",
-						"search": "Buscar",
+						"search": "Buscar ",
 						"zeroRecords": "No se encontraron registros coincidentes.",
 						"paginate": {
 							"first": "Primero",
@@ -285,4 +285,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					
 				});
 			}
+            function imprimir() {
+			    $('#select').hide();
+                $('#titulo').show();
+                $('#titulo').css({"margin-bottom":"10px","font-size":"35px","font-weight":"bold"});
+                $('#cabecera').css({"text-align": "center","align-content":"center","font-size":"12px"});
+                $('#pie').css({"text-align": "right","align-content":"right","font-size":"20px","font-weight": "bold"});
+                $('#a').css({"text-align": "center","align-content":"center","font-size":"20px","font-weight": "bold"});
+                var printme= document.getElementById("tb_mov_diario_salida");
+                var wme= window.open();
+                wme.document.write(printme.outerHTML);
+                wme.document.close();
+                wme.focus();
+                wme.print();
+                wme.close();
+
+                return window.location.reload(true);
+            }
 			</script>

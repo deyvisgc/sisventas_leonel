@@ -82,17 +82,14 @@ class Reporte_model extends CI_Model {
 	
 	function mmovimiento_diario_salida($fecha_ini, $fecha_fin) {
 		$list = array();
-		$query = $this->db->query("SELECT 
-			  sal_fecha_doc_cliente, 
-			  sal_fecha_registro, 
-			  tdo_id_tipo_documento, 
-			  IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre, 
-			  sal_numero_doc_cliente, 
-			  (SELECT emp.emp_razon_social FROM pcliente pcl INNER JOIN empresa emp ON pcl.emp_id_empresa=emp.emp_id_empresa WHERE pcl.pcl_id_pcliente=sal.pcl_id_cliente) emp_razon_social, 
-			  FORMAT(sal_monto, 2, 'de_DE') sal_monto 
-			FROM salida sal 
-			WHERE STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
-			ORDER BY sal_fecha_registro DESC ");
+		$query = $this->db->query("SELECT sa.sal_id_salida, 
+		GROUP_CONCAT(DISTINCT pro_nombre ORDER BY pro_nombre ASC SEPARATOR ' - ') as PRODUCTO,
+        GROUP_CONCAT(sad_cantidad ORDER BY pro_nombre ASC SEPARATOR ' - ') as CANTIDAD,
+        sal_fecha_doc_cliente,sal_fecha_registro, tdo_id_tipo_documento, IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre,sal_numero_doc_cliente, 
+		(SELECT emp.emp_razon_social FROM pcliente pcl INNER JOIN empresa emp ON pcl.emp_id_empresa=emp.emp_id_empresa WHERE pcl.pcl_id_pcliente=sal.pcl_id_cliente) emp_razon_social,FORMAT(sal_monto, 2, 'de_DE') sal_monto ,c.caj_descripcion
+		FROM salida sal INNER JOIN caja as c ON sal.caj_id_caja=c.caj_id_caja INNER JOIN salida_detalle as sa on sa.sal_id_salida=sal.sal_id_salida INNER JOIN producto as p on sa.pro_id_producto=p.pro_id_producto 
+		WHERE STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
+		GROUP BY sa.sal_id_salida ORDER by sal_fecha_registro DESC");
 		foreach ($query->result() as $row)
 		{
 			$list[] = $row;
@@ -217,15 +214,32 @@ class Reporte_model extends CI_Model {
 
 	public function rporte_model_ganancias($fecha_ini, $fecha_fin){
 		$lis=array();
-		$query=$this->db->query("SELECT s.sal_fecha_doc_cliente,s.sal_fecha_registro,sd.sad_cantidad,sd.sad_valor,sd.pro_id_producto,
-       producto.pro_nombre,sd.sad_ganancias,caja.caj_descripcion FROM salida_detalle as sd , salida as s , caja ,producto
-WHERE sd.sal_id_salida=s.sal_id_salida and s.caj_id_caja=caja.caj_id_caja and sd.pro_id_producto=producto.pro_id_producto 
-  and STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY sal_fecha_doc_cliente DESC");
+		$query=$this->db->query("SELECT s.sal_fecha_doc_cliente,sd.sad_cantidad,s.sal_numero_doc_cliente, em.emp_razon_social,sd.sad_valor,sd.pro_id_producto, pro.pro_nombre,sd.sad_ganancias FROM salida_detalle as sd , salida as s,producto as pro, empresa as em, pcliente as cli
+		WHERE sd.sal_id_salida=s.sal_id_salida and s.pcl_id_cliente=cli.pcl_id_pcliente 
+		and em.emp_id_empresa=cli.emp_id_empresa and sd.pro_id_producto=pro.pro_id_producto 
+		and STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') 
+		AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY sal_fecha_doc_cliente DESC");
 		foreach ($query->result() as $row){
 			$lis[]=$row;
 		}
 		return $lis;
 	}
+
+	public function Ganancias_x_Producto_Agrupados($fecha_ini, $fecha_fin){
+		$list=array();
+		$query=$this->db->query(
+			"SELECT pro.pro_nombre, SUM(sd.sad_cantidad) AS CANTIDAD_VENDIDA, sd.sad_valor,sd.pro_id_producto,SUM(sd.sad_monto) AS MONTO,SUM(sd.sad_ganancias) AS GANANCIA_TOTAL 
+			FROM salida_detalle as sd , salida as s,producto as pro WHERE pro.pro_id_producto=sd.pro_id_producto  and sd.sal_id_salida=s.sal_id_salida
+			AND STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') 
+			AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')
+			GROUP BY pro.pro_nombre"
+		);
+        foreach ($query->result() as $row){
+            $list[]=$row;
+        }
+        return $list;
+	}
+
 	public function sumganancias($fecha_ini, $fecha_fin){
 		$query = $this->db->query("SELECT FORMAT(ROUND(IFNULL(SUM(sd.sad_ganancias),0),1),2) as monto_final FROM  salida_detalle as sd , salida as s WHERE sd.sal_id_salida=s.sal_id_salida and STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY sal_fecha_doc_cliente DESC");
 		foreach ($query->result() as $row)

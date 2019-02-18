@@ -21,7 +21,8 @@ class Salida_model extends CI_Model {
 			'".$data['sal_deuda']."',
 			'".$data['sal_chofer']."',
 			'".$data['sal_camion']."',
-			'".$data['sal_observacion']."'
+			'".$data['sal_observacion']."',
+			'".$data['sal_numero_doc_cliente']."'
 			)");
         $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado, @out_sal_id_salida as sal_id_salida");
         return $result->row();
@@ -148,6 +149,12 @@ class Salida_model extends CI_Model {
 			'".$data_movimiento['idcliente']."',
 			'".$data_movimiento['monto_compra']."'
 			)");
+        return $result;
+    }
+    function Eliminar_Ventas($data_venta){
+        $result = $this->db->query("CALL ELIMINAR_VENTA(
+            '".$data_venta['id_salida']."'
+        )");
         return $result;
     }
 

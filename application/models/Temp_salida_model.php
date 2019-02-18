@@ -125,24 +125,24 @@ class Temp_salida_model extends CI_Model {
 		}
 		return $list;
 	}
-	function mgetsal_nro_documento($tdo_id_tipo_documento) {
-		$query = $this->db->query("SELECT 
-			  CONCAT(REPEAT('0',(tdo_tamanho-LENGTH(numero))),numero) numero, 
-			  tdo_valor1 
-			FROM 
-			  (SELECT tdo.tdo_tamanho, tdo.tdo_valor1 
-				FROM tipo_documento tdo 
-				WHERE tdo.tdo_id_tipo_documento=$tdo_id_tipo_documento ) t1 
-			  ,
-			  (SELECT IFNULL(MAX(CAST(sal.sal_numero_doc_cliente AS UNSIGNED)),0)+1 numero 
-				FROM salida sal 
-				WHERE sal.tdo_id_tipo_documento=$tdo_id_tipo_documento ) t2 ");
-		foreach ($query->result() as $row)
-		{
-			return $row;
-		}
-		return array('numero' => '', 'tdo_valor1' => '0.00');
-	}
+	//function mgetsal_nro_documento($tdo_id_tipo_documento) {
+	//	$query = $this->db->query("SELECT
+	//		  CONCAT(REPEAT('0',(tdo_tamanho-LENGTH(numero))),numero) numero,
+	//		  tdo_valor1
+	//		FROM
+	//		  (SELECT tdo.tdo_tamanho, tdo.tdo_valor1
+	//			FROM tipo_documento tdo
+	//			WHERE tdo.tdo_id_tipo_documento=$tdo_id_tipo_documento ) t1
+	//		  ,
+	//		  (SELECT IFNULL(MAX(CAST(sal.sal_numero_doc_cliente AS UNSIGNED)),0)+1 numero
+	//			FROM salida sal
+	//			WHERE sal.tdo_id_tipo_documento=$tdo_id_tipo_documento ) t2 ");
+	//	foreach ($query->result() as $row)
+	//	{
+	//		return $row;
+	//	}
+	//	return array('numero' => '', 'tdo_valor1' => '0.00');
+	//}
 	function mbuscar_cliente($texto) {
 		$list = array();
 		$query = $this->db->query("SELECT 

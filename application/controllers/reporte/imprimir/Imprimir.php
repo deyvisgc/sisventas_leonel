@@ -25,15 +25,15 @@ class imprimir extends CI_Controller
     {
         is_logged_in_or_exit($this);
         $data_header['list_privilegio'] = get_privilegios($this);
-        $data_header['pri_grupo'] = 'MOVIMIENTO';
-        $data_header['pri_nombre'] = 'Imprimir ventas';
+        $data_header['pri_grupo'] = 'REPORTE';
+        $data_header['pri_nombre'] = 'Administrar ventas';
         $data_header['usuario'] = get_usuario($this);
         $data_header['title'] = "Reimprimir";
 
         $data_footer['inits_function'] = array("init_salida");
 
         $this->load->view('header', $data_header);
-        $this->load->view('movimiento/salida/imprimir/reimprimir');
+        $this->load->view('reporte/imprimir/reimprimir');
         $this->load->view('footer', $data_footer);
     }
 
@@ -48,10 +48,11 @@ class imprimir extends CI_Controller
             $buttons = '
             <div class="row">
                 <div class="col-md-12">
-                    <div class="text-center">
-                    
-                    <button type="button" onclick="func_mostrar_documento('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#disminuirDeuda"
-                    class="btn btn-danger">Imprimir</button>
+                    <div class="text-center">                
+                    <button type="button" onclick="func_mostrar_documento('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#"
+                    class="btn btn-facebook"><i class="fa fa-print"></i> Imprimir</button>
+                    <button type="button" onclick="func_eliminar_venta('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#elimiminar_deuda"
+                    class="btn btn-danger"><i class="fa fa-trash"></i> Eliminar</button>
                     </div>                
                 </div>
             </div>';
@@ -61,6 +62,15 @@ class imprimir extends CI_Controller
             );
         }
         echo json_encode($result);
+    }
+
+    public function Eliminar_Venta(){
+        is_logged_in_or_exit($this);
+        $data_venta = array(
+            'id_salida' => $this->input->post('sal_id_salida')
+        );
+        $respuesta = $this->salida_model->Eliminar_Ventas($data_venta);
+        echo json_encode($respuesta);
     }
 
 

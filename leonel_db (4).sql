@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-02-2019 a las 18:54:14
+-- Tiempo de generación: 18-02-2019 a las 16:05:27
 -- Versión del servidor: 10.1.33-MariaDB
 -- Versión de PHP: 7.2.6
 
@@ -31,6 +31,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `editar_monto_sangria` (IN `in_id` I
 UPDATE sangria SET tipo_sangria=in_tipo,monto=in_monto,san_motivo=in_motivo
 WHERE id_sangria=in_id$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ELIMINAR_VENTA` (IN `id_salida` INT)  NO SQL
+DELETE FROM sal,sd USING salida AS sal INNER JOIN salida_detalle as sd
+WHERE sal.sal_id_salida=sd.sal_id_salida AND sd.sal_id_salida = id_salida$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `INSERTAR_MOVIMIENTO_CLIENTE` (IN `monto_pagado` DOUBLE(15,2), IN `descripcion` VARCHAR(250), IN `id_salida` INT, IN `idcliente` INT, IN `monto_compra` DOUBLE(15,2))  NO SQL
 cuerpo: BEGIN
 DECLARE var_saldo DOUBLE(15,2);
@@ -52,6 +56,9 @@ INSERT INTO mayor(ma_fecha,ma_descripcion,ma_debe,ma_haber,ma_saldo,sal_id_salid
 idcliente);
 
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_pagos_proveedor` (IN `in_id_provedor` INT)  NO SQL
+SELECT * FROM mayor_ingreso as ing WHERE ing.id_provedor=in_id_provedor ORDER BY ing.id_mayor_ingreso DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MANAGE_SANGRIA` (IN `in_idusuario` INT(11), IN `in_monto` DOUBLE(15,2), IN `in_tipo_sangria` VARCHAR(150), IN `in_motivo` VARCHAR(250))  BEGIN
     DECLARE var_caj_id INT(15);
@@ -186,7 +193,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_caja_guardar` (OUT `out_hecho`
     
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), IN `in_usu_id_usuario` INT, IN `in_pcl_id_proveedor` INT, IN `in_ing_fecha_doc_proveedor` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_ing_numero_doc_proveedor` VARCHAR(30), IN `in_ing_monto_efectivo` DOUBLE(15,2), IN `in_ing_monto_tar_credito` DOUBLE(15,2), IN `in_ing_monto_tar_debito` DOUBLE(15,2), IN `in_tipo_ingreso` VARCHAR(150))  cuerpo: BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), IN `in_usu_id_usuario` INT, IN `in_pcl_id_proveedor` INT, IN `in_ing_fecha_doc_proveedor` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_ing_numero_doc_proveedor` VARCHAR(30), IN `in_ing_monto_efectivo` DOUBLE(15,2), IN `in_ing_monto_tar_credito` DOUBLE(15,2), IN `in_ing_monto_tar_debito` DOUBLE(15,2), IN `in_ing_monto_deuda` DOUBLE(15,2), IN `in_tipo_ingreso` VARCHAR(150))  cuerpo: BEGIN
     DECLARE var_count_productos DOUBLE(15,2);
     DECLARE var_sum_total DOUBLE(15,2);
     DECLARE var_sum_total_entrante DOUBLE(15,2);
@@ -199,8 +206,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_h
     DECLARE var_temp_numero_lote varchar(30);
     DECLARE var_temp_perecible varchar(2);
     DECLARE var_temp_fecha_vencimiento date;
-    --
     DECLARE done INT DEFAULT FALSE;
+    DECLARE var_saldo_final  DOUBLE(15,2);
+    DECLARE var_deuda  DOUBLE(15,2);
     DECLARE cursor_temp CURSOR FOR
     SELECT pro_id_producto, temp_cantidad, temp_valor, temp_numero_lote, temp_perecible, temp_fecha_vencimiento
     FROM temp 
@@ -212,6 +220,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_h
     DECLARE EXIT HANDLER FOR 1062 SELECT 'Duplicate keys error encountered';
     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT 'SQLException encountered';
     DECLARE EXIT HANDLER FOR SQLSTATE '23000' SELECT 'SQLSTATE 23000';
+   
     --
     SELECT
       IFNULL(COUNT(usu_id_usuario),0) count_productos,
@@ -232,7 +241,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_h
     --
     SET var_sum_total_entrante = in_ing_monto_efectivo+in_ing_monto_tar_credito+in_ing_monto_tar_debito;
     --
-    IF var_sum_total <> var_sum_total_entrante THEN
+    IF var_sum_total < var_sum_total_entrante THEN
         SET out_hecho = 'NO';
         SET out_estado = 'ING0302';
         LEAVE cuerpo;
@@ -268,8 +277,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_h
         caj_id_caja,
         caj_codigo,
         est_id_estado,
-        in_tipo,
-        ing_deuda
+        ing_deuda,
+        in_tipo
+       
     )
     VALUES (
         in_pcl_id_proveedor,
@@ -287,12 +297,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_h
         var_caj_id_caja,
         var_caj_codigo,
         1,
-        in_tipo_ingreso,
-        in_ing_monto_efectivo
+        in_ing_monto_deuda,
+        in_tipo_ingreso
     );
     --
+    
+  
     SET var_ing_id_ingreso = LAST_INSERT_ID();
-    -- -- -- -- 
+    -- -- -- --
     OPEN cursor_temp;
     read_loop: LOOP
         FETCH cursor_temp INTO var_pro_id_producto, var_temp_cantidad, var_temp_valor, var_temp_numero_lote, var_temp_perecible, var_temp_fecha_vencimiento;
@@ -335,6 +347,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_ingreso_registrar` (OUT `out_h
     DELETE FROM temp
     WHERE usu_id_usuario=in_usu_id_usuario AND
         temp_tipo_movimiento='INGRESO';
+    --
+    SELECT ifnull(SUM(ing_deuda),0)suma_total INTO var_saldo_final FROM ingreso as s WHERE s.pcl_id_proveedor=in_pcl_id_proveedor;
+    --
+ 
+    INSERT INTO mayor_ingreso
+            (
+            ma_descripcion,
+            ma_debe,
+            ma_haber,
+            ma_saldo,
+            id_provedor,
+            id_ingresos,
+            ma_fecha
+            ) 
+        VALUES(
+            'Por la compra de productos',
+            in_ing_monto_tar_credito,
+            in_ing_monto_deuda,
+            var_saldo_final,
+            in_pcl_id_proveedor,
+            var_ing_id_ingreso,
+            CURDATE() 
+        );
     --
     SET out_hecho = 'SI';
     SET out_estado = 'ING0305';
@@ -428,7 +463,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_movimiento_registrar` (IN `in_
     
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), OUT `out_sal_id_salida` INT, IN `in_usu_id_usuario` INT, IN `in_pcl_id_cliente` INT, IN `in_sal_fecha_doc_cliente` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_sal_monto_efectivo` DOUBLE(15,2), IN `in_sal_monto_tar_credito` DOUBLE(15,2), IN `in_sal_monto_tar_debito` DOUBLE(15,2), IN `in_sal_descuento` DOUBLE(15,2), IN `in_sal_motivo` VARCHAR(60), IN `in_sal_vuelto` VARCHAR(150), IN `in_tipo_venta` VARCHAR(60), IN `in_deuda` DOUBLE(15,2), IN `in_sal_chofer` VARCHAR(150), IN `in_sal_camion` VARCHAR(150), IN `in_sal_observación` VARCHAR(250))  cuerpo: BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_hecho` VARCHAR(2), OUT `out_estado` VARCHAR(7), OUT `out_sal_id_salida` INT, IN `in_usu_id_usuario` INT, IN `in_pcl_id_cliente` INT, IN `in_sal_fecha_doc_cliente` VARCHAR(30), IN `in_tdo_id_tipo_documento` INT, IN `in_sal_monto_efectivo` DOUBLE(15,2), IN `in_sal_monto_tar_credito` DOUBLE(15,2), IN `in_sal_monto_tar_debito` DOUBLE(15,2), IN `in_sal_descuento` DOUBLE(15,2), IN `in_sal_motivo` VARCHAR(60), IN `in_sal_vuelto` VARCHAR(150), IN `in_tipo_venta` VARCHAR(60), IN `in_deuda` DOUBLE(15,2), IN `in_sal_chofer` VARCHAR(150), IN `in_sal_camion` VARCHAR(150), IN `in_sal_observación` VARCHAR(250), IN `in_sal_numero_doc_cliente` INT)  cuerpo: BEGIN
     DECLARE var_count_productos DOUBLE(15,2);
     DECLARE var_sum_total DOUBLE(15,2);
     DECLARE var_sum_total_entrante DOUBLE(15,2);
@@ -538,7 +573,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_salida_registrar` (OUT `out_he
         in_pcl_id_cliente,
         in_tdo_id_tipo_documento,
         in_sal_fecha_doc_cliente,
-        var_sal_numero_doc_cliente,
+        in_sal_numero_doc_cliente,
         NOW(),
         'C',
         var_sum_total,
@@ -832,6 +867,31 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_temp_salida_quitar` (OUT `out_
     SET out_estado = 'SAL0205';
     -- 
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registrar_ingresos_pagos` (IN `in_id_ingreso` INT, IN `in_ma_debe` DOUBLE(15,2), IN `in_descripcion` VARCHAR(160), IN `in_idprovedor` INT, IN `in_ma_haber` DOUBLE(15,2))  BEGIN
+DECLARE var_saldo DOUBLE(15,2);
+--
+SELECT ifnull(SUM(ing_deuda),0)suma_total INTO var_saldo FROM ingreso as s WHERE s.pcl_id_proveedor=in_idprovedor;
+--
+INSERT INTO mayor_ingreso(
+id_ingresos,
+ma_debe,
+ma_descripcion,
+id_provedor,
+ma_haber,
+ma_fecha,
+ma_saldo)
+VALUES(
+    in_id_ingreso,
+    in_ma_debe,
+    in_descripcion,
+    in_idprovedor,
+    in_ma_haber,
+    CURDATE(),
+     var_saldo
+     );
+
+end$$
 
 --
 -- Funciones
@@ -1264,7 +1324,12 @@ INSERT INTO `ingreso` (`ing_id_ingreso`, `pcl_id_cliente`, `pcl_id_proveedor`, `
 (10, NULL, 62, '2018-12-05', 15, '1', '2018-12-05 16:14:40', 'P', 125.00, 125.00, 125.00, 0.00, 0.00, '1801', '20180928040101', 3, 2, 'deuda', 1600),
 (11, NULL, 6, '2018-12-05', 15, '4515', '2018-12-05 17:21:41', 'P', 225.00, 225.00, 225.00, 0.00, 0.00, '1801', '20181205052121', 3, 2, 'deuda', 1600),
 (12, NULL, 61, '2019-01-16', 12, '12121', '2019-01-16 01:57:10', 'P', 200.00, 200.00, 200.00, 0.00, 0.00, '1801', '20190107041440', 3, 2, 'contado', 200),
-(13, NULL, 62, '2019-01-17', 15, '55', '2019-01-17 15:23:05', 'P', 8.00, 8.00, 8.00, 0.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 8);
+(13, NULL, 62, '2019-01-17', 15, '55', '2019-01-17 15:23:05', 'P', 8.00, 8.00, 8.00, 0.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 8),
+(14, NULL, 64, '2019-02-03', 15, '2', '2019-02-03 16:25:06', 'P', 6.00, 6.00, 6.00, 0.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 6),
+(15, NULL, 6, '2019-02-03', 15, '2', '2019-02-03 16:29:29', 'P', 150.00, 150.00, 150.00, 0.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 125),
+(16, NULL, 65, '2019-02-03', 15, '12', '2019-02-03 18:02:23', 'P', 480.00, 480.00, 0.00, 400.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 100),
+(17, NULL, 66, '2019-02-04', 15, 'LL45', '2019-02-04 11:48:56', 'P', 1300.00, 1300.00, 0.00, 130.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 220),
+(18, NULL, 70, '2019-02-04', 15, '33', '2019-02-04 12:34:08', 'P', 4500.00, 4500.00, 0.00, 500.00, 0.00, '1801', '20190117030514', 3, 2, 'deuda', 1000);
 
 -- --------------------------------------------------------
 
@@ -1313,7 +1378,12 @@ INSERT INTO `ingreso_detalle` (`ind_id_ingreso_detalle`, `pro_id_producto`, `ing
 (21, 114, 10, 5.00, 25.00, 125.00, '4', 'SI', '2018-12-05', 1),
 (22, 19, 11, 5.00, 45.00, 225.00, '45', 'NO', '0000-00-00', 1),
 (23, 1, 12, 10.00, 20.00, 200.00, 'dsdsdsds', 'NO', '0000-00-00', 1),
-(24, 19, 13, 4.00, 2.00, 8.00, '414', 'NO', '0000-00-00', 1);
+(24, 19, 13, 4.00, 2.00, 8.00, '414', 'NO', '0000-00-00', 1),
+(25, 114, 14, 2.00, 3.00, 6.00, '1', 'SI', '2019-02-03', 1),
+(26, 114, 15, 6.00, 25.00, 150.00, '1', 'SI', '2019-02-03', 1),
+(27, 22, 16, 6.00, 80.00, 480.00, '52', 'NO', '0000-00-00', 1),
+(28, 19, 17, 26.00, 50.00, 1300.00, '25L', 'NO', '0000-00-00', 1),
+(29, 22, 18, 5.00, 900.00, 4500.00, '25', 'NO', '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
@@ -1358,7 +1428,48 @@ INSERT INTO `mayor` (`id_mayor`, `ma_fecha`, `ma_descripcion`, `ma_debe`, `ma_ha
 (27, '2019-02-01', 'POR LA COMPRA DE PRODUCTOS', 20.00, 321.35, 642.70, 610, 13),
 (28, '2019-02-01', 'POR LA COMPRA DE PRODUCTOS', 20.00, 160.00, 160.00, 611, 25),
 (29, '2019-02-01', 'POR LA COMPRA DE PRODUCTOS', 0.00, 346.00, 506.00, 612, 25),
-(30, '2019-02-01', 'Por la deuda del 2019-02-01', 320.00, 0.00, 186.00, 612, 25);
+(30, '2019-02-01', 'Por la deuda del 2019-02-01', 320.00, 0.00, 186.00, 612, 25),
+(31, '2019-02-03', 'POR LA COMPRA DE PRODUCTOS', 0.00, 0.00, 12268.00, 613, 93),
+(32, '2019-02-04', 'hola', 500.00, 0.00, 11768.00, 608, 93),
+(33, '2019-02-04', 'POR LA COMPRA DE PRODUCTOS', 500.00, 1061.35, 12829.35, 614, 93),
+(34, '2019-02-17', 'POR LA COMPRA DE PRODUCTOS', 0.00, 520.00, 13349.35, 615, 93),
+(35, '2019-02-17', 'POR LA COMPRA DE PRODUCTOS', 0.00, 0.00, 13349.35, 616, 93);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mayor_ingreso`
+--
+
+CREATE TABLE `mayor_ingreso` (
+  `id_mayor_ingreso` int(11) NOT NULL,
+  `ma_fecha` varchar(150) NOT NULL,
+  `ma_descripcion` varchar(150) NOT NULL,
+  `ma_debe` double(15,2) NOT NULL,
+  `ma_haber` double(15,2) NOT NULL,
+  `ma_saldo` double(15,2) NOT NULL,
+  `id_provedor` int(11) NOT NULL,
+  `id_ingresos` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `mayor_ingreso`
+--
+
+INSERT INTO `mayor_ingreso` (`id_mayor_ingreso`, `ma_fecha`, `ma_descripcion`, `ma_debe`, `ma_haber`, `ma_saldo`, `id_provedor`, `id_ingresos`) VALUES
+(19, '2019-02-03', 'hola mundo', 100.00, 0.00, 600.00, 62, 37),
+(20, '2019-02-03', 'falta cancelar el total', 300.00, 300.00, 800.00, 62, 40),
+(21, '2019-02-03', 'falta cancelar el total', 200.00, 200.00, 1000.00, 62, 41),
+(0, '2019-02-03', 'pago de la cuenta ', 25.00, 0.00, 1725.00, 6, 15),
+(0, '2019-02-03', 'falta cancelar el total', 400.00, 400.00, 400.00, 65, 16),
+(0, '2019-02-03', 'pago de la deuda', 200.00, 0.00, 200.00, 65, 16),
+(0, '2019-02-03', 'pagooos', 100.00, 0.00, 200.00, 65, 16),
+(0, '2019-02-04', 'falta cancelar el total', 130.00, 1170.00, 1170.00, 66, 17),
+(0, '2019-02-04', 'Por la deuda de compra de productos ', 250.00, 0.00, 1170.00, 66, 17),
+(0, '2019-02-04', 'Hola', 500.00, 0.00, 420.00, 66, 17),
+(0, '2019-02-04', 'pago de la deuda', 200.00, 0.00, 220.00, 66, 17),
+(0, '2019-02-04', 'Por la compra de productos', 500.00, 4000.00, 4000.00, 70, 18),
+(0, '2019-02-04', 'PAGO DE LA DEUDA PENDIENTE', 3000.00, 0.00, 1000.00, 70, 18);
 
 -- --------------------------------------------------------
 
@@ -4410,7 +4521,20 @@ INSERT INTO `movimiento` (`mov_id_movimiento`, `ind_id_ingreso_detalle`, `sad_id
 (3019, NULL, NULL, NULL, 611, 'SAC', 52.00, 3.00, 49.00, 19, 2, 3),
 (3020, NULL, NULL, NULL, 611, 'SAC', 122.00, 3.00, 119.00, 111, 2, 3),
 (3021, NULL, NULL, NULL, 612, 'SAC', 0.00, 3.00, -3.00, 26, 2, 3),
-(3022, NULL, NULL, NULL, 612, 'SAC', 33.00, 2.00, 31.00, 89, 2, 3);
+(3022, NULL, NULL, NULL, 612, 'SAC', 33.00, 2.00, 31.00, 89, 2, 3),
+(3023, NULL, NULL, 14, NULL, 'INP', 0.00, 2.00, 2.00, 114, 2, 3),
+(3024, NULL, NULL, 15, NULL, 'INP', 2.00, 6.00, 8.00, 114, 2, 3),
+(3025, NULL, NULL, NULL, 613, 'SAC', 49.00, 2.00, 47.00, 19, 2, 3),
+(3026, NULL, NULL, NULL, 613, 'SAC', 405.00, 20.00, 385.00, 22, 2, 3);
+INSERT INTO `movimiento` (`mov_id_movimiento`, `ind_id_ingreso_detalle`, `sad_id_salida_detalle`, `ing_id_ingreso`, `sal_id_salida`, `mov_tipo`, `mov_cantidad_anterior`, `mov_cantidad_entrante`, `mov_cantidad_actual`, `pro_id_producto`, `est_id_estado`, `usu_id_usuario`) VALUES
+(3027, NULL, NULL, NULL, 613, 'SAC', 31.00, 9.00, 22.00, 89, 2, 3),
+(3028, NULL, NULL, 16, NULL, 'INP', 385.00, 6.00, 391.00, 22, 2, 3),
+(3029, NULL, NULL, 17, NULL, 'INP', 47.00, 26.00, 73.00, 19, 2, 3),
+(3030, NULL, NULL, NULL, 614, 'SAC', 8.00, 3.00, 5.00, 114, 2, 3),
+(3031, NULL, NULL, NULL, 614, 'SAC', 73.00, 5.00, 68.00, 19, 2, 3),
+(3032, NULL, NULL, 18, NULL, 'INP', 391.00, 5.00, 396.00, 22, 2, 3),
+(3033, NULL, NULL, NULL, 615, 'SAC', 5.00, 1.00, 4.00, 114, 2, 3),
+(3034, NULL, NULL, NULL, 616, 'SAC', 4.00, 2.00, 2.00, 114, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -4662,9 +4786,9 @@ INSERT INTO `privilegio` (`pri_id_privilegio`, `pri_nombre`, `pri_acceso`, `pri_
 (22, 'Ventas del dia', 'reporte/ventas', 'REPORTE', 41, 1, 'money', 'cog'),
 (23, 'Registrar Sangria', 'movimiento/sangria2', 'MOVIMIENTO', 45, 1, 'fire', 'cog'),
 (24, 'Mis Ventas', 'reporte/miventa', 'REPORTE', 50, 1, 'money', 'cog'),
-(25, 'Imprimir ventas', 'movimiento/imprimir/imprimir', 'MOVIMIENTO', 60, 1, 'print', 'cog'),
+(25, 'Administrar ventas', 'reporte/imprimir/imprimir', 'REPORTE', 60, 1, 'print', 'cog'),
 (26, 'Efectivo en caja', 'reporte/efectivo/caja', 'REPORTE', 51, 1, 'money', 'cog'),
-(27, 'Ganancias', 'reporte/ganancias', 'REPORTE', 61, 1, 'chart-line	', 'cog'),
+(27, 'Ganancias', 'reporte/ganancias', 'REPORTE', 61, 1, 'dollar', 'cog'),
 (28, 'Movimiento cliente', 'reporte/mcliente', 'REPORTE', 70, 1, 'line-chart', 'cog'),
 (29, 'Movimiento proveedor', 'reporte/proveedor', 'REPORTE', 71, 1, 'line-chart', 'cog');
 
@@ -4705,52 +4829,52 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subclase`, `pro_nombre`, `pro_val_compra`, `pro_val_venta`, `pro_cantidad`, `pro_cantidad_min`, `unm_id_unidad_medida`, `pro_foto`, `pro_perecible`, `pro_fecha_vencimiento`, `pro_xm_cantidad1`, `pro_xm_valor1`, `pro_xm_cantidad2`, `pro_xm_valor2`, `pro_xm_cantidad3`, `pro_xm_valor3`, `pro_val_oferta`, `est_id_estado`, `pro_eliminado`, `pro_kilogramo`) VALUES
-(1, '180810172633', 67, 69, 'M ENTERO X 50', 20.00, 63.40, 27.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/O2ohYFRGUbk1cynL4z9E.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 10.00),
-(2, '180810173207', 67, 69, 'M REFINADO X 28', 30.80, 35.00, 0.00, 4.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/XCrKAvluFnemkhW7qNwj.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 8.00),
-(3, '180810173314', 33, 34, 'M REFINADO X 50', 55.00, 62.50, 0.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/pDwG6itz2SqFU7gNkIuK.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 11.00),
-(4, '180810173237', 67, 69, 'M PARTIDO X 50', 55.00, 66.70, 0.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/S9siX7Cr0lvzyBD821Wb.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 10.00),
-(13, '180924155530', 67, 69, 'M ENTERO X 30', 33.00, 38.00, 8.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/YMxlGbTd12zS0y4hgCk3.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(14, '180810173054', 67, 69, 'M REFINADO X 60 ', 66.00, 80.00, 35.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/BycCSQGi5dPxz9m7H14A.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 10.00),
-(15, '180810172847', 67, 69, 'M PARTIDO X 60 ', 66.00, 79.00, 0.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/1ACcWqOGujfHdRkUFQEb.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 11.00),
-(16, '180810172933', 67, 69, 'M PARTIDO X 30 ', 33.00, 39.50, 0.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/4nhzBmIGwRcdsbU9pDxl.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 12.00),
-(17, '180810173020', 67, 69, 'M PARTIDO X 28', 54.00, 100.00, 0.00, 10.00, 4, 'http://localhost/boletas.php/../resources/sy_file_repository/clR14VhQ5O6jtGZU3DLy.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 9.00, 0.000, 0.00, 11, 'NO', 9.00),
-(18, '180810173131', 67, 69, 'M REFINADO X 30', 33.00, 39.50, 0.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 20.00),
-(19, '180810172243', 67, 69, 'AFRECHO X 40', 2.00, 32.00, 49.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 5.00, 0.273, 8.00, 0.374, 9.00, 0.386, 0.00, 11, 'NO', 20.00),
-(20, '180810173417', 67, 69, 'REPASO X 50', 40.00, 45.00, 12.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/faYPcol9h8sGDBE0TdQx.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 20.00),
-(21, '180810173956', 37, 38, 'MEZCLA PAJ MAIZ', 54.00, 100.00, 147.00, 10.00, 3, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(22, '180823165028', 67, 69, 'AFRECHO X 30', 22.80, 25.00, 405.00, 20.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(23, '180823172439', 67, 69, 'CONEJO COGORNO X 40', 57.60, 62.00, 417.00, 20.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(24, '180823172555', 67, 69, 'BB MYCIN X 40', 82.20, 93.00, 132.00, 20.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(25, '180823172731', 67, 69, 'PICO & NAVAJA X 40', 79.57, 90.00, 335.00, 20.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(26, '180823172803', 67, 69, 'CONEJO B12 X 40', 65.80, 70.00, 4.00, 20.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(27, '180823173745', 74, 81, 'CONEJO BB X 25', 44.18, 45.00, 0.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(28, '180823173927', 74, 75, 'INICIO B12 X 40', 79.90, 85.00, 2.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(29, '180823182800', 74, 76, 'CRECIMIENTO B12 X 40', 70.50, 75.00, 0.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(30, '180823182810', 74, 77, 'ENGORDE B12 X 40', 65.80, 70.00, 7.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(31, '180823182850', 74, 78, 'PONEDORA B12 X 40', 65.80, 70.00, 9.00, 2.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(32, '180823182935', 74, 79, 'SALUD TOTAL X 25', 56.40, 60.00, 0.00, 2.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(33, '180823183015', 74, 80, 'CUY B12 X 40', 67.68, 72.00, 12.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(34, '180823183130', 67, 69, 'VITA OVO X 60', 56.40, 82.00, 18.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(35, '180823183341', 67, 69, 'VITA OVO X 30', 28.20, 39.50, 11.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(36, '180827093606', 67, 69, 'CRECIMIENTO VITA X 40', 46.00, 48.00, 48.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(37, '180827093650', 67, 69, 'CRECIMIENTO VITA X 20', 23.00, 24.00, 1.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(38, '180827093741', 67, 69, 'ENGORDE VITA X 40', 46.00, 50.00, 66.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(39, '180827093833', 67, 69, 'ENGORDE VITA X 20', 23.00, 25.00, 1.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(40, '180827093907', 47, 49, 'INICIO VITA X 40', 46.00, 55.00, 17.00, 3.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(41, '180827093952', 47, 49, 'INICIO VITA X 20', 23.00, 24.00, 0.00, 3.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(42, '180827182351', 67, 69, 'VITA CUY X 40', 38.00, 40.00, 4.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(43, '180827182438', 47, 52, 'PONEDORA VITA X 40', 46.00, 50.00, 0.00, 3.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(44, '180827182515', 67, 69, 'CONEJO OSCAR X 40', 38.00, 40.00, 162.00, 15.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(45, '180827182553', 53, 55, 'CONEJO OSCAR X 20', 19.00, 21.00, 0.00, 2.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(46, '180827182630', 67, 69, 'CUY OSCAR X 40', 38.00, 42.00, 15.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img\r\n_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(47, '180827182710', 53, 54, 'CUY OSCAR X 20', 19.00, 20.00, 2.00, 3.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(48, '180827182745', 67, 69, 'TRIGO N X 60', 70.00, 83.00, 436.00, 20.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(49, '180827182837', 67, 69, 'TRIGO N X 30', 35.00, 41.50, 7.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(50, '180827182913', 59, 63, 'CRECIMIENTO SIMPLE X 40', 23.00, 32.00, 46.00, 15.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(51, '180827183106', 67, 69, 'ENGORDE SIMPLE X 40', 23.00, 35.00, 0.00, 5.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(52, '180827183148', 59, 60, 'VERDE X 40', 50.00, 72.00, 41.00, 15.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(53, '180827183224', 67, 69, 'ROJO X 40', 50.00, 65.00, 46.00, 3.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(54, '180827183302', 64, 66, 'CRECIMIENTO SIMPLE X 40 E', 24.00, 30.00, 32.00, 10.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(1, '180810172633', 67, 69, 'M ENTERO X 50', 20.00, 63.40, 27.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/O2ohYFRGUbk1cynL4z9E.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 10.00),
+(2, '180810173207', 67, 69, 'M REFINADO X 28', 30.80, 35.00, 0.00, 4.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/XCrKAvluFnemkhW7qNwj.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 8.00),
+(3, '180810173314', 33, 34, 'M REFINADO X 50', 55.00, 62.50, 0.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/pDwG6itz2SqFU7gNkIuK.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 11.00),
+(4, '180810173237', 67, 69, 'M PARTIDO X 50', 55.00, 66.70, 0.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/S9siX7Cr0lvzyBD821Wb.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 10.00),
+(13, '180924155530', 67, 69, 'M ENTERO X 30', 33.00, 38.00, 8.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/YMxlGbTd12zS0y4hgCk3.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(14, '180810173054', 67, 69, 'M REFINADO X 60 ', 66.00, 80.00, 35.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/BycCSQGi5dPxz9m7H14A.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 10.00),
+(15, '180810172847', 67, 69, 'M PARTIDO X 60 ', 66.00, 79.00, 0.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/1ACcWqOGujfHdRkUFQEb.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 11.00),
+(16, '180810172933', 67, 69, 'M PARTIDO X 30 ', 33.00, 39.50, 0.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/4nhzBmIGwRcdsbU9pDxl.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 12.00),
+(17, '180810173020', 67, 69, 'M PARTIDO X 28', 54.00, 100.00, 0.00, 10.00, 4, 'http://localhost/index.php/../resources/sy_file_repository/clR14VhQ5O6jtGZU3DLy.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 9.00, 0.000, 0.00, 11, 'NO', 9.00),
+(18, '180810173131', 67, 69, 'M REFINADO X 30', 33.00, 39.50, 0.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 20.00),
+(19, '180810172243', 67, 69, 'AFRECHO X 40', 50.00, 32.00, 68.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 5.00, 0.273, 8.00, 0.374, 9.00, 0.386, 0.00, 11, 'NO', 20.00),
+(20, '180810173417', 67, 69, 'REPASO X 50', 40.00, 45.00, 12.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/faYPcol9h8sGDBE0TdQx.jpg', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 20.00),
+(21, '180810173956', 37, 38, 'MEZCLA PAJ MAIZ', 54.00, 100.00, 147.00, 10.00, 3, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(22, '180823165028', 67, 69, 'AFRECHO X 30', 900.00, 25.00, 396.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(23, '180823172439', 67, 69, 'CONEJO COGORNO X 40', 57.60, 62.00, 417.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(24, '180823172555', 67, 69, 'BB MYCIN X 40', 82.20, 93.00, 132.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(25, '180823172731', 67, 69, 'PICO & NAVAJA X 40', 79.57, 90.00, 335.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(26, '180823172803', 67, 69, 'CONEJO B12 X 40', 65.80, 70.00, 4.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(27, '180823173745', 74, 81, 'CONEJO BB X 25', 44.18, 45.00, 0.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(28, '180823173927', 74, 75, 'INICIO B12 X 40', 79.90, 85.00, 2.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(29, '180823182800', 74, 76, 'CRECIMIENTO B12 X 40', 70.50, 75.00, 0.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(30, '180823182810', 74, 77, 'ENGORDE B12 X 40', 65.80, 70.00, 7.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(31, '180823182850', 74, 78, 'PONEDORA B12 X 40', 65.80, 70.00, 9.00, 2.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(32, '180823182935', 74, 79, 'SALUD TOTAL X 25', 56.40, 60.00, 0.00, 2.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(33, '180823183015', 74, 80, 'CUY B12 X 40', 67.68, 72.00, 12.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(34, '180823183130', 67, 69, 'VITA OVO X 60', 56.40, 82.00, 18.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(35, '180823183341', 67, 69, 'VITA OVO X 30', 28.20, 39.50, 11.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(36, '180827093606', 67, 69, 'CRECIMIENTO VITA X 40', 46.00, 48.00, 48.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(37, '180827093650', 67, 69, 'CRECIMIENTO VITA X 20', 23.00, 24.00, 1.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(38, '180827093741', 67, 69, 'ENGORDE VITA X 40', 46.00, 50.00, 66.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(39, '180827093833', 67, 69, 'ENGORDE VITA X 20', 23.00, 25.00, 1.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(40, '180827093907', 47, 49, 'INICIO VITA X 40', 46.00, 55.00, 17.00, 3.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(41, '180827093952', 47, 49, 'INICIO VITA X 20', 23.00, 24.00, 0.00, 3.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(42, '180827182351', 67, 69, 'VITA CUY X 40', 38.00, 40.00, 4.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(43, '180827182438', 47, 52, 'PONEDORA VITA X 40', 46.00, 50.00, 0.00, 3.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(44, '180827182515', 67, 69, 'CONEJO OSCAR X 40', 38.00, 40.00, 162.00, 15.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(45, '180827182553', 53, 55, 'CONEJO OSCAR X 20', 19.00, 21.00, 0.00, 2.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(46, '180827182630', 67, 69, 'CUY OSCAR X 40', 38.00, 42.00, 15.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img\r\n_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(47, '180827182710', 53, 54, 'CUY OSCAR X 20', 19.00, 20.00, 2.00, 3.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(48, '180827182745', 67, 69, 'TRIGO N X 60', 70.00, 83.00, 436.00, 20.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(49, '180827182837', 67, 69, 'TRIGO N X 30', 35.00, 41.50, 7.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(50, '180827182913', 59, 63, 'CRECIMIENTO SIMPLE X 40', 23.00, 32.00, 46.00, 15.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(51, '180827183106', 67, 69, 'ENGORDE SIMPLE X 40', 23.00, 35.00, 0.00, 5.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(52, '180827183148', 59, 60, 'VERDE X 40', 50.00, 72.00, 41.00, 15.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(53, '180827183224', 67, 69, 'ROJO X 40', 50.00, 65.00, 46.00, 3.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(54, '180827183302', 64, 66, 'CRECIMIENTO SIMPLE X 40 E', 24.00, 30.00, 32.00, 10.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'NO', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (55, '180915182313', 37, 41, 'CUY R X 50', 50.00, 60.00, 0.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
 (56, '180915185837', 37, 41, 'CUY R X 25', 25.00, 30.00, 0.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
 (57, '180915185942', 37, 39, 'ECONOMICO X 50', 44.00, 48.00, 0.00, 5.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -4785,7 +4909,7 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (86, '180925173054', 84, 86, 'MIMASKOT RAZA PEQUEÑA', 60.00, 65.00, 27.00, 5.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (87, '180925173257', 84, 86, 'MIMASKOT ADULTO', 60.00, 68.00, 0.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (88, '180925173335', 67, 69, 'BABYCAN AZUL', 64.00, 65.00, 194.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(89, '180925175629', 84, 86, 'BABYCAN ADULTO VERDE', 64.00, 68.00, 31.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(89, '180925175629', 84, 86, 'BABYCAN ADULTO VERDE', 64.00, 68.00, 22.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (90, '180925175706', 67, 69, 'MULTISABOR', 64.00, 68.00, 92.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (91, '180925175755', 67, 69, 'RICOCAN CORDERO', 64.00, 68.00, 189.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (92, '180925183743', 84, 86, 'RICOCAN CLASICO', 82.62, 83.00, 74.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -4810,7 +4934,7 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (111, '181005164534', 82, 83, 'CONCHUELA GRUESA', 25.00, 28.00, 119.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (112, '181005164614', 82, 83, 'CALCIO', 8.50, 8.50, 384.00, 30.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (113, '181005165409', 82, 83, 'SOYA', 80.00, 90.00, 474.00, 20.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(114, '181005165444', 82, 83, 'ACEITE DE SOYA', 520.00, 520.00, 0.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(114, '181005165444', 82, 83, 'ACEITE DE SOYA', 25.00, 520.00, 2.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (115, '181005165523', 82, 83, 'SAL INDUSTRIAL', 12.50, 12.50, 0.00, 0.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (116, '181005165600', 82, 83, 'GRANZA X 50', 42.50, 42.50, 112.00, 20.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (117, '181005165638', 67, 69, 'GRANZA X 60', 51.00, 70.00, 162.00, 10.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -4824,10 +4948,10 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (125, '181011163746', 33, 34, 'M PARTIDO X 60 F', 68.00, 78.00, 5.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
 (126, '181011163925', 33, 34, 'M REFINADO X 60 F', 68.00, 78.00, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
 (127, '181011164009', 70, 73, 'BB MYCIN X 40', 89.00, 90.00, 1.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
-(128, '181011172328', 33, 34, 'M PARTIDO X 60 A', 68.00, 78.00, 3.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
-(129, '181011172408', 33, 34, 'M REFINADO X 60 A', 68.00, 83.00, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
-(130, '181011172557', 37, 40, 'M MOLIDO X 60 A', 68.00, 77.00, 1.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
-(131, '181011172652', 70, 73, 'BB MYCIN X 40  L', 82.20, 92.00, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(128, '181011172328', 33, 34, 'M PARTIDO X 60 A', 68.00, 78.00, 3.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
+(129, '181011172408', 33, 34, 'M REFINADO X 60 A', 68.00, 83.00, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
+(130, '181011172557', 37, 40, 'M MOLIDO X 60 A', 68.00, 77.00, 1.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
+(131, '181011172652', 70, 73, 'BB MYCIN X 40  L', 82.20, 92.00, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (132, '181011181950', 33, 34, 'M PARTIDO X 15 L', 1725.00, 20.00, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (133, '181012091247', 67, 69, 'M ENTERO X 60 L', 68.00, 80.00, 33.00, 5.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
 (134, '181012092032', 33, 34, 'M PARTIDO X 60 L', 68.00, 80.00, 21.00, 5.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'SI', 0.00),
@@ -4850,16 +4974,16 @@ INSERT INTO `producto` (`pro_id_producto`, `pro_codigo`, `cla_clase`, `cla_subcl
 (151, '181018183539', 37, 39, 'P3 X 25 E', 22.50, 25.00, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (152, '181022101156', 33, 34, 'M ENTERO X 57', 66.00, 73.20, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (153, '181022103230', 33, 34, 'M PARTIDO X 57', 66.00, 76.00, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(154, '181022110817', 67, 69, 'ENGORDE PURINA', 74.17, 80.00, 2.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(154, '181022110817', 67, 69, 'ENGORDE PURINA', 74.17, 80.00, 2.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (155, '181022150249', 84, 90, 'CASTA BRAVA X 40', 43.90, 48.90, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (156, '181022181131', 37, 39, 'ENGORDE ECON X 50', 43.00, 60.00, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(157, '181025102704', 67, 69, 'OVEJINA', 38.00, 48.00, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(158, '181025102747', 67, 69, 'PANKAMEL X 100 KGRS', 68.00, 80.00, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(159, '181025102846', 67, 69, 'GIRASOL X 30 KGRS', 80.00, 180.00, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(160, '181025102941', 67, 69, 'KOMBATE X 40 KGRS', 100.00, 136.80, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(157, '181025102704', 67, 69, 'OVEJINA', 38.00, 48.00, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(158, '181025102747', 67, 69, 'PANKAMEL X 100 KGRS', 68.00, 80.00, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(159, '181025102846', 67, 69, 'GIRASOL X 30 KGRS', 80.00, 180.00, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(160, '181025102941', 67, 69, 'KOMBATE X 40 KGRS', 100.00, 136.80, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/img_vacio.png', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (161, '181030092610', 67, 69, 'CRECIMIENTO ECON X 50', 40.00, 60.00, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (162, '181030113325', 33, 34, 'M REFINADO X 57', 66.00, 76.00, 8.00, 5.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
-(163, '181030153459', 37, 42, 'P2 X 20', 27.60, 30.00, 0.00, 1.00, 2, 'http://localhost/boletas.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
+(163, '181030153459', 37, 42, 'P2 X 20', 27.60, 30.00, 0.00, 1.00, 2, 'http://localhost/index.php/../resources/sy_file_repository/c79LwPZjtBi62T4KEV5O.jpg', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (164, '181031182727', 67, 69, 'CUY COGORNO X 40', 65.80, 67.00, 16.00, 2.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (165, '181102094831', 67, 69, 'M PARTIDO X 20', 10.00, 27.70, 0.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
 (166, '181102094857', 67, 69, 'M REFINADO X 15', 5.00, 13.90, 4.00, 1.00, 2, '', 'SI', NULL, 0.00, 0.000, 0.00, 0.000, 0.00, 0.000, 0.00, 11, 'NO', 0.00),
@@ -4938,6 +5062,7 @@ INSERT INTO `rol_has_privilegio` (`rol_id_rol`, `pri_id_privilegio`) VALUES
 (2, 5),
 (2, 7),
 (2, 8),
+(2, 11),
 (2, 12),
 (2, 14),
 (2, 15),
@@ -4947,6 +5072,7 @@ INSERT INTO `rol_has_privilegio` (`rol_id_rol`, `pri_id_privilegio`) VALUES
 (2, 23),
 (2, 25),
 (2, 26),
+(2, 27),
 (2, 28),
 (2, 29);
 
@@ -5028,19 +5154,16 @@ INSERT INTO `salida` (`sal_id_salida`, `pcl_id_proveedor`, `pcl_id_cliente`, `td
 (597, NULL, 93, 1823, '2019-01-16', '0000037', '2019-01-16', 'C', 154.00, 154.00, 154.00, 0.00, 0.00, 0.00, '', '1801', '20190107041440', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
 (598, NULL, 93, 1823, '2019-01-17', '0000038', '2019-01-17', 'C', 186.00, 186.00, 0.00, 180.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 0.00, 0.00, '', '', ''),
 (599, NULL, 93, 1823, '2019-01-23', '0000039', '2019-01-23', 'C', 50.00, 50.00, 0.00, 25.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 0.00, 0.00, '', '', ''),
-(600, NULL, 93, 1823, '2019-01-24', '0000040', '2019-01-24', 'C', 136.00, 136.00, 136.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'contado', 0.00, 0.00, '', '', ''),
 (601, NULL, 14, 1823, '2019-01-31', '0000041', '2019-01-31', 'C', 385.00, 385.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 365.00, 0.00, '55444', 'genaro', 'dajsndajsnj asjda jnsdaj njsandja nsdjan jasdnaj s'),
-(602, NULL, 16, 1823, '2019-01-31', '0000042', '2019-01-31', 'C', 318.00, 318.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 0.00, 0.00, '5454', 'asdas', 'asdas'),
 (603, NULL, 16, 1823, '2019-01-31', '0000043', '2019-01-31', 'C', 50.00, 50.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 1, 'deuda', 0.00, 0.00, '55', 'asds', 'kasnkdaks aksdk aksd a'),
 (604, NULL, 16, 1823, '2019-01-31', '0000044', '2019-01-31', 'C', 50.00, 50.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 1, 'deuda', 0.00, 0.00, '55', 'asds', 'kasnkdaks aksdk aksd a'),
 (605, NULL, 16, 1823, '2019-01-31', '0000045', '2019-01-31', 'C', 50.00, 50.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 1, 'deuda', 0.00, 0.00, '23', 'asd', 'asdasd'),
-(606, NULL, 93, 1823, '2019-01-31', '0000046', '2019-01-31', 'C', 50.00, 50.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 1, 'deuda', 0.00, 0.00, '22', 'sa', 'sd'),
 (607, NULL, 93, 1823, '2019-01-31', '0000047', '2019-01-31', 'C', 50.00, 50.00, 50.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 0.00, 0.00, '5', 'asd', 'asd'),
-(608, NULL, 93, 1823, '2019-02-01', '0000048', '2019-02-01', 'C', 115.00, 115.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 95.00, 0.00, '4845', 'hello', 'jenajnsjc'),
 (609, NULL, 93, 1823, '2019-02-01', '0000049', '2019-02-01', 'C', 268.00, 268.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 268.00, 0.00, '255', 'akksk', 'aksnka'),
-(610, NULL, 13, 1823, '2019-02-01', '0000050', '2019-02-01', 'C', 341.35, 341.35, 0.00, 20.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 321.35, 0.00, '44555', 'JAJA', 'COMPRA'),
-(611, NULL, 25, 1823, '2019-02-01', '0000051', '2019-02-01', 'C', 180.00, 180.00, 0.00, 20.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 160.00, 0.00, '313', 'ASS', 'ASAS'),
-(612, NULL, 25, 1823, '2019-02-01', '0000052', '2019-02-01', 'C', 346.00, 346.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 26.00, 0.00, '555', 'asda12', 'asdasd');
+(613, NULL, 93, 1823, '2019-02-03', '0000053', '2019-02-03', 'C', 1176.00, 940.80, 2000.00, 0.00, 0.00, 235.20, '', '1801', '20190117030514', 3, 2, 'contado', 0.00, 1059.20, 'as5', 'asda', 'asdasd'),
+(614, NULL, 93, 1823, '2019-02-04', '0000054', '2019-02-04', 'C', 1561.35, 1561.35, 0.00, 500.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 1061.35, 0.00, '45-AS', 'JAIMITO EL CARTERO', 'kdkdkdk'),
+(615, NULL, 93, 1822, '2019-02-17', '120', '2019-02-17', 'C', 520.00, 520.00, 0.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'deuda', 520.00, 0.00, '', '', ''),
+(616, NULL, 93, 1821, '2019-02-17', '125', '2019-02-17', 'C', 1040.00, 1040.00, 1040.00, 0.00, 0.00, 0.00, '', '1801', '20190117030514', 3, 2, 'contado', 0.00, 0.00, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -5052,7 +5175,7 @@ CREATE TABLE `salida_detalle` (
   `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL,
   `pro_id_producto` int(10) UNSIGNED NOT NULL,
   `sal_id_salida` int(10) UNSIGNED NOT NULL,
-  `sad_cantidad` double(15,2) UNSIGNED DEFAULT NULL,
+  `sad_cantidad` int(10) UNSIGNED DEFAULT NULL,
   `sad_ganancias` double(15,2) NOT NULL,
   `sad_sum_kilo` double(15,2) NOT NULL,
   `sad_valor` double(15,2) DEFAULT NULL,
@@ -5065,101 +5188,97 @@ CREATE TABLE `salida_detalle` (
 --
 
 INSERT INTO `salida_detalle` (`sad_id_salida_detalle`, `pro_id_producto`, `sal_id_salida`, `sad_cantidad`, `sad_ganancias`, `sad_sum_kilo`, `sad_valor`, `sad_monto`, `est_id_estado`) VALUES
-(2205, 19, 561, 3.00, 15.60, 104.00, 32.00, 96.00, 1),
-(2206, 19, 562, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2207, 1, 562, 2.00, 86.80, 20.00, 63.40, 126.80, 1),
-(2208, 4, 562, 3.00, 35.10, 30.00, 66.70, 200.10, 1),
-(2209, 19, 563, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2210, 4, 563, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2211, 19, 564, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2212, 16, 564, 2.00, 13.00, 24.00, 39.50, 79.00, 1),
-(2213, 19, 565, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2214, 4, 565, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2215, 19, 566, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2216, 4, 566, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2217, 19, 567, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2218, 19, 568, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2219, 89, 568, 3.00, 12.00, 0.00, 68.00, 204.00, 1),
-(2220, 19, 569, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2221, 4, 569, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2222, 19, 570, 4.00, 20.80, 80.00, 32.00, 128.00, 1),
-(2223, 4, 570, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2224, 19, 571, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2225, 4, 571, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2226, 19, 572, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2227, 4, 572, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2228, 19, 573, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2229, 4, 573, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2230, 19, 574, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2231, 4, 574, 2.00, 23.40, 20.00, 66.70, 133.40, 1),
-(2232, 19, 575, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2233, 15, 575, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2234, 19, 576, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2235, 15, 576, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2236, 19, 577, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2237, 15, 577, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2238, 19, 578, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2239, 15, 578, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2240, 19, 579, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2241, 15, 579, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2242, 19, 580, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2243, 15, 580, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2244, 19, 581, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2245, 15, 581, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2246, 19, 582, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2247, 15, 582, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2248, 19, 583, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2249, 16, 583, 3.00, 19.50, 36.00, 39.50, 118.50, 1),
-(2250, 19, 584, 3.00, 15.60, 60.00, 32.00, 96.00, 1),
-(2251, 15, 584, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2252, 19, 585, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2253, 15, 585, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2254, 19, 586, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2255, 15, 586, 2.00, 26.00, 22.00, 79.00, 158.00, 1),
-(2256, 19, 587, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2257, 15, 587, 1.00, 13.00, 11.00, 79.00, 79.00, 1),
-(2258, 19, 588, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2259, 16, 588, 2.00, 13.00, 24.00, 39.50, 79.00, 1),
-(2260, 19, 589, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2261, 16, 589, 2.00, 13.00, 24.00, 39.50, 79.00, 1),
-(2262, 19, 590, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2263, 16, 590, 1.00, 6.50, 12.00, 39.50, 39.50, 1),
-(2264, 19, 591, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2265, 1, 591, 6.00, 260.40, 60.00, 63.40, 380.40, 1),
-(2266, 14, 591, 2.00, 28.00, 20.00, 80.00, 160.00, 1),
-(2267, 19, 592, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2268, 14, 592, 2.00, 28.00, 20.00, 80.00, 160.00, 1),
-(2269, 14, 593, 2.00, 28.00, 20.00, 80.00, 160.00, 1),
-(2270, 19, 593, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2271, 19, 594, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2272, 20, 594, 2.00, 10.00, 40.00, 45.00, 90.00, 1),
-(2273, 118, 594, 2.00, 0.00, 0.00, 66.00, 132.00, 1),
-(2274, 47, 594, 2.00, 2.00, 0.00, 20.00, 40.00, 1),
-(2275, 19, 595, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2276, 20, 595, 2.00, 10.00, 40.00, 45.00, 90.00, 1),
-(2277, 19, 596, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2278, 20, 596, 2.00, 10.00, 40.00, 45.00, 90.00, 1),
-(2279, 19, 597, 2.00, 10.40, 40.00, 32.00, 64.00, 1),
-(2280, 20, 597, 2.00, 10.00, 40.00, 45.00, 90.00, 1),
-(2281, 22, 598, 2.00, 4.40, 0.00, 25.00, 50.00, 1),
-(2282, 89, 598, 2.00, 8.00, 0.00, 68.00, 136.00, 1),
-(2283, 22, 599, 2.00, 4.40, 0.00, 25.00, 50.00, 1),
-(2284, 89, 600, 2.00, 8.00, 0.00, 68.00, 136.00, 1),
-(2285, 73, 601, 1.00, 33.04, 0.00, 75.00, 75.00, 1),
-(2286, 23, 601, 5.00, 22.00, 0.00, 62.00, 310.00, 1),
-(2287, 118, 602, 3.00, 0.00, 0.00, 66.00, 198.00, 1),
-(2288, 44, 602, 3.00, 6.00, 0.00, 40.00, 120.00, 1),
-(2289, 22, 606, 2.00, 4.40, 0.00, 25.00, 50.00, 1),
-(2290, 22, 607, 2.00, 4.40, 0.00, 25.00, 50.00, 1),
-(2291, 22, 608, 5.00, 1.00, 0.00, 23.00, 115.00, 1),
-(2292, 89, 609, 2.00, 8.00, 0.00, 68.00, 136.00, 1),
-(2293, 118, 609, 2.00, 0.00, 0.00, 66.00, 132.00, 1),
-(2294, 19, 610, 5.00, 150.00, 100.00, 0.27, 1.35, 1),
-(2295, 89, 610, 5.00, 20.00, 0.00, 68.00, 340.00, 1),
-(2296, 19, 611, 3.00, 90.00, 60.00, 32.00, 96.00, 1),
-(2297, 111, 611, 3.00, 9.00, 0.00, 28.00, 84.00, 1),
-(2298, 26, 612, 3.00, 12.60, 0.00, 70.00, 210.00, 1),
-(2299, 89, 612, 2.00, 8.00, 0.00, 68.00, 136.00, 1);
+(2205, 19, 561, 3, 15.60, 104.00, 32.00, 96.00, 1),
+(2206, 19, 562, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2207, 1, 562, 2, 86.80, 20.00, 63.40, 126.80, 1),
+(2208, 4, 562, 3, 35.10, 30.00, 66.70, 200.10, 1),
+(2209, 19, 563, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2210, 4, 563, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2211, 19, 564, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2212, 16, 564, 2, 13.00, 24.00, 39.50, 79.00, 1),
+(2213, 19, 565, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2214, 4, 565, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2215, 19, 566, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2216, 4, 566, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2217, 19, 567, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2218, 19, 568, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2219, 89, 568, 3, 12.00, 0.00, 68.00, 204.00, 1),
+(2220, 19, 569, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2221, 4, 569, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2222, 19, 570, 4, 20.80, 80.00, 32.00, 128.00, 1),
+(2223, 4, 570, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2224, 19, 571, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2225, 4, 571, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2226, 19, 572, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2227, 4, 572, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2228, 19, 573, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2229, 4, 573, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2230, 19, 574, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2231, 4, 574, 2, 23.40, 20.00, 66.70, 133.40, 1),
+(2232, 19, 575, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2233, 15, 575, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2234, 19, 576, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2235, 15, 576, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2236, 19, 577, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2237, 15, 577, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2238, 19, 578, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2239, 15, 578, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2240, 19, 579, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2241, 15, 579, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2242, 19, 580, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2243, 15, 580, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2244, 19, 581, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2245, 15, 581, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2246, 19, 582, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2247, 15, 582, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2248, 19, 583, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2249, 16, 583, 3, 19.50, 36.00, 39.50, 118.50, 1),
+(2250, 19, 584, 3, 15.60, 60.00, 32.00, 96.00, 1),
+(2251, 15, 584, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2252, 19, 585, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2253, 15, 585, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2254, 19, 586, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2255, 15, 586, 2, 26.00, 22.00, 79.00, 158.00, 1),
+(2256, 19, 587, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2257, 15, 587, 1, 13.00, 11.00, 79.00, 79.00, 1),
+(2258, 19, 588, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2259, 16, 588, 2, 13.00, 24.00, 39.50, 79.00, 1),
+(2260, 19, 589, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2261, 16, 589, 2, 13.00, 24.00, 39.50, 79.00, 1),
+(2262, 19, 590, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2263, 16, 590, 1, 6.50, 12.00, 39.50, 39.50, 1),
+(2264, 19, 591, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2265, 1, 591, 6, 260.40, 60.00, 63.40, 380.40, 1),
+(2266, 14, 591, 2, 28.00, 20.00, 80.00, 160.00, 1),
+(2267, 19, 592, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2268, 14, 592, 2, 28.00, 20.00, 80.00, 160.00, 1),
+(2269, 14, 593, 2, 28.00, 20.00, 80.00, 160.00, 1),
+(2270, 19, 593, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2271, 19, 594, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2272, 20, 594, 2, 10.00, 40.00, 45.00, 90.00, 1),
+(2273, 118, 594, 2, 0.00, 0.00, 66.00, 132.00, 1),
+(2274, 47, 594, 2, 2.00, 0.00, 20.00, 40.00, 1),
+(2275, 19, 595, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2276, 20, 595, 2, 10.00, 40.00, 45.00, 90.00, 1),
+(2277, 19, 596, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2278, 20, 596, 2, 10.00, 40.00, 45.00, 90.00, 1),
+(2279, 19, 597, 2, 10.40, 40.00, 32.00, 64.00, 1),
+(2280, 20, 597, 2, 10.00, 40.00, 45.00, 90.00, 1),
+(2281, 22, 598, 2, 4.40, 0.00, 25.00, 50.00, 1),
+(2282, 89, 598, 2, 8.00, 0.00, 68.00, 136.00, 1),
+(2283, 22, 599, 2, 4.40, 0.00, 25.00, 50.00, 1),
+(2285, 73, 601, 1, 33.04, 0.00, 75.00, 75.00, 1),
+(2286, 23, 601, 5, 22.00, 0.00, 62.00, 310.00, 1),
+(2290, 22, 607, 2, 4.40, 0.00, 25.00, 50.00, 1),
+(2292, 89, 609, 2, 8.00, 0.00, 68.00, 136.00, 1),
+(2293, 118, 609, 2, 0.00, 0.00, 66.00, 132.00, 1),
+(2300, 19, 613, 2, 60.00, 40.00, 32.00, 64.00, 1),
+(2301, 22, 613, 20, 44.00, 0.00, 25.00, 500.00, 1),
+(2302, 89, 613, 9, 36.00, 0.00, 68.00, 612.00, 1),
+(2303, 114, 614, 3, 1485.00, 0.00, 520.00, 1560.00, 1),
+(2304, 19, 614, 5, -90.00, 100.00, 0.27, 1.35, 1),
+(2305, 114, 615, 1, 495.00, 0.00, 520.00, 520.00, 1),
+(2306, 115, 616, 2, 990.00, 0.00, 520.00, 1040.00, 1);
 
 -- --------------------------------------------------------
 
@@ -5479,25 +5598,25 @@ ALTER TABLE `empresa`
 -- AUTO_INCREMENT de la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  MODIFY `ing_id_ingreso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `ing_id_ingreso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_detalle`
 --
 ALTER TABLE `ingreso_detalle`
-  MODIFY `ind_id_ingreso_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ind_id_ingreso_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `mayor`
 --
 ALTER TABLE `mayor`
-  MODIFY `id_mayor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_mayor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento`
 --
 ALTER TABLE `movimiento`
-  MODIFY `mov_id_movimiento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3023;
+  MODIFY `mov_id_movimiento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3035;
 
 --
 -- AUTO_INCREMENT de la tabla `pcliente`
@@ -5533,13 +5652,13 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `salida`
 --
 ALTER TABLE `salida`
-  MODIFY `sal_id_salida` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=613;
+  MODIFY `sal_id_salida` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=617;
 
 --
 -- AUTO_INCREMENT de la tabla `salida_detalle`
 --
 ALTER TABLE `salida_detalle`
-  MODIFY `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2300;
+  MODIFY `sad_id_salida_detalle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2307;
 
 --
 -- AUTO_INCREMENT de la tabla `sangria`

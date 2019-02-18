@@ -45,12 +45,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_salida();" id="btn_filtrar"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
                                     </div>
                                 </div>
+                                <div class="form-group col-md-3">
+                                    <button type="button" class="btn btn-facebook" onclick="imprimir();"><i class="fa fa-print"></i> Imprimir </button>
+                                </div>
                                 <br>
                                 <br>
                                 <hr>
+                                <div id="imprimir">
                                 <div class="row" style="margin: 16px;">
-                                    <div class="col-sm-12 box-body table-responsive">
-                                        <table class="table table-bordered" id="tb_efectivo">
+                                    <div class="col-sm-12 table-responsive">
+                                        <table class="table table-responsive table-bordered" id="tb_efectivo">
+                                            <caption id="titulo" hidden>REPORTE DE EFECTIVO EN CAJA</caption><br><br>
                                             <thead>
                                             <tr>
                                                 <th>FECHA</th>
@@ -62,9 +67,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <th>S/. PAGO CRÉDITO</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="cabecera">
                                             </tbody>
-                                            <tfoot>
+                                            <tfoot id="pie">
                                             <tr>
                                                 <th colspan="4" class="alinear_derecha">&nbsp;Total:</th>
                                                 <th  class="alinear_derecha"><span id="sp_total_salida"></span></th>
@@ -86,6 +91,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             </tfoot>
                                         </table>
                                     </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -132,13 +138,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     function generar_tabla_ajx3(id_tabla, url, type, data, dataSrc, columns) {
         $('#'+id_tabla).DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'print',
-                    text: 'Imprimir'
-                }
-            ],
             order:( [ 0, 'desc' ] ),
             ajax: {
                 url: url,
@@ -158,7 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "lengthMenu": "Mostrar _MENU_ entradas",
                 "loadingRecords": "Cargando...",
                 "processing": "Procesando...",
-                "search": "Buscar",
+                "search": "Buscar  ",
                 "zeroRecords": "No se encontraron registros coincidentes.",
                 "paginate": {
                     "first": "Primero",
@@ -176,5 +175,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     function filtrar_movimiento_diario_salida() {
         $('#tb_efectivo').DataTable().ajax.reload();
+    }
+    function imprimir() {
+        $('#titulo').show();
+        $('#titulo').css({"margin-bottom":"10px","font-size":"35px","font-weight":"bold"});
+        $('#cabecera').css({"text-align": "center","align-content":"center"});
+        $('#pie').css({"text-align": "right","align-content":"right","font-size":"20px","font-weight": "bold"});
+        $('#a').css({"text-align": "center","align-content":"center","font-size":"20px","font-weight": "bold"});
+        var printme= document.getElementById("tb_efectivo");
+        var wme= window.open();
+        wme.document.write(printme.outerHTML);
+        wme.document.close();
+        wme.focus();
+        wme.print();
+        wme.close();
+
+        return window.location.reload(true);
     }
 </script>

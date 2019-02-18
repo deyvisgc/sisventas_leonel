@@ -55,6 +55,7 @@ class Cliente extends CI_Controller {
 			'sal_chofer'=>$this->input->post('sal_chofer'),
 			'sal_camion' => $this->input->post('sal_camion'),
 			'sal_observacion' => $this->input->post('sal_observacion'),
+			'sal_numero_doc_cliente' => $this->input->post('in_sal_numero_doc_cliente'),
             );
 		$result = $this->salida_model->mregistrar($data);
 		

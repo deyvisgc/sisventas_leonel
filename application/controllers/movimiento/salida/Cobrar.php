@@ -37,7 +37,9 @@ class Cobrar extends CI_Controller{
     public function listarClientes(){
 
         $result = array('data'=>array());
+
         $data= $this->salida_model->listarCliente();
+
         foreach($data as $key => $value){
             $cliente = $value['emp_razon_social'];
             $fecha =$value['sal_fecha_doc_cliente'];
