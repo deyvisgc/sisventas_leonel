@@ -38,5 +38,15 @@ class Ganancias extends CI_Controller
 		echo json_encode($data);
 	}
 
+	public function Ganancias_x_Producto_Agrupado(){
+	    is_logged_in_or_exit($this);
+        $fecha_ini = $this->input->post('fecha_ini');
+        $fecha_fin = $this->input->post('fecha_fin');
+        $lis = $this->reporte_model->Ganancias_x_Producto_Agrupados($fecha_ini, $fecha_fin);
+        $sumgan=$this->reporte_model->sumganancias($fecha_ini, $fecha_fin);
+        $data = array('hecho' => 'SI', 'data' => $lis,'data_totales' => $sumgan);
+        echo json_encode($data);
+    }
+
 
 }

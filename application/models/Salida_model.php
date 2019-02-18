@@ -151,6 +151,12 @@ class Salida_model extends CI_Model {
 			)");
         return $result;
     }
+    function Eliminar_Ventas($data_venta){
+        $result = $this->db->query("CALL ELIMINAR_VENTA(
+            '".$data_venta['id_salida']."'
+        )");
+        return $result;
+    }
 
 }
 ?>

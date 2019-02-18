@@ -32,7 +32,9 @@ class Movimiento extends CI_Controller {
 		is_logged_in_or_exit($this);
 		$fecha_ini = $this->input->post('fecha_ini');
 		$fecha_fin = $this->input->post('fecha_fin');
+
 		$list = $this->reporte_model->mmovimiento_diario_ingreso($fecha_ini, $fecha_fin);
+
 		$list_totales = $this->reporte_model->mmovimiento_diario_totales_ingreso($fecha_ini, $fecha_fin);
 		$data = array('hecho' => 'SI', 'data' => $list, 'data_totales' => $list_totales);
 		echo json_encode($data);

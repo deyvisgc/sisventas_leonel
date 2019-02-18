@@ -48,10 +48,11 @@ class imprimir extends CI_Controller
             $buttons = '
             <div class="row">
                 <div class="col-md-12">
-                    <div class="text-center">
-                    
-                    <button type="button" onclick="func_mostrar_documento('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#disminuirDeuda"
-                    class="btn btn-danger">Imprimir</button>
+                    <div class="text-center">                
+                    <button type="button" onclick="func_mostrar_documento('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#"
+                    class="btn btn-facebook"><i class="fa fa-print"></i> Imprimir</button>
+                    <button type="button" onclick="func_eliminar_venta('.$value['sal_id_salida'].')" data-toggle="modal" data-target="#elimiminar_deuda"
+                    class="btn btn-danger"><i class="fa fa-trash"></i> Eliminar</button>
                     </div>                
                 </div>
             </div>';
@@ -61,6 +62,15 @@ class imprimir extends CI_Controller
             );
         }
         echo json_encode($result);
+    }
+
+    public function Eliminar_Venta(){
+        is_logged_in_or_exit($this);
+        $data_venta = array(
+            'id_salida' => $this->input->post('sal_id_salida')
+        );
+        $respuesta = $this->salida_model->Eliminar_Ventas($data_venta);
+        echo json_encode($respuesta);
     }
 
 

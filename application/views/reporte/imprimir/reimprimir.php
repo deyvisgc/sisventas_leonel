@@ -32,10 +32,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <table class="table table-responsive table-bordered" id="tb_ventas">
                                         <thead>
                                         <tr>
-                                            <th>Empresa</th>
+                                            <th>Cliente</th>
                                             <th>Fecha</th>
                                             <th>Importe de Venta</th>
-                                            <th>OPCIONES</th>
+                                            <th class="text-center">OPCIONES</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -99,13 +99,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         data.sal_id_salida = sal_id_salida;
         $.ajax({
             type: "POST",
-            url: BASE_URL+"reporte/salida/cliente/mostrar_documento",
+            url: BASE_URL+"movimiento/salida/cliente/mostrar_documento",
             data: data,
             success: function(datos) {
                 $('#dv_contenedor_impresion').empty();
                 $('#dv_contenedor_impresion').append(datos);
                 func_imprimir();
             }
+        });
+    }
+    function func_eliminar_venta(sal_id_salida){
+        var data = {};
+        data.sal_id_salida = sal_id_salida;
+        $.ajax({
+           type:'POST',
+           url:BASE_URL+'reporte/imprimir/Imprimir/Eliminar_Venta',
+            data: data,
+            success:function (datos) {
+                swal({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Se anulo correctamente la venta',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                filtrar_movimiento_diario_salida();
+           }
         });
     }
     function func_imprimir() {
@@ -117,5 +136,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         setTimeout(function(){
             newWin.close();
         }, 10);
+    }
+    function filtrar_movimiento_diario_salida() {
+        $('#tb_ventas').DataTable().ajax.reload();
     }
 </script>
