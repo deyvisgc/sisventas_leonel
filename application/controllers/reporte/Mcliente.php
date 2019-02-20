@@ -41,7 +41,7 @@ class Mcliente extends CI_Controller
 
         foreach ($data as $key => $value){
             $ruc=$value['emp_ruc'];
-            $razon_social=$value['emp_razon_social'];
+			$razon_social=$value['emp_razon_social'];
             $buttons = '
             <div class="text-center">
             <button type="button" onclick="Movimiento_Clientes('.$value['pcl_id_pcliente'].')" data-toggle="modal" data-target="#modal_movimiento_cliente"
@@ -62,7 +62,7 @@ class Mcliente extends CI_Controller
         $result = array('data'=>array());
         $data = $this->salida_model->listar_compras_x_cliente($id_cliente);
         foreach($data as $key =>$value){
-            $fecha=$value['sal_fecha_doc_cliente'];
+			$fecha=$value['sal_fecha_doc_cliente'];
             $total=$value['sal_monto'];
             $buttons='
             <div class="text-center">
@@ -113,5 +113,32 @@ class Mcliente extends CI_Controller
         }
         echo json_encode($result);
     }
+    public function listarProductos($id_cliente){
+		$fecha_ini = $this->input->post('fecha_ini');
+		$fecha_fin = $this->input->post('fecha_fin');
+		$listaproductos=$this->reporte_model->listaProductosxcliente($fecha_ini,$fecha_fin,$id_cliente);
+		$operacion=$this->reporte_model->sumaroperaciones($fecha_fin,$fecha_fin,$id_cliente);
+		$data = array('hecho' => 'SI', 'data' => $listaproductos, 'data_totales' => $operacion);
+		echo  json_encode($data);
+
+	}
+	public function listaTransporte($id_salida){
+
+		is_logged_in_or_exit($this);
+		$result = array('data'=>array());
+		$data = $this->pcliente_model->listarTransporte($id_salida);
+		foreach($data as $key =>$value){
+			$fecha=$value['sal_chofer'];
+			$descripcion=$value['sal_observacion'];
+			$debe=$value['sal_camion'];
+
+			$result['data'][$key]=array(
+				$fecha,
+				$descripcion,
+				$debe,
+			);
+		}
+		echo json_encode($result);
+	}
 
 }

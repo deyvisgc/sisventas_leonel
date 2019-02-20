@@ -116,8 +116,7 @@ class Salida_model extends CI_Model {
     }
 
     function listar_compras_x_cliente($id){
-        $consulta="SELECT sa.sal_id_salida,  sa.sal_fecha_doc_cliente,sa.sal_monto 
-        FROM salida as sa WHERE sa.pcl_id_cliente='$id'";
+        $consulta="SELECT sa.pcl_id_cliente, sa.sal_id_salida, sa.sal_fecha_doc_cliente,sa.sal_monto,sa.sal_numero_doc_cliente,sa.sal_observacion,sa.sal_chofer,sa.sal_camion FROM salida as sa WHERE sa.pcl_id_cliente='$id'";
         $data = $this->db->query($consulta);
         return $data->result_array();
 
@@ -125,8 +124,8 @@ class Salida_model extends CI_Model {
 
     function detalle_compra_x_cliente($id_compra){
         $list = array();
-        $consulta="SELECT p.pro_nombre,sd.sad_cantidad, sd.sad_valor,sd.sad_monto,sd.sad_ganancias  
-        FROM producto as p, salida_detalle as sd,salida as sal 
+        $consulta="SELECT p.pro_nombre,sd.sad_cantidad, sd.sad_valor,sd.sad_monto,sd.sad_ganancias,sal.sal_numero_doc_cliente 
+        FROM producto as p, salida_detalle as sd,salida as sal
         WHERE p.pro_id_producto=sd.pro_id_producto 
         AND sal.sal_id_salida=sd.sal_id_salida  
         AND sd.sal_id_salida=$id_compra";

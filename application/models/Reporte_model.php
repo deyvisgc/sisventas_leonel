@@ -284,6 +284,35 @@ class Reporte_model extends CI_Model {
         return array(
             'efectivo_caja' => '00.00');
     }
+    public function listaProductosxcliente($fecha_ini,$fecha_fin,$id_cliente){
+		$lista1=[];
+	$lista=$this->db->query("SELECT pro.pro_nombre,sd.sad_cantidad,
+       sd.sad_monto  FROM producto as pro,salida as sal, salida_detalle 
+         as sd WHERE sal.sal_id_salida=sd.sal_id_salida AND sd.pro_id_producto=pro.pro_id_producto
+                 AND STR_TO_DATE(sal.sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
+  AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') AND sal.pcl_id_cliente =$id_cliente GROUP BY pro.pro_nombre");
+
+	foreach ($lista->result() as  $lis){
+
+		$lista1[]=$lis;
+	}
+	return $lista1;
+	}
+	public function sumaroperaciones($fecha_ini,$fecha_fin,$id_cliente){
+		$sql=$this->db->query("SELECT  IFNULL(SUM(st.sad_monto),0) as monto,IFNULL(SUM(st.sad_cantidad),0) as cantidad FROM salida as s, salida_detalle as st
+WHERE st.sal_id_salida=s.sal_id_salida AND s.pcl_id_cliente=$id_cliente AND
+      STR_TO_DATE(s.sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
+        AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.sal_id_salida");
+		foreach ($sql->result() as $row)
+		{
+			return $row;
+		}
+		return array('monto' => '0.00',
+			'cantidad' => '0.00');
+
+
+	}
+
 
 
 }

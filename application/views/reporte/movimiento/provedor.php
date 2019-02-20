@@ -70,6 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<ul class="nav nav-tabs">
 									<li class="active"><a href="#dv_compras" data-toggle="tab" id="a_mov_diario_salida">Movimiento de Compras</a></li>
 									<li><a href="#dv_pagos" data-toggle="tab" id="a_mov_diario_ingreso">Movimiento de Pagos</a></li>
+									<li><a href="#dv_productos" data-toggle="tab" id="a_mov_diario_ingreso">Movimiento de Productos</a></li>
 									<li class="pull-left header"></span></li>
 								</ul>
 								<div class="tab-content">
@@ -110,6 +111,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													</thead>
 													<tbody>
 													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="dv_productos">
+										<hr>
+
+										<div class="row" style="margin: 16px;">
+											<div class="form-group" style="margin-left: 20px">
+												<div class="row"><br><br>
+													<label for="" class="col-sm-2 col-lg-2 control-label">FECHA INICIO</label>
+													<div class="col-sm-3">
+														<input type="date" id="fecha_ini" name="fecha_ini" class="form-control" value="" placeholder="Fecha inicio">
+													</div>
+													<label for="" class="col-sm-2 col-lg-2 control-label">FECHA FIN</label>
+													<div class="col-sm-3">
+														<input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="" placeholder="Fecha fin">
+													</div>
+													<div class="form-group">
+														<div class="col-sm-3 col-lg-1">
+															<button type="button" class="btn btn-primary"  onclick="filtrar_compra_producto();" id="btn-altas"><i class="fa fa-calendar"></i> Filtar por Fecha</button>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-sm-12 table-responsive">
+												<table class="table table-bordered" id="tb_producto_provedor">
+													<thead>
+													<tr>
+														<th class="text-center">PRODUCTO</th>
+														<th class="text-center">CANTIDAD</th>
+														<th class="text-center">M0NTO</th>
+													</tr>
+													</thead>
+													<tbody>
+													</tbody>
+													<tfoot id="pie">
+													<tr>
+														<th  class=" alinear_derecha">&nbsp;Total Cantidad / Total Monto</th>
+														<th ><span id="sp_total_cantidad"></span></th>
+														<th  colspan="0" ><span style="display: block;margin: 0 auto;" id="sp_total_monto"></span></th>
+														<th hidden class=""></th>
+													</tr>
+													</tfoot>
 												</table>
 											</div>
 										</div>
@@ -198,7 +244,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		});
 
 
-
+		var fecha_actual_hoy = get_fhoy();
+		$('#fecha_ini').val(fecha_actual_hoy);
+		$('#fecha_fin').val(fecha_actual_hoy);
 
 
 
@@ -263,6 +311,67 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		});
 
 
+		 var url=BASE_URL+'reporte/proveedor/listarProductos/'+pcl_id_pcliente;
+		 var datos_fecha = function () {
+			var data={};
+			data.fecha_inicio=$('#fecha_ini').val();
+			data.fecha_fin=$('#fecha_fin').val();
+			return data;
+		};
+		var mov_diario_dataSrc = function (res) {
+		 	$("#sp_total_cantidad").text(res.data_totales.cantidad);
+		 	$("#sp_total_monto").text(res.data_totales.monto);
+			return res.data;
+
+		};
+		var columns=[
+			{data: "pro_nombre"},
+			{data: "ind_cantidad"},
+			{data: "ind_monto"}
+		];
+		tabla_producto_provedor(url,'POST',datos_fecha,mov_diario_dataSrc,columns)}
+
+	function tabla_producto_provedor( url, type, data,dataSrc,columns) {
+		$('#tb_producto_provedor').DataTable({
+			ajax: {
+				url: url,
+				type: type,
+				data: data,
+				dataSrc: dataSrc
+			},
+			destroy: true,
+			columns: columns,
+			"language": {
+				"decimal": "",
+				"emptyTable": "Tabla vacia.",
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"infoPostFix": "",
+				"thousands": ",",
+				"lengthMenu": "Mostrar _MENU_ entradas",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"search": "Buscar ",
+				"zeroRecords": "No se encontraron registros coincidentes.",
+				"paginate": {
+					"first": "Primero",
+					"last": "Final",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"aria": {
+					"sortAscending": ": activar para ordenar la columna ascendente.",
+					"sortDescending": ": activar para ordenar la columna descendente."
+				}
+			},
+
+
+		});
+
+	}
+	function filtrar_compra_producto() {
+		$('#tb_producto_provedor').DataTable().ajax.reload();
 	}
 
 	function Detalles(ing_id_ingreso) {
