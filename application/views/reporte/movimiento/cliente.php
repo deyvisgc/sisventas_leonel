@@ -23,7 +23,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <ul class="nav nav-tabs pull-right">
                         <li class="active"><a href="#dv_mov_diario_ingreso" data-toggle="tab" id="a_mov_diario_ingreso">Registro de Clientes</a></li>
                         <li class="pull-left header"><i class="fa fa-chart-line"></i>  <span id="sp_tipo_movimiento">Movimientos por Clientes</span></li>
-						<li class="pull-left header"><i class="fa fa-chart-line"></i>  <span id="sp_tipo_movimiento">Movimientos por Productos</span></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="dv_mov_diario_ingreso">
@@ -154,10 +153,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													</tbody>
 													<tfoot>
 													<tr>
-														<th  class=" alinear_derecha">&nbsp;Total Cantidad / Total Monto</th>
-														<th ><span id="sp_total_cantidad"></span></th>
-														<th  colspan="0" ><span style="display: block;margin: 0 auto;" id="sp_total_monto"></span></th>
-														<th hidden class=""></th>
+														<th colspan="1" class=" alinear_derecha">&nbsp;Total Cantidad:</th>
+														<th >$.<span id="sp_total_cantidad"></span></th>
+													</tr>
+													<tr>
+														<th colspan="2" class=" alinear_derecha">&nbsp;Total Monto:</th>
+														<th>$.<span id="sp_total_monto"></span></th>
 													</tr>
 													</tfoot>
 												</table>
@@ -339,8 +340,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return data;
 		};
 		var mov_diario_dataSrc = function(res){
-			$('#sp_total_monto').text(res.data_totales.monto);
 			$('#sp_total_cantidad').text(res.data_totales.cantidad);
+			$('#sp_total_monto').text(res.data_totales.monto);
+
 			return res.data;
 		};
 

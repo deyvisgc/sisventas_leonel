@@ -150,10 +150,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													</tbody>
 													<tfoot id="pie">
 													<tr>
-														<th  class=" alinear_derecha">&nbsp;Total Cantidad / Total Monto</th>
-														<th ><span id="sp_total_cantidad"></span></th>
-														<th  colspan="0" ><span style="display: block;margin: 0 auto;" id="sp_total_monto"></span></th>
-														<th hidden class=""></th>
+														<th colspan="1" class=" alinear_derecha">&nbsp;Total Cantidad:</th>
+														<th >$.<span id="sp_total_cantidad"></span></th>
+													</tr>
+													<tr>
+														<th colspan="2" class=" alinear_derecha">&nbsp;Total Monto:</th>
+														<th>$.<span id="sp_total_monto"></span></th>
 													</tr>
 													</tfoot>
 												</table>

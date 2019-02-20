@@ -299,7 +299,7 @@ class Reporte_model extends CI_Model {
 	return $lista1;
 	}
 	public function sumaroperaciones($fecha_ini,$fecha_fin,$id_cliente){
-		$sql=$this->db->query("SELECT  IFNULL(SUM(st.sad_monto),0) as monto,IFNULL(SUM(st.sad_cantidad),0) as cantidad FROM salida as s, salida_detalle as st
+		$sql=$this->db->query("SELECT  IFNULL(SUM(st.sad_monto),0.00) as monto,IFNULL(SUM(st.sad_cantidad),0.00) as cantidad FROM salida as s, salida_detalle as st
 WHERE st.sal_id_salida=s.sal_id_salida AND s.pcl_id_cliente=$id_cliente AND
       STR_TO_DATE(s.sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.sal_id_salida");
