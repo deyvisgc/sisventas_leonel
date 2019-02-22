@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div class="nav-tabs-custom">
 								<ul class="nav nav-tabs pull-right">
 									<li><a href="#dv_registro" data-toggle="tab" id="a_registro">Registro</a></li>
-									<li class="active"><a href="#dv_reporte" data-toggle="tab" id="a_reporte">Reporte</a></li>
+									<li class="Inactivo"><a href="#dv_productos" data-toggle="tab" id="a_productos">Productos Desabilitados</a></li>
+									<li class="active"><a href="#dv_reporte" data-toggle="tab" id="a_reporte">Productos Habilitados</a></li>
 									<li class="pull-left header"><i class="fa fa-atlas"></i> Productos.</li>
 								</ul>
 								<div class="tab-content">
@@ -51,7 +52,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											</div>
 										</div>
 									</div>
-									
+									<div class="tab-pane Inactivo" id="dv_productos">
+										<div class="row">
+											<div class="col-sm-12 box-body table-responsive">
+												<p></p>
+												<table class="table table-bordered table-hover" id="tabla_productos">
+													<thead>
+													<tr>
+														<th>CODIGO</th>
+														<th>NOMBRE</th>
+														<th>IMAGEN</th>
+														<th>CLASE</th>
+														<th>SUB-CLASE</th>
+														<th>ESTADO</th>
+														<th>KILOGRAMOS</th>
+														<th>EDITAR</th>
+														<th>ELIMINAR</th>
+													</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
 									<div class="tab-pane" id="dv_registro">
 										<div class="row">
 											<p></p>
@@ -221,6 +245,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											</form>
 										</div>
 									</div>
+
 								</div>
 							</div>
 						</div>
@@ -330,9 +355,112 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							return '<button  type="button" class="btn btn-danger btn-xs boton_hhh" onclick="eliminar(event)"><span class="glyphicon glyphicon-edit span_hhh" aria-hidden="true"> Eliminar</span></button>';
 						}
 					}
+
 				];
 				generar_tabla(id_tabla, url, data, columns);
+
+
+				var id_tabla = "tabla_productos";
+				var url = "<?php echo base_url(); ?>mantenimiento/producto/Productos_Inactivos";
+				var data = [];
+				var columns = [
+					{data: "pro_codigo"},
+					{data: "pro_nombre"},
+					{
+						data: null,
+						"render": function ( data, type, full, meta ) {
+							return '<div class="pull-left image">'+
+								'<img src="'+BASE_URL+'../resources/sy_file_repository/'+full.pro_foto+'" class="img-circle zoom" alt="Producto Imagen" style="max-width: 50px; height: auto;" onerror="func_img_error(event);">'+
+								'</div>';
+						}
+					},
+					{data: "clase_nombre"},
+					{data: "subclase_nombre"},
+					{data: "est_nombre"},
+					{data: "kilogramo"},
+					{
+						data: null,
+						"render": function ( data, type, full, meta ) {
+							return '<button  type="button" class="btn btn-warning btn-xs boton_hhh" onclick="mostrar(event)"><span class="glyphicon glyphicon-edit span_hhh" aria-hidden="true"> Editar</span></button>'+
+								'<input type="hidden" name="pro_codigo" value="'+full.pro_codigo+'">'+
+								'<input type="hidden" name="cla_clase" value="'+full.cla_clase+'">'+
+								'<input type="hidden" name="cla_subclase" value="'+full.cla_subclase+'">'+
+								'<input type="hidden" name="pro_nombre" value="'+full.pro_nombre+'">'+
+								'<input type="hidden" name="pro_val_compra" value="'+full.pro_val_compra+'">'+
+								'<input type="hidden" name="pro_val_venta" value="'+full.pro_val_venta+'">'+
+								'<input type="hidden" name="pro_cantidad" value="'+full.pro_cantidad+'">'+
+								'<input type="hidden" name="pro_cantidad_min" value="'+full.pro_cantidad_min+'">'+
+								'<input type="hidden" name="unm_id_unidad_medida" value="'+full.unm_id_unidad_medida+'">'+
+								'<input type="hidden" name="pro_foto" value="'+full.pro_foto+'">'+
+								'<input type="hidden" name="pro_perecible" value="'+full.pro_perecible+'">'+
+								'<input type="hidden" name="est_id_estado" value="'+full.est_id_estado+'">'+
+								'<input type="hidden" name="pro_xm_cantidad1" value="'+full.pro_xm_cantidad1+'">'+
+								'<input type="hidden" name="pro_xm_valor1" value="'+full.pro_xm_valor1+'">'+
+								'<input type="hidden" name="pro_xm_cantidad2" value="'+full.pro_xm_cantidad2+'">'+
+								'<input type="hidden" name="pro_xm_valor2" value="'+full.pro_xm_valor2+'">'+
+								'<input type="hidden" name="pro_xm_cantidad3" value="'+full.pro_xm_cantidad3+'">'+
+								'<input type="hidden" name="pro_xm_valor3" value="'+full.pro_xm_valor3+'">'+
+								'<input type="hidden" name="pro_val_oferta" value="'+full.pro_val_oferta+'">'+
+								'<input type="hidden" name="pro_kilogramos" value="'+full.kilogramo+'">'+
+								'<input type="hidden" name="pro_id_producto" value="'+full.pro_id_producto+'">';
+
+						}
+					},
+					{
+						data: null,
+						"render": function ( data, type, full, meta ) {
+							return '<button  type="button" class="btn btn-danger btn-xs boton_hhh" onclick="eliminar(event)"><span class="glyphicon glyphicon-edit span_hhh" aria-hidden="true"> Eliminar</span></button>';
+						}
+					}
+				];
+				productos_Inactivos(id_tabla, url, data, columns);
 			}
+
+			function productos_Inactivos(id_tabla, url, data, columns) {
+				$('#'+id_tabla).DataTable({
+					dom: 'Bfrtip',
+					buttons: [
+						{
+							extend: 'print',
+							text: 'Imprimir'
+						}
+					],
+					ajax: {
+						url: url,
+						type: "POST",
+						data: data
+					},
+					columns: columns,
+					"language": {
+						"decimal": "",
+						"emptyTable": "Tabla vacia.",
+						"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+						"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+						"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+						"infoPostFix": "",
+						"thousands": ",",
+						"lengthMenu": "Mostrar _MENU_ entradas",
+						"loadingRecords": "Cargando...",
+						"processing": "Procesando...",
+						"search": "Buscar",
+						"zeroRecords": "No se encontraron registros coincidentes.",
+						"paginate": {
+							"first": "Primero",
+							"last": "Final",
+							"next": "Siguiente",
+							"previous": "Anterior"
+						},
+						"aria": {
+							"sortAscending": ": activar para ordenar la columna ascendente.",
+							"sortDescending": ": activar para ordenar la columna descendente."
+						}
+					},
+					destroy:true
+
+				});
+			}
+
+
 			function func_img_error(e) {
 				var img = $(e.target);
 				var ruta_foto = "<?php echo base_url(); ?>../resources/sy_file_repository/img_vacio.png";
@@ -456,6 +584,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							$('#a_reporte').tab('show');
 							add_mensaje(null, " Correcto. ", ' datos guardados.', "success");
 						}
+						$('#tb_producto').DataTable().ajax.reload();
+						$('#tabla_productos').DataTable().ajax.reload();
 					}
 				});
 			}

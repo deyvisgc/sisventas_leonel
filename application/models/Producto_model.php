@@ -57,7 +57,49 @@ class Producto_model extends CI_Model {
 			  on p.unm_id_unidad_medida=um.unm_id_unidad_medida 
 			  inner join estado e 
 			  on p.est_id_estado=e.est_id_estado 
-			where p.pro_eliminado='NO' ");
+			where p.pro_eliminado='NO' AND p.est_id_estado=11 ");
+		foreach ($query->result() as $row)
+		{
+			$list[] = $row;
+		}
+		return $list;
+	}
+	public function listado_ProductosInactivos(){
+		$list = array();
+		$query = $this->db->query("select 
+			  p.pro_id_producto, 
+			  p.pro_codigo, 
+			  IFNULL(cla_clase,'') cla_clase, 
+			  IFNULL((SELECT cc.cla_nombre FROM clase cc WHERE cc.cla_id_clase=p.cla_clase),'') clase_nombre, 
+			  IFNULL(cla_subclase,'') cla_subclase, 
+			  IFNULL((SELECT cc.cla_nombre FROM clase cc WHERE cc.cla_id_clase=p.cla_subclase),'') subclase_nombre, 
+			  p.pro_nombre, 
+			  p.pro_val_compra, 
+			  p.pro_val_venta, 
+			  p.pro_cantidad, 
+              p.pro_cantidad, 
+			  p.pro_cantidad_min, 
+			  p.est_id_estado, 
+			  p.pro_foto, 
+              P.pro_kilogramo as kilogramo,
+			  p.pro_perecible, 
+			  p.pro_xm_cantidad1, 
+			  p.pro_xm_valor1, 
+			  p.pro_xm_cantidad2, 
+			  p.pro_xm_valor2, 
+			  p.pro_xm_cantidad3, 
+			  p.pro_xm_valor3, 
+			  p.pro_val_oferta, 
+			  um.unm_id_unidad_medida, 
+			  um.unm_nombre, 
+			  um.unm_nombre_corto, 
+			  e.est_nombre 
+			from producto p 
+			  inner join unidad_medida um 
+			  on p.unm_id_unidad_medida=um.unm_id_unidad_medida 
+			  inner join estado e 
+			  on p.est_id_estado=e.est_id_estado 
+			where p.pro_eliminado='NO' AND p.est_id_estado=12");
 		foreach ($query->result() as $row)
 		{
 			$list[] = $row;

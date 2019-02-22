@@ -129,7 +129,8 @@ function generar_tabla(id_tabla, url, data, columns) {
 				"sortAscending": ": activar para ordenar la columna ascendente.",
 				"sortDescending": ": activar para ordenar la columna descendente."
 			}
-		}
+		},
+		destroy:true
 		
 	});
 }
