@@ -169,11 +169,18 @@ class Salida_model extends CI_Model {
     public function Seleccionar_Productos_Despacho($ids){
 
         $id_guia = implode(",", $ids);
-        $result = $this->db->query('SELECT p.pro_nombre as PRODUCTO, SUM(sd.sad_cantidad) as CANTIDAD 
+        $result = $this->db->query('SELECT p.pro_nombre as PRODUCTO,p.cla_clase, SUM(sd.sad_cantidad) as CANTIDAD 
         FROM salida as sa, salida_detalle as sd, producto as p 
         WHERE sa.sal_id_salida=sd.sal_id_salida AND sd.pro_id_producto=p.pro_id_producto 
-        AND  FIND_IN_SET( sa.sal_id_salida ,"'.$id_guia.'") GROUP BY p.pro_nombre');
+        AND FIND_IN_SET( sa.sal_id_salida ,"'.$id_guia.'") 
+        GROUP BY p.pro_nombre,p.cla_clase 
+        ORDER BY CANTIDAD DESC');
         return $result->result_array();
+    }
+
+    public function Total_Cuentas_x_Cobrar(){
+        $result = $this->db->query("SELECT SUM(sal.sal_deuda)as TOTAL FROM salida as sal");
+        return $result->row_array();
     }
 }
 ?>

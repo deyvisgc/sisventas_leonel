@@ -74,5 +74,10 @@ class Pagar extends CI_Controller{
 		$data=$this->ingreso_model->registra_pago($data_ingreso_pago);
 		echo json_encode($data);
 	}
+    public function Total_x_Pagar(){
+        $data = $this->ingreso_model->Total_Cuentas_x_Pagar();
+        echo json_encode($data);
+    }
+
 
 }

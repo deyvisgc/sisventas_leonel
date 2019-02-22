@@ -29,9 +29,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<div class="tab-content">
 									<div class="tab-pane active" id="dv_general">
 										<div class="row">
-											<div class="col-sm-12 box-body table-responsive">
+											<div class="col-sm-12 table-responsive">
 												<p></p>
-												<table class="table table-bordered" id="tb_general">
+												<table class="table table-bordered" id="tb_general" style="width: 100%;">
 													<thead>
 														<tr>
 															<th>CLASE</th>
@@ -52,9 +52,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									
 									<div class="tab-pane" id="dv_minimo">
 										<div class="row">
-											<div class="col-sm-12 box-body table-responsive">
+											<div class="col-sm-12 table-responsive">
 												<p></p>
-												<table class="table table-bordered" id="tb_minimo">
+												<table class="table table-bordered" id="tb_minimo" style="width: 100%">
 													<thead>
 														<tr>
 															<th>CLASE</th>

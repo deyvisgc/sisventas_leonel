@@ -35,18 +35,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <div class="box-header">
                                                 <h3 class="box-title"></h3>
                                             </div>
-                                            <div class="box-body table-responsive">
+                                            <div class=" table-responsive">
                                                 <table id="clientes_deudores" class="table table-striped">
                                                     <thead>
                                                     <tr>
-                                                        <th>Cliente</th>
-                                                        <th>Fecha</th>
-                                                        <th>Deuda</th>
-                                                        <th>Operacion</th>
+                                                        <th class="text-center">Cliente</th>
+                                                        <th class="text-center">Fecha</th>
+                                                        <th class="text-center">Deuda</th>
+                                                        <th class="text-center">Operacion</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody class="text-center">
                                                     </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th colspan="2">&nbsp;Total</th>
+                                                            <th class="text-center"><span id="total_x_cobrar">450.00</span></th>
+                                                        </tr>
+                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
@@ -112,7 +118,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" id="movimiento_deuda" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
+                <button type="button" id="movimiento_deuda" onclick="editarDeuda();Cargar_Total_Cuentas_x_Cobrar();" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
@@ -155,16 +161,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function init_salida(){
         $(document).ready(function () {
             table = $('#clientes_deudores').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'print',
-                        text: 'Imprimir',
-                        exportOptions: {
-                            columns: [ 0, 1, 2]
-                        }
-                    }
-                ],
                 'ajax':BASE_URL+'movimiento/salida/Cobrar/listarClientes',
                 order:([1,'desc']),
                 language: {
@@ -178,7 +174,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "lengthMenu": "Mostrar _MENU_ Entradas",
                     "loadingRecords": "Cargando...",
                     "processing": "Procesando...",
-                    "search": "Buscar:",
+                    "search": "Buscar: ",
                     "zeroRecords": "No se encontraron datos",
                     "paginate": {
                         "first": "Primero",
@@ -188,6 +184,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     }
                 }
 
+            });
+
+            $.ajax({
+                url:BASE_URL+'movimiento/salida/Cobrar/Total_x_Cobrar',
+                type:'POST',
+                dataType:'JSON',
+                success:function(response){
+                    $('#total_x_cobrar').html(response.TOTAL);
+                }
             });
         });
         $('#movimiento_deuda').click(function () {
@@ -216,6 +221,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
 
+    function Cargar_Total_Cuentas_x_Cobrar(){
+        $.ajax({
+            url:BASE_URL+'movimiento/salida/Cobrar/Total_x_Cobrar',
+            type:'POST',
+            dataType:'JSON',
+            success:function(response){
+                $('#total_x_cobrar').html(response.TOTAL);
+            }
+        });
+    }
+
     function descontarDeuda(){
         var deuda_actual = $('#deuda_actual').val();
         var monto_pagado = $('#monto_pagado').val();
@@ -238,7 +254,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             });
             setInterval( function () {
                 table.ajax.reload( null, false ); // user paging is not reset on reload
-            }, 3500 )
+            }, 3500 );
         }
     }
 
@@ -282,7 +298,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             });
             setInterval( function () {
                 table.ajax.reload( null, false ); // user paging is not reset on reload
-            }, 3500 )
+            }, 3500 );
         }
     }
 
@@ -309,6 +325,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 });
             }
         });
+        return window.location.reload(true);
     }
 
 </script>

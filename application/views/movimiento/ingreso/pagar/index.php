@@ -37,16 +37,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             </div>
                                             <div class="box-body table-responsive">
                                                 <table id="clientes_deudores" class="table table-striped">
-                                                    <thead>
+                                                    <thead >
                                                     <tr>
-                                                        <th>Proveedor</th>
-                                                        <th>Fecha</th>
-                                                        <th>Deuda</th>
-                                                        <th>Operacion</th>
+                                                        <th class="text-center">Proveedor</th>
+                                                        <th class="text-center">Fecha</th>
+                                                        <th class="text-center">Deuda</th>
+                                                        <th class="text-center">Operacion</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody class="text-center">
                                                     </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th colspan="2">&nbsp;Total</th>
+                                                        <th class="text-center"><span id="total_x_pagar">450.00</span></th>
+                                                    </tr>
+                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
@@ -111,7 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" id="registrar_pago" onclick="editarDeuda();" class="btn btn-primary">Guardar</button>
+                <button type="button" id="registrar_pago" onclick="editarDeuda();Cargar_Total_Cuentas_x_Pagar();" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
@@ -154,16 +160,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function init_ingreso(){
         $(document).ready(function () {
             table = $('#clientes_deudores').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'print',
-                        text: 'Imprimir',
-                        exportOptions: {
-                            columns: [ 0, 1, 2]
-                        }
-                    }
-                ],
                 'ajax':BASE_URL+'movimiento/ingreso/pagar/listarProveedores',
                 order:([1,'desc']),
                 language: {
@@ -185,6 +181,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         "next": "Siguiente",
                         "previous": "Anterior"
                     }
+                }
+            });
+
+            $.ajax({
+                url:BASE_URL+'movimiento/ingreso/Pagar/Total_x_Pagar',
+                type:'POST',
+                dataType:'JSON',
+                success:function(response){
+                    $('#total_x_pagar').html(response.TOTAL);
                 }
             });
         });
@@ -224,7 +229,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		});
     }
 
-
+    function Cargar_Total_Cuentas_x_Pagar(){
+        $.ajax({
+            url:BASE_URL+'movimiento/ingreso/Pagar/Total_x_Pagar',
+            type:'POST',
+            dataType:'JSON',
+            success:function(response){
+                $('#total_x_pagar').html(response.TOTAL);
+            }
+        });
+    }
 
     function cargarDatosDeuda(ing_id_ingreso=null){
         if(ing_id_ingreso){
@@ -319,5 +333,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 });
             }
         });
+        return window.location.reload(true);
     }
 </script>

@@ -22,7 +22,11 @@ class Salida_detalle_model extends CI_Model {
 	function mbuscar_detalles($sal_id_salida) {
 		$list = array();
 		$query = $this->db->query("
-			SELECT * FROM (SELECT salida_detalle.pro_id_producto,salida_detalle.sal_id_salida,salida_detalle.sad_cantidad,salida_detalle.sad_monto,salida_detalle.sad_valor,producto.pro_nombre, producto.cla_clase,producto.pro_kilogramo,unidad_medida.unm_nombre_corto FROM salida_detalle,producto ,unidad_medida WHERE salida_detalle.pro_id_producto=producto.pro_id_producto and producto.unm_id_unidad_medida=unidad_medida.unm_id_unidad_medida AND salida_detalle.sal_id_salida=$sal_id_salida GROUP BY producto.cla_clase,producto.pro_nombre,producto.pro_kilogramo) as ma ORDER by ma.pro_kilogramo DESC");
+			SELECT * FROM (SELECT salida_detalle.pro_id_producto,salida_detalle.sal_id_salida,salida_detalle.sad_cantidad,salida_detalle.
+			sad_monto,salida_detalle.sad_valor,producto.pro_nombre, producto.cla_clase,producto.pro_kilogramo,unidad_medida.unm_nombre_corto 
+			FROM salida_detalle,producto ,unidad_medida WHERE salida_detalle.pro_id_producto=producto.pro_id_producto 
+			and producto.unm_id_unidad_medida=unidad_medida.unm_id_unidad_medida AND salida_detalle.sal_id_salida=$sal_id_salida 
+			GROUP BY producto.cla_clase,producto.pro_nombre,producto.pro_kilogramo) as ma ORDER by ma.pro_kilogramo DESC");
 		foreach ($query->result() as $row)
 		{
 			$list[] = $row;
