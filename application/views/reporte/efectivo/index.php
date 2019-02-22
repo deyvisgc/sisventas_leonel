@@ -29,28 +29,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="tab-pane active" id="dv_mov_diario_ingreso">
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="" class="col-sm-2 control-label">FECHA INICIO</label>
+                                    <label for="" class="col-sm-2 col-lg-2 control-label">FECHA INICIO</label>
                                     <div class="col-sm-3">
                                         <input type="date" id="date_ini" name="fecha_ini" class="form-control" value="" placeholder="Fecha inicio">
                                     </div>
-                                    <label for="" class="col-sm-2 control-label">FECHA FIN</label>
+                                    <label for="" class="col-sm-2 col-lg-2 control-label">FECHA FIN</label>
                                     <div class="col-sm-3">
                                         <input type="date" id="date_fin" name="fecha_fin" class="form-control" value="" placeholder="Fecha fin">
                                     </div>
-                                </div>
-                                <br>
-                                <hr>
-                                <div class="form-group">
-                                    <div class="col-sm-3">
-                                        <button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_salida();" id="btn_filtrar"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
+                                    <div class="form-group">
+                                        <div class="col-sm-3 col-lg-2">
+                                            <button type="button" class="btn btn-primary" onclick="filtrar_movimiento_diario_salida();" id="btn_filtrar"><i class="fa fa-check-circle"></i> Filtar por Fecha</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-3">
-                                    <button type="button" class="btn btn-facebook" onclick="imprimir();"><i class="fa fa-print"></i> Imprimir </button>
-                                </div>
-                                <br>
-                                <br>
+                                <br><br>
                                 <hr>
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-danger pull-right" onclick="imprimir();"><i class="fa fa-print"></i> Imprimir </button>
+                                </div><br>
                                 <div id="imprimir">
                                 <div class="row" style="margin: 16px;">
                                     <div class="col-sm-12 table-responsive">

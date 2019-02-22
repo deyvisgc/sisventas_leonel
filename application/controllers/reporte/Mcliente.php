@@ -37,7 +37,7 @@ class Mcliente extends CI_Controller
     public function listarClientes(){
         is_logged_in_or_exit($this);
         $result = array('data'=>array());
-        $data = $this->pcliente_model->listarCliente();
+        $data = $this->pcliente_model->listarClientes();
 
         foreach ($data as $key => $value){
             $ruc=$value['emp_ruc'];

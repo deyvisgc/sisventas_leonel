@@ -47,8 +47,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <hr>
 								</div>
-                                <div class="form-group col-md-3">
-                                    <button type="button" class="btn btn-facebook" onclick="imprimir_desagrupados();"><i class="fa fa-print"></i> IMPRIMIR </button>
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-facebook pull-right" onclick="imprimir_desagrupados();"><i class="fa fa-print"></i> IMPRIMIR </button>
                                 </div>
                                 <div id="imprimir_desagrupados">
                                     <div class="row" style="margin: 16px;">
@@ -102,14 +102,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <br>
                                     <hr>
                                 </div>
-                                <div class="form-group col-md-3">
-                                    <button type="button" class="btn btn-facebook" onclick="imprimir();"><i class="fa fa-print"></i> IMPRIMIR </button>
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-facebook pull-right" onclick="imprimir();"><i class="fa fa-print"></i> IMPRIMIR </button>
                                 </div>
                                 <div id="imprimir_agrupado">
                                     <div class="row" style="margin: 0px 16px 16px 16px;">
                                         <div class="col-sm-12 table-responsive">
-                                            <table class="table table-bordered" id="tb_reporte_ganancia_agrupado">
-                                                <caption id="titulo" hidden>REPORTE DE GANANCIAS POR PRODUCTO</caption><br><br>
+                                            <table class="table table-bordered" id="tb_reporte_ganancia_agrupado" style="width: 100%">
+                                                <caption id="titulo2" hidden>REPORTE DE GANANCIAS POR PRODUCTO</caption><br><br>
                                                 <thead>
                                                 <tr>
                                                     <th>PRODUCTO</th>
@@ -284,7 +284,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
     function imprimir() {
-        $('#titulo').show();
+        $('#titulo2').show();
         $('#titulo').css({"margin-bottom":"10px","font-size":"35px","font-weight":"bold"});
         $('#cabecera').css({"text-align": "center","align-content":"center"});
         $('#pie').css({"text-align": "right","align-content":"right","font-size":"18px","font-weight": "bold","margin-right":"50px !important"});

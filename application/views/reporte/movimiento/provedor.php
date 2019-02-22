@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div class="row">
 								<div class="row" style="margin: 16px;">
 									<div class="col-sm-12 table-responsive">
-										<table class="table table-bordered" id="tb_provedor">
+										<table class="table table-bordered" id="tb_provedor" style="width: 100%">
 											<thead>
 											<tr>
 												<th class="text-center">RUC</th>
@@ -37,7 +37,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												<th class="text-center">Movimientos</th>
 											</tr>
 											</thead>
-											<tbody>
+											<tbody class="text-center">
 											</tbody>
 										</table>
 									</div>
@@ -79,7 +79,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<hr>
 										<div class="row" style="margin: 16px;">
 											<div class="col-sm-12 table-responsive">
-												<table class="table table-bordered" id="tb_compras">
+												<table class="table table-bordered" id="tb_compras" style="width: 100%">
 													<thead>
 													<tr>
 														<th class="text-center">FECHA</th>
@@ -87,7 +87,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														<th class="text-center">DETALLE COMPRA</th>
 													</tr>
 													</thead>
-													<tbody>
+													<tbody class="text-center">
 													</tbody>
 												</table>
 											</div>
@@ -99,7 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<hr>
 										<div class="row" style="margin: 16px;">
 											<div class="col-sm-12 table-responsive">
-												<table class="table table-bordered" id="tb_pagos_provedor">
+												<table class="table table-bordered" id="tb_pagos_provedor" style="width: 100%">
 													<thead>
 													<tr>
 														<th class="text-center">FECHA</th>
@@ -109,7 +109,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														<th class="text-center">SALDO</th>
 													</tr>
 													</thead>
-													<tbody>
+													<tbody class="text-center">
 													</tbody>
 												</table>
 											</div>
@@ -119,26 +119,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<hr>
 
 										<div class="row" style="margin: 16px;">
-											<div class="form-group" style="margin-left: 20px">
-												<div class="row"><br><br>
-													<label for="" class="col-sm-2 col-lg-2 control-label">FECHA INICIO</label>
-													<div class="col-sm-3">
-														<input type="date" id="fecha_ini" name="fecha_ini" class="form-control" value="" placeholder="Fecha inicio">
-													</div>
-													<label for="" class="col-sm-2 col-lg-2 control-label">FECHA FIN</label>
-													<div class="col-sm-3">
-														<input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="" placeholder="Fecha fin">
-													</div>
-													<div class="form-group">
-														<div class="col-sm-3 col-lg-1">
-															<button type="button" class="btn btn-primary"  onclick="filtrar_compra_producto();" id="btn-altas"><i class="fa fa-calendar"></i> Filtar por Fecha</button>
-														</div>
-													</div>
+											<div class="form-group">
+												<div class="row"><br>
+                                                    <div class="form-group">
+                                                        <label for="" class="col-sm-2 col-lg-1 control-label">FECHA INICIO</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="date" id="fecha_ini" name="fecha_ini" class="form-control" value="" placeholder="Fecha inicio">
+                                                        </div>
+                                                        <label for="" class="col-sm-2 col-lg-1 control-label">FECHA FIN</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="" placeholder="Fecha fin">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-3 col-lg-2">
+                                                                <button type="button" class="btn btn-primary"  onclick="filtrar_compra_producto();" id="btn-altas"><i class="fa fa-calendar"></i> Filtar por Fecha</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 												</div>
 											</div>
 
 											<div class="col-sm-12 table-responsive">
-												<table class="table table-bordered" id="tb_producto_provedor">
+												<table class="table table-bordered" id="tb_producto_provedor" style="width: 100%">
 													<thead>
 													<tr>
 														<th class="text-center">PRODUCTO</th>
@@ -146,7 +148,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														<th class="text-center">M0NTO</th>
 													</tr>
 													</thead>
-													<tbody>
+													<tbody class="text-center">
 													</tbody>
 													<tfoot id="pie">
 													<tr>
@@ -188,7 +190,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="modal-body">
 				<div class="row" style="margin: 16px;">
 					<div class="col-sm-12 table-responsive">
-						<table class="table table-bordered" id="tb_detalle_ingreso">
+						<table class="table table-bordered" id="tb_detalle_ingreso" style="width: 100%">
 							<thead>
 							<tr>
 								<th>PRODUCTO</th>
@@ -197,7 +199,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<th>MONTO</th>
 							</tr>
 							</thead>
-							<tbody>
+							<tbody class="text-center">
 							</tbody>
 							<tfoot>
 							<tr>
@@ -258,7 +260,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		if(pcl_id_pcliente){
 			tb = $('#tb_compras').DataTable({
 				'ajax':BASE_URL+'reporte/proveedor/buscarcompras/'+pcl_id_pcliente,
-				order:([1,'asc']),
+				order:([0,'desc']),
 				language: {
 					"decimal": "",
 					"emptyTable": "No hay información",

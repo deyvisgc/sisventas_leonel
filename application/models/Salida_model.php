@@ -156,6 +156,24 @@ class Salida_model extends CI_Model {
         )");
         return $result;
     }
+    function listarVentas_Guia(){
+        $consulta = "SELECT s.sal_id_salida,s.sal_fecha_doc_cliente,e.emp_razon_social,s.sal_monto
+        FROM pcliente as c, empresa as e, salida as s 
+        WHERE e.emp_id_empresa=c.emp_id_empresa 
+        AND c.pcl_id_pcliente=s.pcl_id_cliente 
+        ORDER BY s.sal_id_salida DESC ";
+        $datos = $this->db->query($consulta);
+        return $datos->result_array();
+    }
 
+    public function Seleccionar_Productos_Despacho($ids){
+
+        $id_guia = implode(",", $ids);
+        $result = $this->db->query('SELECT p.pro_nombre as PRODUCTO, SUM(sd.sad_cantidad) as CANTIDAD 
+        FROM salida as sa, salida_detalle as sd, producto as p 
+        WHERE sa.sal_id_salida=sd.sal_id_salida AND sd.pro_id_producto=p.pro_id_producto 
+        AND  FIND_IN_SET( sa.sal_id_salida ,"'.$id_guia.'") GROUP BY p.pro_nombre');
+        return $result->result_array();
+    }
 }
 ?>

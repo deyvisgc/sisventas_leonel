@@ -286,9 +286,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													<div class="btn-group">
 														<button class="btn  btn-success btn-lg" id="bt_pagar_productos" disabled=""><i class="fa fa-money"></i> Pagar</button>
 													</div>
-
-                                                    <button class="btn  btn-danger btn-lg" onclick="calcularDescuento();" id="btn_descuento"><i class="fa fa-money"></i> Calcular Descuento</button>
-												</div><!-- ./col -->
+                                                </div><!-- ./col -->
 											</div>
 											<br>
 										</div>

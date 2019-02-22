@@ -89,6 +89,16 @@ class Pcliente_model extends CI_Model {
 
     }
 
+    function listarClientes(){
+        $consulta = 'SELECT cli.pcl_id_pcliente, em.emp_ruc,em.emp_razon_social FROM pcliente as cli, 
+            empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND cli.pcl_tipo=1 AND cli.est_id_estado=11 AND cli.pcl_eliminado=\'NO\'';
+
+        $datos = $this->db->query($consulta);
+
+        return $datos->result_array();
+
+    }
+
      function listarProveedor(){
 		$sql="SELECT pcl_id_pcliente, emp_ruc, emp_razon_social FROM pcliente pc INNER JOIN empresa e ON pc.emp_id_empresa=e.emp_id_empresa where (pc.pcl_tipo='2' or pc.pcl_tipo='3') and pc.pcl_eliminado='NO' and pc.est_id_estado='11'";
 		$datos = $this->db->query($sql);
