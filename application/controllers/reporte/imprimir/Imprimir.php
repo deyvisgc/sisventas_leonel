@@ -73,5 +73,33 @@ class imprimir extends CI_Controller
         echo json_encode($respuesta);
     }
 
+    public function Listar_Ventas_Imprimir_Guias(){
+
+        $result = array('data'=>array());
+        $data= $this->salida_model->listarVentas_Guia();
+        foreach($data as $key => $value){
+            $cliente = $value['emp_razon_social'];
+            $fecha =$value['sal_fecha_doc_cliente'];
+            $deuda =$value['sal_monto'];
+            $buttons = $value['sal_id_salida'];
+            $result['data'][$key] = array(
+                $buttons,$cliente,$fecha,$deuda
+            );
+        }
+        echo json_encode($data);
+    }
+
+    public function Imprimir_Reporte_Despacho(){
+        is_logged_in_or_exit($this);
+
+        $list = array();
+        $list[] = $this->input->post('id_guia');
+
+        $data = $this->salida_model->Seleccionar_Productos_Despacho($list);
+        $data['data']=$data;
+
+        $this->load->view('reporte/imprimir/guia', $data);
+    }
+
 
 }

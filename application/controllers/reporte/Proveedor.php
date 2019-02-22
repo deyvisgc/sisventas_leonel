@@ -70,8 +70,8 @@ class Proveedor extends CI_Controller
             </div>';
 
 			$result['data'][$key]=array(
+                $fecha,
 				$monto,
-				$fecha,
 				$buttons
 			);
 		}
