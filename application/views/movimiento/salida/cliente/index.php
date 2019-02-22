@@ -59,7 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                             </div><br>
 
 															<div class="input-group">
-																<input type="hidden" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
+																<input type="text" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
 															</div>
 
 															<br>
@@ -588,6 +588,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				var kilogra=document.getElementById('pre_kilo').value;
 				var sumkilo=parseFloat(cantidad1)*parseFloat(kilogra);
 				var sumafinalkilo=parseFloat(sumkilo).toFixed(2);
+
 
 
 				if(pro_id_producto == '') {
