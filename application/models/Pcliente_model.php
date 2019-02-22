@@ -136,10 +136,10 @@ class Pcliente_model extends CI_Model {
 		
 		SELECT pr.pro_nombre ,id.ind_cantidad , id.ind_monto  FROM ingreso_detalle as id ,ingreso as ing ,producto as pr ,pcliente as pc
 		WHERE id.ing_id_ingreso=ing.ing_id_ingreso and id.pro_id_producto=.pr.pro_id_producto
-		  and ing.pcl_id_proveedor=pc.pcl_id_pcliente and
-		      STR_TO_DATE(ing.ing_fecha_doc_proveedor, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')
-		and ing.pcl_id_proveedor=$pcl_id_pcliente GROUP BY pr.pro_nombre ORDER by ing.ing_id_ingreso DESC
-		");
+		and ing.pcl_id_proveedor=pc.pcl_id_pcliente and
+		STR_TO_DATE(ing.ing_fecha_doc_proveedor, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')
+		and ing.pcl_id_proveedor=$pcl_id_pcliente GROUP BY pr.pro_nombre ORDER by ing.ing_id_ingreso DESC");
+
 		foreach ($consulta->result() as  $lis){
 
 			$lista1[]=$lis;
@@ -147,12 +147,13 @@ class Pcliente_model extends CI_Model {
 		return $lista1;
 
 	}
+
 	public function listarOperaciones($fecha_ini,$fecha_fin,$pcl_id_pcliente){
 		$sql=$this->db->query("SELECT IFNULL(SUM(ingd.ind_cantidad),0.00) as cantidad, IFNULL(SUM(ingd.ind_monto),0.00)
-  as monto FROM ingreso_detalle as ingd , ingreso as ing WHERE ingd.ing_id_ingreso=ing.ing_id_ingreso
-    and ing.pcl_id_proveedor=$pcl_id_pcliente and STR_TO_DATE(ing.ing_fecha_doc_proveedor, '%Y-%m-%d') 
-      BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')
-GROUP BY ing.ing_id_ingreso ORDER by ing.ing_id_ingreso DESC");
+  		as monto FROM ingreso_detalle as ingd , ingreso as ing WHERE ingd.ing_id_ingreso=ing.ing_id_ingreso
+    	and ing.pcl_id_proveedor=$pcl_id_pcliente and STR_TO_DATE(ing.ing_fecha_doc_proveedor, '%Y-%m-%d') 
+      	BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')
+		GROUP BY ing.ing_id_ingreso ORDER by ing.ing_id_ingreso DESC");
 		foreach ($sql->result() as $row)
 		{
 			return $row;

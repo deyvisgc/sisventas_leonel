@@ -83,5 +83,10 @@ class Cobrar extends CI_Controller{
         $data = $this->salida_model->insert_movimiento_pago($data_movimiento);
         echo json_encode($data);
     }
+    public function Total_x_Cobrar(){
+        $data = $this->salida_model->Total_Cuentas_x_Cobrar();
+        echo json_encode($data);
+    }
+
 }
 ?>
