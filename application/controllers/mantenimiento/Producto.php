@@ -45,6 +45,14 @@ class Producto extends CI_Controller {
 		$data = array('hecho' => 'SI', 'data' => $list_producto);
 		echo json_encode($data);
 	}
+	public function Productos_Inactivos(){
+		is_logged_in_or_exit($this);
+
+		$list_producto = $this->producto_model->listado_ProductosInactivos();
+
+		$data = array('hecho' => 'SI', 'data' => $list_producto);
+		echo json_encode($data);
+	}
 	public function registrar()
 	{
 		is_logged_in_or_exit($this);
