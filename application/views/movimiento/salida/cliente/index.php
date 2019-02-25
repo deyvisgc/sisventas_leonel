@@ -59,7 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                             </div><br>
 
 															<div class="input-group">
-																<input type="text" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
+																<input type="hidden" readonly="readonly" name="pre_kilo" class="form-control cantidades" id="pre_kilo" ">
 															</div>
 
 															<br>

@@ -95,8 +95,10 @@ class imprimir extends CI_Controller
         $list = array();
         $list[] = $this->input->post('id_guia');
 
-        $data = $this->salida_model->Seleccionar_Productos_Despacho($list);
-        $data['data']=$data;
+        $datas = $this->salida_model->Seleccionar_Productos_Despacho($list);
+        $totales = $this->salida_model->Totales_Productos_Despacho($list);
+        $data['data']=$datas;
+        $data['totales']=$totales;
 
         $this->load->view('reporte/imprimir/guia', $data);
     }

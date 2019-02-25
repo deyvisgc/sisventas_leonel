@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Sangria2 extends CI_Controller{
+class Sangrias extends CI_Controller{
     function __construct()
     {
         parent::__construct();
@@ -29,7 +29,7 @@ class Sangria2 extends CI_Controller{
         $data_footer['inits_function'] = array("init_ingreso");
 
         $this->load->view('header', $data_header);
-        $this->load->view('movimiento/sangria2');
+        $this->load->view('movimiento/sangrias');
         $this->load->view('footer',$data_footer);
     }
 

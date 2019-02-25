@@ -116,8 +116,10 @@ class Mcliente extends CI_Controller
     public function listarProductos($id_cliente){
 		$fecha_ini = $this->input->post('fecha_ini');
 		$fecha_fin = $this->input->post('fecha_fin');
+
 		$listaproductos=$this->reporte_model->listaProductosxcliente($fecha_ini,$fecha_fin,$id_cliente);
 		$operacion=$this->reporte_model->sumaroperaciones($fecha_fin,$fecha_fin,$id_cliente);
+
 		$data = array('hecho' => 'SI', 'data' => $listaproductos, 'data_totales' => $operacion);
 		echo  json_encode($data);
 

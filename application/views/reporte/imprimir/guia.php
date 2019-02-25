@@ -28,6 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <table class="table table-striped" style="width=100%;" id="tb_guia">
                                         <thead class="table-bordered text-center">
                                         <tr>
+                                            <th></th>
                                             <th class="text-center text-bold">Producto</th>
                                             <th class="text-center text-bold">Cantidad</th>
                                         </tr>
@@ -35,12 +36,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <tbody>
 
                                         <?php foreach ($data as $key): ?>
-                                        <tr class="text-center">
-                                            <td class="text-center" style="margin-left: 20px"><?php echo $key['PRODUCTO']; ?></td>
-                                            <td class="text-center" style="margin-left: 20px"><?php echo $key['CANTIDAD']; ?></td>
-                                        </tr>
+                                            <tr class="text-center">
+                                                <td>-></td>
+                                                <td class="text-center"
+                                                    style="margin-left: 20px"><?php echo $key['PRODUCTO']; ?></td>
+                                                <td class="text-center"
+                                                    style="margin-left: 20px"><?php echo $key['CANTIDAD']; ?></td>
+                                            </tr>
                                         <?php endforeach ?>
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th class="text-center">&nbsp;Total:</th>
+                                                <th class="text-center"></span><?= $totales->total_kilogramos ?> KG </th>
+                                                <th class="text-center"><?= $totales->cantidad_sacos ?> SACOS </th>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

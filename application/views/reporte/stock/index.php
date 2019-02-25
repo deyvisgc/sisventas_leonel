@@ -38,13 +38,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															<th>SUBCLASE</th>
 															<th>CODIGO</th>
 															<th>DESCRIPCION</th>
-															<th>STOCK</th>
-															<th>S/. COMPRA</th>
-															<th>S/. VENTA</th>
+															<th>COMPRA</th>
+                                                            <th>VENTA</th>
+                                                            <th>STOCK</th>
+                                                            <th>TOTAL_COMPRA</th>
+															<th>TOTAL_VENTA</th>
 														</tr>
 													</thead>
 													<tbody>
 													</tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th colspan="6" class=" alinear_derecha">&nbsp;Total</th>
+                                                            <th class=" alinear_derecha"><span id="total_cantidad">00.00</span></th>
+                                                            <th class=" alinear_derecha"><span id="total_compra">00.30</span></th>
+                                                            <th class=" alinear_derecha"><span id="total_venta">00.00</span></th>
+                                                        </tr>
+                                                    </tfoot>
 												</table>
 											</div>
 										</div>
@@ -95,14 +105,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				var general_id_tabla = "tb_general";
 				var general_url = "<?php echo base_url(); ?>reporte/stock/bstock_general";
 				var general_data = [];
+                var general_dataSrc = function(res){
+                    $('#total_cantidad').text(res.data_totales.cantidad);
+                    $('#total_compra').text(res.data_totales.t_compra);
+                    $('#total_venta').text(res.data_totales.t_venta);
+                    return res.data;
+                };
 				var general_columns = [
 					{data: "clase_nombre"},
 					{data: "subclase_nombre"},
 					{data: "pro_codigo"},
 					{data: "pro_nombre"},
-					{data: "pro_cantidad", className: "alinear_derecha"},
 					{data: "pro_val_compra", className: "alinear_derecha"},
-					{data: "pro_val_venta", className: "alinear_derecha"}
+                    {data: "pro_val_venta", className: "alinear_derecha"},
+                    {data: "pro_cantidad", className: "alinear_derecha"},
+					{data: "total_compra", className: "alinear_derecha"},
+					{data: "total_venta", className: "alinear_derecha"}
 				];
 				
 				var minimo_id_tabla = "tb_minimo";
@@ -119,11 +137,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					{data: "pro_val_compra", className: "alinear_derecha"}
 				];
 				
-				generar_tabla2(general_id_tabla, general_url, general_data, general_columns);
+				generar_tabla2(general_id_tabla, general_url, general_data, general_dataSrc,general_columns);
 				generar_tabla3(minimo_id_tabla, minimo_url, minimo_data, minimo_columns);
 			}
 			
-				function generar_tabla2(id_tabla, url, data, columns) {
+				function generar_tabla2(id_tabla, url, data,dataSrc, columns) {
 					$('#'+id_tabla).DataTable({
 						 dom: 'Bfrtip',
 								buttons: [
@@ -135,7 +153,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						ajax: {
 							url: url,
 							type: "POST",
-							data: data
+							data: data,
+                            dataSrc:dataSrc
 						},
 						columns: columns,
 						"language": {

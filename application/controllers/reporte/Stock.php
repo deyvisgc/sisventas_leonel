@@ -31,7 +31,8 @@ class Stock extends CI_Controller {
 	{
 		is_logged_in_or_exit($this);
 		$lista = $this->reporte_model->mstock_general();
-		$data = array('hecho' => 'SI', 'data' => $lista);
+		$totales = $this->reporte_model->Totales_Stock();
+		$data = array('hecho' => 'SI', 'data' => $lista,'data_totales' => $totales);
 		echo json_encode($data);
 	}
 	public function bstock_minimo()

@@ -169,7 +169,7 @@ class Salida_model extends CI_Model {
     public function Seleccionar_Productos_Despacho($ids){
 
         $id_guia = implode(",", $ids);
-        $result = $this->db->query('SELECT p.pro_nombre as PRODUCTO,p.cla_clase, SUM(sd.sad_cantidad) as CANTIDAD 
+        $result = $this->db->query('SELECT p.pro_nombre as PRODUCTO,p.cla_clase, SUM(sd.sad_cantidad) as CANTIDAD, p.pro_kilogramo * sd.sad_cantidad AS total_kilogramos, SUM(sd.sad_cantidad) as cantidad_sacos 
         FROM salida as sa, salida_detalle as sd, producto as p 
         WHERE sa.sal_id_salida=sd.sal_id_salida AND sd.pro_id_producto=p.pro_id_producto 
         AND FIND_IN_SET( sa.sal_id_salida ,"'.$id_guia.'") 
@@ -177,9 +177,22 @@ class Salida_model extends CI_Model {
         ORDER BY CANTIDAD DESC');
         return $result->result_array();
     }
+    public function Totales_Productos_Despacho($ids){
+
+        $id_guia = implode(",", $ids);
+        $result = $this->db->query('SELECT SUM(sd.sad_sum_kilo) AS total_kilogramos, SUM(sd.sad_cantidad) as cantidad_sacos 
+        FROM salida as sa, salida_detalle as sd, producto as p 
+        WHERE sa.sal_id_salida=sd.sal_id_salida AND sd.pro_id_producto=p.pro_id_producto 
+        AND FIND_IN_SET( sa.sal_id_salida ,"'.$id_guia.'") ');
+        foreach ($result->result() as $row)
+        {
+            return $row;
+        }
+        return false;
+    }
 
     public function Total_Cuentas_x_Cobrar(){
-        $result = $this->db->query("SELECT SUM(sal.sal_deuda)as TOTAL FROM salida as sal");
+        $result = $this->db->query("SELECT FORMAT(ROUND(SUM(sal.sal_deuda),1),2) as TOTAL FROM salida as sal");
         return $result->row_array();
     }
 }
