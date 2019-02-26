@@ -126,10 +126,13 @@ class Proveedor extends CI_Controller
 	public function listarProductos($pcl_id_pcliente){
     	$fecha_ini=$this->input->post('fecha_inicio');
     	$fecha_fin=$this->input->post('fecha_fin');
+
 		$listaproductos=$this->pcliente_model->listarproductos($fecha_ini,$fecha_fin,$pcl_id_pcliente);
 		$operacion=$this->pcliente_model->listarOperaciones($fecha_ini,$fecha_fin,$pcl_id_pcliente);
+
 		$data = array('hecho' => 'SI', 'data' => $listaproductos, 'data_totales' => $operacion);
-    	echo json_encode($data);
+
+		echo json_encode($data);
 
 
 	}
