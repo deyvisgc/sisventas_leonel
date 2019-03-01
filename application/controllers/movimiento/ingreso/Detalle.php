@@ -35,6 +35,14 @@ class Detalle extends CI_Controller
         $data = array('hecho' => 'SI', 'list_producto' => $list_producto);
         echo json_encode($data);
     }
+    public function buscar_X_lote(){
+		is_logged_in_or_exit($this);
+		$descripcion = $this->input->post('lote');
+		$usuario = get_usuario($this);
+		$list_producto = $this->temp_ingreso_model->mbuscar_productos_x_descripcion($usuario['usu_id_usuario'], $descripcion);
+		$data = array('hecho' => 'SI', 'list_producto' => $list_producto);
+		echo json_encode($data);
+	}
 
     public function agregar_producto()
     {
@@ -78,4 +86,18 @@ class Detalle extends CI_Controller
         $data = array('hecho' => 'SI', 'list_proveedor' => $list_proveedor);
         echo json_encode($data);
     }
+    public function registrar_producto(){
+		is_logged_in_or_exit($this);
+		$data = array(
+			'valor' => $this->input->post('valor'),
+			'valor_venta' => $this->input->post('valor_venta'),
+			'cantidad' => $this->input->post('cantidad'),
+			'numero_lote' => $this->input->post('numero_lote'),
+			'nombre_product' => $this->input->post('nombre_product'),
+			'fecha_vencimiento' => $this->input->post('fecha_vencimiento'));
+
+		$result = $this->temp_ingreso_model->magregar_producto($data);
+		$data=array('succes'=>true);
+		echo json_encode($data);
+	}
 }

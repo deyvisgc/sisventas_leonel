@@ -431,7 +431,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         $('#bt_cancelar_producto').click(func_cancelar_producto);
         $('#bt_agregar_producto').click(func_agregar_producto);
-        $('#bt_registrar_producto').click(func_pagar_productos);
+        $('#bt_registrar_producto').click(func_registrar_producto);
         add_mensaje(null, 'OK ', ' Ingrese sus productos.', 'info');
     }
 
@@ -483,6 +483,67 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
+	function func_registrar_producto(){
+
+		var nombre_product=$('#in_descripcion_p').val();
+		var valor = $('#in_valor').val();
+		if (valor == '') {
+			add_mensaje(null, '!!! ', ' Ingrese precio.', 'warning');
+			return;
+		}
+		var valor_venta=$('#in_valor_venta').val();
+		if (valor_venta == '') {
+			add_mensaje(null, '!!! ', ' Ingrese precio.', 'warning');
+			return;
+		}
+		var cantidad = $('#in_cantidad').val();
+		if (cantidad == '') {
+			add_mensaje(null, '!!! ', ' Ingrese cantidad.', 'warning');
+			return;
+		}
+		var numero_lote = $('#in_numero_lote').val();
+		if (numero_lote == '') {
+			add_mensaje(null, '!!! ', ' Ingrese #Lote.', 'warning');
+			return;
+		}
+		var fecha_vencimiento = $('#in_fecha_vencimiento').val();
+		if (!$('#in_fecha_vencimiento').prop('disabled')) {
+			if (fecha_vencimiento == '') {
+				add_mensaje(null, '!!! ', ' Ingrese fecha de vencimiento.', 'warning');
+				return;
+			}
+		}
+		var data = {};
+		data.valor = valor;
+		data.valor_venta = valor_venta;
+		data.cantidad = cantidad;
+		data.numero_lote = numero_lote;
+		data.fecha_vencimiento = fecha_vencimiento;
+		data.nombre_product=nombre_product;
+		$.ajax({
+			type: "POST",
+			url: BASE_URL + "movimiento/ingreso/detalle/registrar_producto",
+			dataType: 'json',
+			data: data,
+			success: function (datos) {
+
+				Swal.fire({
+					position: 'center',
+					type: 'success',
+					title: 'Proceso Completado',
+					showConfirmButton: false,
+					timer: 1500
+				});
+
+               $('#in_descripcion_p').val("");
+				$('#in_valor').val("");
+				$('#in_valor_venta').val("");
+				$('#in_cantidad').val("");
+				$('#in_numero_lote').val("");
+				$('#in_fecha_vencimiento').val("");
+			}
+		});
+	}
     function func_agregar_producto(e) {
         var pro_id_producto = $('#in_pro_id_producto').val();
         if (pro_id_producto == '') {
@@ -535,8 +596,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
 
-    function Registrar_Productos(){
-        
-    }
+
 </script>
 

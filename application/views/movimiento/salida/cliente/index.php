@@ -42,6 +42,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																	<button type="button" class="btn btn-success" id="bt_descripcion" disabled=""><i class="fa fa-search"></i></button>
 																</div>
 																<input type="text" class="form-control" id="in_descripcion" placeholder="Descripcion..." style="font-size:20px; text-align:center; color: blue; font-weight: bold;" disabled="">
+															</div><p></p><p></p>
+															<div class="input-group">
+																<div class="input-group-btn">
+																	<button type="button" class="btn btn-success" id="bt_descripcion" ><i class="fa fa-search"></i></button>
+																</div>
+																<input type="text" class="form-control" id="in_descripcion_lote" placeholder="Descripcion lote..." style="font-size:20px; text-align:center; color: blue; font-weight: bold;" >
 															</div>
 															<p></p>
                                                             <div class="input-group">
@@ -362,6 +368,57 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					select: function( event, ui ) {
 						$('#in_valor').val(ui.item.pro_val_venta);
                         $('#pre_compra').val(ui.item.pro_val_compra);
+						$('#pre_kilo').val(ui.item.kilo);
+						$('#in_cantidad').prop('disabled', false);
+						$('#in_cantidad').val('');
+						$('#in_pro_id_producto').val(ui.item.pro_id_producto);
+						var img_src = BASE_URL+'../resources/sy_file_repository/'+ui.item.pro_foto;
+						$('#img_foto').attr("src", img_src);
+						var texto_valor = '';
+						if(ui.item.pro_val_oferta > 0) {
+							texto_valor = ui.item.pro_val_oferta+' O';
+						}
+						else {
+							texto_valor = ui.item.pro_val_venta;
+							if(ui.item.pro_xm_cantidad1 > 0 && ui.item.pro_xm_valor1 > 0){
+								texto_valor += '<br> '+ui.item.pro_xm_valor1+' #1';
+							}
+							if(ui.item.pro_xm_cantidad2 > 0 && ui.item.pro_xm_valor2 > 0){
+								texto_valor += '<br> '+ui.item.pro_xm_valor2+' #2';
+							}
+							if(ui.item.pro_xm_cantidad3 > 0 && ui.item.pro_xm_valor3 > 0){
+								texto_valor += '<br> '+ui.item.pro_xm_valor3+' #3';
+							}
+						}
+						$('#sp_precio_unitario').empty();
+						$('#sp_precio_unitario').append(texto_valor);
+						$('#sp_uni_med_nombre').text(ui.item.unm_nombre_corto);
+						$('#sp_stock').text(ui.item.pro_cantidad);
+					}
+				});
+
+				$( "#in_descripcion_lote" ).autocomplete({
+					source: function( request, response ) {
+						$.ajax( {
+							url: BASE_URL+'movimiento/salida/detalle/buscar_X_lote',
+							dataType: "json",
+							type: "POST",
+							data: {
+								lote: request.term
+							},
+							success: function( data ) {
+								if(data.list_producto.length === 0) {
+									add_mensaje(null, " Productos. ", ' 0 encontrados.', "info");
+								}
+								response( data.list_producto );
+							}
+						} );
+					},
+					delay: 900,
+					minLength: 1,
+					select: function( event, ui ) {
+						$('#in_valor').val(ui.item.pro_val_venta);
+						$('#pre_compra').val(ui.item.pro_val_compra);
 						$('#pre_kilo').val(ui.item.kilo);
 						$('#in_cantidad').prop('disabled', false);
 						$('#in_cantidad').val('');
