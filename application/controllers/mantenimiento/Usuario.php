@@ -63,6 +63,7 @@ class Usuario extends CI_Controller {
 				'per_tel_movil' => $this->input->post('per_tel_movil'),
 				'per_tel_fijo' => $this->input->post('per_tel_fijo'),
 				'per_foto' => $this->input->post('per_foto'));
+
 		$per_id_persona = $this->persona_model->registrar($data);
 		
 		$opt = array("cost" => 12);

@@ -100,7 +100,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <!-- Main Header -->
     <header class="main-header">
         <!-- Logo -->
-        <a href="<?= base_url() ?>bienvenida" class="logo" style="background-color:#1f2d4a; ">
+        <a href="<?= base_url() ?>bienvenida" class="logo" style="background-color:#1f2d4a !important; ">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>S</b>M</span>
             <!-- logo for regular state and mobile devices -->

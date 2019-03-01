@@ -134,4 +134,11 @@ class Producto extends CI_Controller {
 		$data = array('hecho' => 'SI');
 		echo json_encode($data);
 	}
+
+	public function Productos_x_Caducir(){
+	    is_logged_in_or_exit($this);
+	    $list_x_vencer = $this->producto_model->productos_x_vencer();
+	    $data = array('hecho'=>'SI','data'=>$list_x_vencer);
+	    echo json_encode($data);
+    }
 }

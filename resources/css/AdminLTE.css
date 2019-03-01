@@ -308,7 +308,7 @@ a:focus {
   padding: 0 15px;
   font-weight: 300;
   overflow: hidden;
-  /* background-color: #DD4B39; SY */ background-color: #6dc72a;
+  /* background-color: #DD4B39; SY */ background-color: #1f2d4a !important;
   color: #fff;
 }
 .main-header .logo .logo-lg {
@@ -2396,6 +2396,7 @@ a:focus {
   background: transparent;
   margin: 0;
 }
+
 .nav-tabs-custom > .nav-tabs > li > a:hover {
   color: #999;
 }
