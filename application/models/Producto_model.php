@@ -1,30 +1,38 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Producto_model extends CI_Model {
-	function mregistrar($data) {
-		$this->db->insert('producto', $data);
-		$insert_id = $this->db->insert_id();
-		return  $insert_id;
-	}
-	function mactualizar($pro_id_producto, $data) {
-		$this->db->where('pro_id_producto', $pro_id_producto);
+class Producto_model extends CI_Model
+{
+    function mregistrar($data)
+    {
+        $this->db->insert('producto', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function mactualizar($pro_id_producto, $data)
+    {
+        $this->db->where('pro_id_producto', $pro_id_producto);
         return $this->db->update('producto', $data);
-	}
-	function mstock_ajustar($data) {
-		$result = $this->db->query("call proc_stock_ajustar(@out_hecho, 
+    }
+
+    function mstock_ajustar($data)
+    {
+        $result = $this->db->query("call proc_stock_ajustar(@out_hecho, 
 			@out_estado, 
-			".$data['pro_id_producto'].", 
-			".$data['cantidad'].", 
-			'".$data['operador']."', 
-			'".$data['usu_id_usuario']."' 
+			" . $data['pro_id_producto'] . ", 
+			" . $data['cantidad'] . ", 
+			'" . $data['operador'] . "', 
+			'" . $data['usu_id_usuario'] . "' 
 			)");
-		$result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado");
-		return $result->row();
-	}
-	function buscar_all() {
-		$list = array();
-		$query = $this->db->query("select 
+        $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado");
+        return $result->row();
+    }
+
+    function buscar_all()
+    {
+        $list = array();
+        $query = $this->db->query("select 
 			  p.pro_id_producto, 
 			  p.pro_codigo, 
 			  IFNULL(cla_clase,'') cla_clase, 
@@ -58,15 +66,16 @@ class Producto_model extends CI_Model {
 			  inner join estado e 
 			  on p.est_id_estado=e.est_id_estado 
 			where p.pro_eliminado='NO' AND p.est_id_estado=11 ");
-		foreach ($query->result() as $row)
-		{
-			$list[] = $row;
-		}
-		return $list;
-	}
-	public function listado_ProductosInactivos(){
-		$list = array();
-		$query = $this->db->query("select 
+        foreach ($query->result() as $row) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    public function listado_ProductosInactivos()
+    {
+        $list = array();
+        $query = $this->db->query("select 
 			  p.pro_id_producto, 
 			  p.pro_codigo, 
 			  IFNULL(cla_clase,'') cla_clase, 
@@ -100,16 +109,17 @@ class Producto_model extends CI_Model {
 			  inner join estado e 
 			  on p.est_id_estado=e.est_id_estado 
 			where p.pro_eliminado='NO' AND p.est_id_estado=12");
-		foreach ($query->result() as $row)
-		{
-			$list[] = $row;
-		}
-		return $list;
-	}
-	// ---
-	function mbuscar_all_habilitados() {
-		$list = array();
-		$query = $this->db->query("select 
+        foreach ($query->result() as $row) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    // ---
+    function mbuscar_all_habilitados()
+    {
+        $list = array();
+        $query = $this->db->query("select 
 			  p.pro_id_producto, 
 			  p.pro_codigo, 
 			  p.pro_nombre, 
@@ -117,11 +127,25 @@ class Producto_model extends CI_Model {
 			from producto p 
 			where p.pro_eliminado='NO' 
 			  and p.est_id_estado=11 ");
-		foreach ($query->result() as $row)
-		{
-			$list[] = $row;
-		}
-		return $list;
+        foreach ($query->result() as $row) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    function productos_x_vencer()
+    {
+        $list = array();
+        $sql = "SELECT p.pro_codigo,p.pro_nombre,c.cla_nombre,es.est_nombre,p.pro_fecha_vencimiento FROM producto as p,estado as es, clase as c 
+        WHERE p.est_id_estado= es.est_id_estado AND c.cla_id_clase=p.cla_clase AND
+        pro_fecha_vencimiento <= curdate() + INTERVAL 30 DAY";
+
+        $query = $this->db->query($sql);
+        foreach ($query->result() as $row) {
+            $list[] = $row;
+        }
+        return $list;
 	}
 }
+
 ?>

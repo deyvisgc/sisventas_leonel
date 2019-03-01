@@ -70,7 +70,7 @@ class Ingreso_model extends CI_Model {
 	}
 
     public function Total_Cuentas_x_Pagar(){
-        $result = $this->db->query("SELECT SUM(ing.ing_deuda) as TOTAL FROM ingreso as ing");
+        $result = $this->db->query("SELECT SUM(ing.ing_deuda) as TOTAL FROM ingreso as ing where ing.in_tipo='deuda'");
         return $result->row_array();
     }
 }
