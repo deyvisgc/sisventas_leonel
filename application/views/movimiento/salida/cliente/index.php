@@ -582,6 +582,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 var totalganancia= parseFloat(ganancia1).toFixed(2);
 
 
+
 				var cantidad1=document.getElementById('in_cantidad').value;
 				var kilogra=document.getElementById('pre_kilo').value;
 				var sumkilo=parseFloat(cantidad1)*parseFloat(kilogra);

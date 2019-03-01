@@ -357,18 +357,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
 
         var url = BASE_URL + 'reporte/Mcliente/listarProductos/'+id_cliente;
+
+        var mov_diario_dataSrc = function (res) {
+            $('#sp_total_cantidad').text(res.data_totales.cantidad_total);
+            $('#sp_total_monto').text(res.data_totales.total_compra);
+
+            return res.data;
+        };
+
         var datos_fecha = function () {
             var data = {};
             data.fecha_ini = $("#fecha_ini").val();
             data.fecha_fin = $("#fecha_fin").val();
             return data;
         };
-        var mov_diario_dataSrc = function (res) {
-            $('#sp_total_cantidad').text(res.data_totales.cantidad);
-            $('#sp_total_monto').text(res.data_totales.monto);
 
-            return res.data;
-        };
 
         var columns = [
             {data: "pro_nombre"},

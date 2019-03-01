@@ -32,7 +32,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div class="row">
 											<div class="col-sm-12 box-body table-responsive">
 												<p></p>
-												<table class="table table-bordered table-hover" id="tb_producto">
+												<table class="table table-bordered table-hover" id="tb_producto" style="width: 100%">
 													<thead>
 														<tr>
 															<th>CODIGO</th>
@@ -56,7 +56,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div class="row">
 											<div class="col-sm-12 box-body table-responsive">
 												<p></p>
-												<table class="table table-bordered table-hover" id="tabla_productos">
+												<table class="table table-bordered table-hover" id="tabla_productos" style="width: 100%">
 													<thead>
 													<tr>
 														<th>CODIGO</th>

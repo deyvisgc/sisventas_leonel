@@ -81,7 +81,7 @@ class Producto_model extends CI_Model {
 			  p.pro_cantidad_min, 
 			  p.est_id_estado, 
 			  p.pro_foto, 
-              P.pro_kilogramo as kilogramo,
+              p.pro_kilogramo as kilogramo,
 			  p.pro_perecible, 
 			  p.pro_xm_cantidad1, 
 			  p.pro_xm_valor1, 

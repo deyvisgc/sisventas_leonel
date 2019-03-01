@@ -117,7 +117,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									</div>
 									<div class="tab-pane" id="dv_productos">
 										<hr>
-
 										<div class="row" style="margin: 16px;">
 											<div class="form-group">
 												<div class="row"><br>
@@ -152,12 +151,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													</tbody>
 													<tfoot id="pie">
 													<tr>
-														<th colspan="1" class=" alinear_derecha">&nbsp;Total Cantidad:</th>
-														<th >$.<span id="sp_total_cantidad"></span></th>
-													</tr>
-													<tr>
-														<th colspan="2" class=" alinear_derecha">&nbsp;Total Monto:</th>
-														<th>$.<span id="sp_total_monto"></span></th>
+														<th colspan="1" class=" alinear_derecha">&nbsp;Total</th>
+														<th class="text-center">$.<span id="sp_total_cantidad"></span></th>
+                                                        <th class="text-center">$.<span id="sp_total_monto"></span></th>
 													</tr>
 													</tfoot>
 												</table>
@@ -333,7 +329,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			{data: "ind_cantidad"},
 			{data: "ind_monto"}
 		];
-		tabla_producto_provedor(url,'POST',datos_fecha,mov_diario_dataSrc,columns)}
+		tabla_producto_provedor(url,'POST',datos_fecha,mov_diario_dataSrc,columns)
+	}
 
 	function tabla_producto_provedor( url, type, data,dataSrc,columns) {
 		$('#tb_producto_provedor').DataTable({
