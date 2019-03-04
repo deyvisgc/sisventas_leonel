@@ -23,13 +23,21 @@ class Detalle extends CI_Controller {
 		$data = array('hecho' => 'SI', 'data' => $list, 'tventa' => $tventa);
 		echo json_encode($data);
 	}
-	public function buscar_productos_x_descripcion() {
+	public function buscar_productos_x_descripcion($lote) {
 		is_logged_in_or_exit($this);
-		
+
 		$descripcion = $this->input->post('descripcion');
 		$usuario = get_usuario($this);
-		$list_producto = $this->temp_salida_model->mbuscar_s_productos_x_descripcion($usuario['usu_id_usuario'], $descripcion);
-		
+		$list_producto = $this->temp_salida_model->mbuscar_s_productos_x_descripcion($usuario['usu_id_usuario'], $descripcion,$lote);
+
+		$data = array('hecho' => 'SI', 'list_producto' => $list_producto);
+		echo json_encode($data);
+	}
+	public function buscar_X_lote(){
+		is_logged_in_or_exit($this);
+		$descripcion = $this->input->post('lote');
+		$usuario = get_usuario($this);
+		$list_producto = $this->temp_salida_model->mbuscar_productos_x_lote($usuario['usu_id_usuario'], $descripcion);
 		$data = array('hecho' => 'SI', 'list_producto' => $list_producto);
 		echo json_encode($data);
 	}
@@ -44,6 +52,7 @@ class Detalle extends CI_Controller {
 			'cantidad' => $this->input->post('cantidad'),
 			'precio' => $this->input->post('precio'),
             'totalganancia' => $this->input->post('totalganancia'),
+			'numero_lote'=> $this->input->post('numero_lote'),
 			'pro_sum_kilo' => $this->input->post('sumafinalkilo'));
 		
 		$result = $this->temp_salida_model->magregar($data);

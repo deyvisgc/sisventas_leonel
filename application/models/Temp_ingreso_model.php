@@ -116,6 +116,7 @@ class Temp_ingreso_model extends CI_Model
         return $list;
     }
 
+
     function mdocumento_salida()
     {
         $list = array();

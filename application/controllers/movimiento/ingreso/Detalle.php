@@ -35,14 +35,6 @@ class Detalle extends CI_Controller
         $data = array('hecho' => 'SI', 'list_producto' => $list_producto);
         echo json_encode($data);
     }
-    public function buscar_X_lote(){
-		is_logged_in_or_exit($this);
-		$descripcion = $this->input->post('lote');
-		$usuario = get_usuario($this);
-		$list_producto = $this->temp_ingreso_model->mbuscar_productos_x_descripcion($usuario['usu_id_usuario'], $descripcion);
-		$data = array('hecho' => 'SI', 'list_producto' => $list_producto);
-		echo json_encode($data);
-	}
 
     public function agregar_producto()
     {
