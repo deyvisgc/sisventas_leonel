@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         padding: 0;
     }
 
-    .modal-content {¿
+    .modal-content {
         border-radius: 0;
     }
 </style>

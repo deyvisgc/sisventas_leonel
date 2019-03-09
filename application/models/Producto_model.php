@@ -86,7 +86,6 @@ class Producto_model extends CI_Model
 			  p.pro_val_compra, 
 			  p.pro_val_venta, 
 			  p.pro_cantidad, 
-              p.pro_cantidad, 
 			  p.pro_cantidad_min, 
 			  p.est_id_estado, 
 			  p.pro_foto, 
