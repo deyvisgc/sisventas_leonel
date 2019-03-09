@@ -14,6 +14,7 @@ class Bienvenida extends CI_Controller {
 		$this->load->helper('seguridad');
 		$this->load->helper('util');
 		$this->load->helper('url');
+
 	}
 	public function index()
 	{

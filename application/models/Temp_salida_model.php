@@ -10,6 +10,7 @@ class Temp_salida_model extends CI_Model {
 			".$data['cantidad'].", 
 			".$data['precio'].",
 			".$data['totalganancia'].",
+			".$data['numero_lote'].",
 			".$data['pro_sum_kilo']."
 			)");
 
@@ -38,6 +39,7 @@ class Temp_salida_model extends CI_Model {
 			  t.pro_ganancias ganancias, 
 			  t.pro_sum_kilo as kilogramo,
 			  t.temp_valor precio, 
+			   t.temp_numero_lote as lote, 
 			  (t.temp_cantidad*t.temp_valor) total 
 			FROM temp t 
 			  INNER JOIN producto pro 
@@ -69,7 +71,7 @@ class Temp_salida_model extends CI_Model {
 		return array('count_productos'=>'0', 'sum_total'=>'0.00');
 	}
 	
-	function mbuscar_s_productos_x_descripcion($usu_id_usuario, $descripcion) {
+	function mbuscar_s_productos_x_descripcion($usu_id_usuario, $descripcion,$lote) {
 		$list = array();
 		$query = $this->db->query("select 
 			  pro.pro_id_producto, 
@@ -96,14 +98,49 @@ class Temp_salida_model extends CI_Model {
 			  and pro.est_id_estado=11 
 			  and unm.est_id_estado=11 
 			where 
-			  pro.pro_nombre like '%".$descripcion."%' OR pro.pro_codigo like '%".$descripcion."%'   and 
+             pro.pro_lote=$lote and
+			  pro.pro_nombre like '%%' OR pro.pro_codigo like '%".$descripcion."%'   and 
 			  pro.pro_cantidad <> 1 and 
 			  pro.pro_cantidad > (SELECT IFNULL(SUM(temp_cantidad),0) FROM temp t WHERE t.temp_tipo_movimiento='SALIDA' AND t.pro_id_producto=pro.pro_id_producto) and 
 			  pro.pro_id_producto not in (SELECT t.pro_id_producto FROM temp t WHERE t.temp_tipo_movimiento='SALIDA' AND t.usu_id_usuario=".$usu_id_usuario.") 
-			order by pro.pro_nombre ");
+			order by pro.pro_nombre");
 		foreach ($query->result() as $row)
 		{
 			$row->value = $row->pro_nombre;
+			$list[] = $row;
+		}
+		return $list;
+	}
+
+	function mbuscar_productos_x_lote($usu_id_usuario, $descripcion){
+		$list = array();
+		$query = $this->db->query("select 
+			  pro.pro_id_producto, 
+			  pro.pro_nombre, 
+			  pro.pro_val_venta, 
+			  pro.pro_cantidad, 
+			  pro.pro_foto,
+              pro.pro_kilogramo as kilo,
+			  pro.pro_val_compra, 
+			  pro.pro_xm_cantidad1, 
+			  pro.pro_xm_valor1, 
+			  pro.pro_xm_cantidad2, 
+			  pro.pro_xm_valor2, 
+			  pro.pro_xm_cantidad3, 
+			  pro.pro_xm_valor3, 
+			  pro.pro_val_oferta,
+              pro.pro_lote
+
+			from producto pro 
+			 WHERE
+			pro.est_id_estado=11 and 
+			  pro.pro_lote like '%".$descripcion."%'  and 
+			  pro.pro_cantidad <> 1 and 
+			  pro.pro_cantidad > (SELECT IFNULL(SUM(temp_cantidad),0) FROM temp t WHERE t.temp_tipo_movimiento='SALIDA' AND t.pro_id_producto=pro.pro_id_producto) and 
+			  pro.pro_id_producto not in (SELECT t.pro_id_producto FROM temp t WHERE t.temp_tipo_movimiento='SALIDA' AND t.usu_id_usuario=".$usu_id_usuario.") 
+			order by pro.pro_lote");
+		foreach ($query->result() as $row) {
+			$row->value = $row->pro_lote;
 			$list[] = $row;
 		}
 		return $list;

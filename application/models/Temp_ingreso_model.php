@@ -17,6 +17,18 @@ class Temp_ingreso_model extends CI_Model
         $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado");
         return $result->row();
     }
+    function magregar_producto($data){
+		$result = $this->db->query("call registrarProducto(
+			" . $data['valor'] . ", 
+			" . $data['valor_venta'] . ", 
+			" . $data['cantidad'] . ", 
+			'" . $data['numero_lote'] . "', 
+			'" . $data['nombre_product'] . "', 
+			'" . $data['fecha_vencimiento'] . "' 
+			)");
+
+		return $result;
+	}
 
     function mquitar($data)
     {
@@ -103,6 +115,7 @@ class Temp_ingreso_model extends CI_Model
         }
         return $list;
     }
+
 
     function mdocumento_salida()
     {
