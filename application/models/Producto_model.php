@@ -56,6 +56,7 @@ class Producto_model extends CI_Model
 			  p.pro_xm_cantidad3, 
 			  p.pro_xm_valor3, 
 			  p.pro_val_oferta, 
+              p.pro_lote,
 			  um.unm_id_unidad_medida, 
 			  um.unm_nombre, 
 			  um.unm_nombre_corto, 
@@ -65,7 +66,7 @@ class Producto_model extends CI_Model
 			  on p.unm_id_unidad_medida=um.unm_id_unidad_medida 
 			  inner join estado e 
 			  on p.est_id_estado=e.est_id_estado 
-			where p.pro_eliminado='NO' AND p.est_id_estado=11 ");
+			where p.pro_eliminado='NO' AND p.est_id_estado=11");
         foreach ($query->result() as $row) {
             $list[] = $row;
         }
@@ -98,6 +99,7 @@ class Producto_model extends CI_Model
 			  p.pro_xm_cantidad3, 
 			  p.pro_xm_valor3, 
 			  p.pro_val_oferta, 
+               p.pro_lote,
 			  um.unm_id_unidad_medida, 
 			  um.unm_nombre, 
 			  um.unm_nombre_corto, 

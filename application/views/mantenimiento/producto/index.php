@@ -52,6 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <th>SUB-CLASE</th>
                                             <th>ESTADO</th>
                                             <th>KILOGRAMOS</th>
+											<th>LOTES</th>
                                             <th>EDITAR</th>
                                             <th>ELIMINAR</th>
                                         </tr>
@@ -77,7 +78,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <th>SUB-CLASE</th>
                                             <th>ESTADO</th>
                                             <th>KILOGRAMOS</th>
-                                            <th>EDITAR</th>
+											<th>LOTES</th>
+											<th>EDITAR</th>
                                             <th>ELIMINAR</th>
                                         </tr>
                                         </thead>
@@ -160,6 +162,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                        class="form-control" value="0.00" placeholder="Val-oferta">
                                             </div>
                                         </div>
+
+										<div class="form-group">
+											<label for="" class="col-sm-4 control-label">Lotes</label>
+											<div class="col-sm-6">
+												<input type="number" id="pro_lote" name="pro_lote"
+													   class="form-control" value="0.00" >
+											</div>
+										</div>
                                     </div>
 
                                     <div class="col-sm-6">
@@ -389,6 +399,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             {data: "subclase_nombre"},
             {data: "est_nombre"},
             {data: "kilogramo"},
+			{data: "pro_lote"},
             {
                 data: null,
                 "render": function (data, type, full, meta) {
@@ -413,6 +424,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         '<input type="hidden" name="pro_xm_valor3" value="' + full.pro_xm_valor3 + '">' +
                         '<input type="hidden" name="pro_val_oferta" value="' + full.pro_val_oferta + '">' +
                         '<input type="hidden" name="pro_kilogramos" value="' + full.kilogramo + '">' +
+						'<input type="hidden" name="pro_lote" value="' + full.pro_lote + '">' +
                         '<input type="hidden" name="pro_id_producto" value="' + full.pro_id_producto + '">';
 
                 }
@@ -447,6 +459,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             {data: "subclase_nombre"},
             {data: "est_nombre"},
             {data: "kilogramo"},
+			{data: "pro_lote"},
             {
                 data: null,
                 "render": function (data, type, full, meta) {
@@ -471,6 +484,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         '<input type="hidden" name="pro_xm_valor3" value="' + full.pro_xm_valor3 + '">' +
                         '<input type="hidden" name="pro_val_oferta" value="' + full.pro_val_oferta + '">' +
                         '<input type="hidden" name="pro_kilogramos" value="' + full.kilogramo + '">' +
+						'<input type="hidden" name="pro_lote" value="' + full.pro_lote + '">' +
                         '<input type="hidden" name="pro_id_producto" value="' + full.pro_id_producto + '">';
 
                 }
@@ -617,6 +631,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var pro_xm_valor3 = tr.find('input[name="pro_xm_valor3"]').val();
         var pro_val_oferta = tr.find('input[name="pro_val_oferta"]').val();
         var pro_val_kilogramo = tr.find('input[name="pro_kilogramos"]').val();
+		var pro_val_lote = tr.find('input[name="pro_lote"]').val();
         var pro_id_producto = tr.find('input[name="pro_id_producto"]').val();
         $("#in_pro_codigo").val(pro_codigo);
         $("#in_pro_nombre").val(pro_nombre);
@@ -637,6 +652,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#in_pro_xm_valor3").val(pro_xm_valor3);
         $("#in_pro_val_oferta").val(pro_val_oferta);
         $("#pro_kilogramos").val(pro_val_kilogramo);
+		$("#pro_lote").val(pro_val_lote);
         $("#in_pro_id_producto").val(pro_id_producto);
     }
 
@@ -702,6 +718,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         data.pro_xm_valor3 = $("#in_pro_xm_valor3").val();
         data.pro_val_oferta = $("#in_pro_val_oferta").val();
         data.pro_kilogramos = $("#pro_kilogramos").val();
+		data.pro_lote = $("#pro_lote").val();
         data.pro_id_producto = pro_id_producto;
         $.ajax({
             type: "POST",

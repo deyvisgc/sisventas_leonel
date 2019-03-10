@@ -77,6 +77,7 @@ class Producto extends CI_Controller {
 				'pro_val_oferta' => $this->input->post('pro_val_oferta'),
 				'est_id_estado' => $this->input->post('est_id_estado'),
 		    	'pro_kilogramo' => $this->input->post('pro_kilogramos'),
+			    'pro_lote' => $this->input->post('pro_lote'),
 				'pro_eliminado' => 'NO');
 		$pro_id_producto = $this->producto_model->mregistrar($data);
 		
@@ -116,6 +117,7 @@ class Producto extends CI_Controller {
 				'pro_xm_valor3' => $this->input->post('pro_xm_valor3'),
 				'pro_val_oferta' => $this->input->post('pro_val_oferta'),
 			   'pro_kilogramo' => $this->input->post('pro_kilogramos'),
+			    'pro_lote' => $this->input->post('pro_lote'),
 				'est_id_estado' => $this->input->post('est_id_estado'));
 
 		$result = $this->producto_model->mactualizar($pro_id_producto, $data);
