@@ -75,8 +75,8 @@ class Pagar extends CI_Controller{
 		echo json_encode($data);
 	}
     public function Total_x_Pagar(){
-        $result = $this->db->query("SELECT FORMAT(ROUND(SUM(ing.ing_deuda),1),2) as TOTAL FROM ingreso as ing");
-        return $result->row_array();
+        $data = $this->ingreso_model->Total_Cuentas_x_Pagar();
+        echo json_encode($data);
     }
     public function buscar_x_proveedores(){
     	$proveedor=$this->input->post("proveedor");
