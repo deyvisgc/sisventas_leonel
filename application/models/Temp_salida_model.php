@@ -187,14 +187,18 @@ class Temp_salida_model extends CI_Model {
 			  e.emp_ruc, 
 			  e.emp_razon_social, 
 			  e.emp_direccion, 
-			  e.emp_nombre_contacto 
+			  e.emp_nombre_contacto,
+              SUM(sal.sal_deuda) AS sal_deuda
 			FROM pcliente pc 
 			INNER JOIN empresa e 
-			ON pc.emp_id_empresa=e.emp_id_empresa 
+			ON pc.emp_id_empresa=e.emp_id_empresa
+            INNER JOIN salida as sal
+            ON pc.pcl_id_pcliente=sal.pcl_id_cliente
+            
 			where (pc.pcl_tipo='1' or pc.pcl_tipo='3') and 
 			  (e.emp_razon_social like '%".$texto."%' or 
 			  e.emp_ruc like '%".$texto."%') 
-			  and pc.pcl_eliminado='NO' ");
+			  and pc.pcl_eliminado='NO' GROUP BY pc.pcl_id_pcliente;");
 		foreach ($query->result() as $row)
 		{
 			$row->value = $row->emp_razon_social;

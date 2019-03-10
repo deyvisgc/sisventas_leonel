@@ -25,7 +25,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <li class="active"><a href="#dv_panel_eleccion" data-toggle="tab" id="a_panel_eleccion">Cuentas por pagar</a></li>
                         <li class="pull-left header"><i class="fa fa-cart-arrow-down"></i> <span id="sp_etiqueta">Lista de Proveedores a pagar</span></li>
                     </ul>
-                    <div class="tab-content">
+					<p></p>
+					<h2 style="margin-left: 10px">Filtrar Deudas Por Proveedor</h2>
+					<div class="row">
+						<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+							<div class="input-group" style="margin-left: 10px">
+								<span class="input-group-addon bg-gray">Proveedor:</span>
+								<input type="text" class="form-control precios" id="in_proveedor" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+
+							</div>
+						</div>
+						<button style="margin-left: 550px" type="button" onclick="cancelarfiltroxproveedor();" class="btn btn-danger">CANCELAR FILTRO</button>
+					</div><br><br>
+
+
+                    <div class="tab-content"  style="margin-left: 10px">
                         <!-- TAB ELECCION -->
                         <div class="tab-pane active" id="dv_panel_eleccion">
                             <div class="row">
@@ -36,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <h3 class="box-title"></h3>
                                             </div>
                                             <div class="box-body table-responsive">
-                                                <table id="clientes_deudores" class="table table-striped">
+                                                <table id="proveedores_deudores" class="table table-striped">
                                                     <thead >
                                                     <tr>
                                                         <th class="text-center">Proveedor</th>
@@ -159,7 +173,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     var table;
     function init_ingreso(){
         $(document).ready(function () {
-            table = $('#clientes_deudores').DataTable({
+            table = $('#proveedores_deudores').DataTable({
                 'ajax':BASE_URL+'movimiento/ingreso/pagar/listarProveedores',
                 order:([1,'desc']),
                 language: {
@@ -181,7 +195,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         "next": "Siguiente",
                         "previous": "Anterior"
                     }
-                }
+                },
+				destroy: true,
             });
 
             $.ajax({
@@ -193,6 +208,98 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             });
         });
+
+		$( "#in_proveedor" ).autocomplete({
+			source: function( request, response ) {
+				$.ajax( {
+					url: BASE_URL+'movimiento/ingreso/pagar/buscar_x_proveedores',
+					dataType: "json",
+					type: "POST",
+					data: {
+						proveedor: request.term
+					},
+					success: function( data ) {
+						if(data.lista_proveedor.length === 0) {
+							add_mensaje(null, "Proveedores. ", ' 0 encontrados.', "info");
+						}
+						response( data.lista_proveedor );
+					}
+				} );
+			},
+			delay: 900,
+			minLength: 1,
+			select: function( event, ui ) {
+
+				var url = BASE_URL + 'movimiento/ingreso/pagar/listarProveedorXID/'+ui.item.pcl_id_pcliente;
+
+				var mov_diario_dataSrc = function (res) {
+					$('#total_x_pagar').text(res.data_totales.deuda);
+
+					return res.data;
+				};
+
+				var columns = [
+					{data: "emp_razon_social"},
+					{data: "ing_fecha_doc_proveedor"},
+					{data: "ing_deuda"},
+					{
+						data: null,
+						"render": function ( data, type, full, meta ) {
+							return '<button type="button" onclick="cargarDatosDeuda('+full.pro_id_producto+')" data-toggle="modal" data-target="#disminuirDeuda"\n' +
+								'class="btn btn-primary">Amortizar</button> '+
+								' <button type="button" onclick="corregirDeuda('+full.pro_id_producto+')" data-toggle="modal" data-target="#editDeuda"\n' +
+								'class="btn btn-success">Corregir</button>';
+						}
+					}
+				];
+				generar_deuda_Proveedor(url, 'POST', mov_diario_dataSrc, columns)
+
+			}
+		});
+
+		function generar_deuda_Proveedor(url, type, dataSrc, columns) {
+			tb = $('#proveedores_deudores').DataTable({
+
+				ajax: {
+					url: url,
+					type: type,
+					dataSrc: dataSrc
+				},
+
+				columns: columns,
+				"language": {
+					"decimal": "",
+					"emptyTable": "Tabla vacia.",
+					"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+					"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+					"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+					"infoPostFix": "",
+					"thousands": ",",
+					"lengthMenu": "Mostrar _MENU_ entradas",
+					"loadingRecords": "Cargando...",
+					"processing": "Procesando...",
+					"search": "Buscar ",
+					"zeroRecords": "No se encontraron registros coincidentes.",
+					"paginate": {
+						"first": "Primero",
+						"last": "Final",
+						"next": "Siguiente",
+						"previous": "Anterior"
+					},
+					"aria": {
+						"sortAscending": ": activar para ordenar la columna ascendente.",
+						"sortDescending": ": activar para ordenar la columna descendente."
+					}
+				},
+				destroy: true,
+
+
+			});
+
+		}
+
+
+
 		$('#registrar_pago').click(function () {
 			var ma_saldo = $('#monto_restante').val();
 			var id_ingreso = $('#sal_id_salida').val();
@@ -335,4 +442,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
         return window.location.reload(true);
     }
+    function cancelarfiltroxproveedor() {
+    	location.reload();
+
+	}
 </script>

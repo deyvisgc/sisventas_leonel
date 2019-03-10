@@ -200,6 +200,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<input type="text" class="form-control numero" id="in_sal_numero_doc_cliente" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
 															</div>
                                                             <p></p>
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Saldo Pendiente <i class="fa fa-dollar-sign"></i></span>
+																<input type="text" class="form-control numero" id="in_saldo_pendiente" readonly style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+															</div>
+															<p></p>
                                                             <div class="input-group">
                                                                 <span class="input-group-addon bg-gray">Tipo de Venta </span>
                                                                 <select class="form-control custom-select" id="t_venta" name="t_venta">
@@ -443,6 +448,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$('#in_texto_cliente').val(ui.item.emp_razon_social);
 						$('#in_texto_ruc').val(ui.item.emp_ruc);
 						$('#in_pcl_id_cliente').val(ui.item.pcl_id_pcliente);
+						$('#in_saldo_pendiente').val(ui.item.sal_deuda);
 						return false;
 					}
 				});

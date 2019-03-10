@@ -78,6 +78,19 @@ class Pagar extends CI_Controller{
         $data = $this->ingreso_model->Total_Cuentas_x_Pagar();
         echo json_encode($data);
     }
+    public function buscar_x_proveedores(){
+    	$proveedor=$this->input->post("proveedor");
+    	$data=$this->ingreso_model->buscar_x_proveedores($proveedor);
+    	$result=array('hecho','si','lista_proveedor'=>$data);
+    	echo json_encode($result);
+	}
+	public function listarProveedorXID($idproveedor){
+
+		$data= $this->ingreso_model->listarProveedorXID($idproveedor);
+		$suma=$this->ingreso_model->sumardeudadProveedor($idproveedor);
+		$data = array('hecho' => 'SI', 'data' => $data, 'data_totales' => $suma);
+		echo  json_encode($data);
+	}
 
 
 }
