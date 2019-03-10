@@ -61,6 +61,14 @@ class Cobrar extends CI_Controller{
         $data = $this->salida_model->cargaData($sal_id_salida);
         echo json_encode($data);
     }
+    public function buscar_x_cliente(){
+		is_logged_in_or_exit($this);
+    	$descripcion=$this->input->post("cliente");
+    	$lista1=$this->salida_model->buscar_cliente($descripcion);
+    	$data=array('hecho','list_cliente'=>$lista1);
+    	echo json_encode($data);
+	}
+
 
     public function editarDeuda(){
         $data_deuda = array(
@@ -87,6 +95,15 @@ class Cobrar extends CI_Controller{
         $data = $this->salida_model->Total_Cuentas_x_Cobrar();
         echo json_encode($data);
     }
+    public function listarClientesXID($idcliente){
+
+		$data= $this->salida_model->listarClienteXID($idcliente);
+		$suma=$this->salida_model->sumardeudad($idcliente);
+		$data = array('hecho' => 'SI', 'data' => $data, 'data_totales' => $suma);
+		echo  json_encode($data);
+
+
+	}
 
 }
 ?>

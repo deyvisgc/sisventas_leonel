@@ -120,6 +120,7 @@ class CI_DB_mssql_result extends CI_DB_result {
 		return $retval;
 	}
 
+
 	// --------------------------------------------------------------------
 
 	/**

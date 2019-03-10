@@ -24,8 +24,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <ul class="nav nav-tabs pull-right">
                         <li class="active"><a href="#dv_panel_eleccion" data-toggle="tab" id="a_panel_eleccion">Cuentas por cobrar</a></li>
                         <li class="pull-left header"><i class="fa fa-cart-arrow-down"></i> <span id="sp_etiqueta">Lista de Deudores</span></li>
-                    </ul>
-                    <div class="tab-content">
+                    </ul><p></p>
+					<h2 style="margin-left: 10px">Filtrar Deudas Por Clientes</h2>
+					<div class="row">
+						<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+							<div class="input-group" style="margin-left: 10px">
+								<span class="input-group-addon bg-gray">Cliente:</span>
+								<input type="text" class="form-control precios" id="in_cliente" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+
+							</div>
+						</div>
+						<button style="margin-left: 550px" type="button" onclick="cancelarfiltro();" class="btn btn-danger">CANCELAR FILTRO</button>
+						</div><br><br>
+                    <div class="tab-content" style="margin-left: 10px">
                         <!-- TAB ELECCION -->
                         <div class="tab-pane active" id="dv_panel_eleccion">
                             <div class="row">
@@ -158,6 +169,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <script>
 
     var table;
+    var id_cliente=$("#id_bus_cliente").val();
     function init_salida(){
         $(document).ready(function () {
             table = $('#clientes_deudores').DataTable({
@@ -182,7 +194,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         "next": "Siguiente",
                         "previous": "Anterior"
                     }
-                }
+                },
+				destroy:true,
 
             });
 
@@ -219,9 +232,98 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             });
         });
-    }
 
-    function Cargar_Total_Cuentas_x_Cobrar(){
+		$( "#in_cliente" ).autocomplete({
+			source: function( request, response ) {
+				$.ajax( {
+					url: BASE_URL+'movimiento/salida/cobrar/buscar_x_cliente',
+					dataType: "json",
+					type: "POST",
+					data: {
+						cliente: request.term
+					},
+					success: function( data ) {
+						if(data.list_cliente.length === 0) {
+							add_mensaje(null, " Clientes. ", ' 0 encontrados.', "info");
+						}
+						response( data.list_cliente );
+					}
+				} );
+			},
+			delay: 900,
+			minLength: 1,
+			select: function( event, ui ) {
+
+				var url = BASE_URL + 'movimiento/salida/Cobrar/listarClientesXID/'+ui.item.pcl_id_pcliente;
+
+				var mov_diario_dataSrc = function (res) {
+					$('#total_x_cobrar').text(res.data_totales.sumadeudad);
+
+					return res.data;
+				};
+
+				var columns = [
+					{data: "emp_razon_social"},
+					{data: "sal_fecha_doc_cliente"},
+					{data: "sal_deuda"},
+					{
+						data: null,
+						"render": function ( data, type, full, meta ) {
+							return '<button type="button" onclick="cargarDatosDeuda('+full.pro_id_producto+')" data-toggle="modal" data-target="#disminuirDeuda"\n' +
+								  'class="btn btn-primary">Amortizar</button> '+
+								' <button type="button" onclick="corregirDeuda('+full.pro_id_producto+')" data-toggle="modal" data-target="#editDeuda"\n' +
+								'class="btn btn-success">Corregir</button>';
+						}
+					}
+				];
+				generar_deuda_cliente(url, 'POST', mov_diario_dataSrc, columns)
+
+			}
+		});
+    }
+	function generar_deuda_cliente(url, type, dataSrc, columns) {
+		tb = $('#clientes_deudores').DataTable({
+
+			ajax: {
+				url: url,
+				type: type,
+				dataSrc: dataSrc
+			},
+
+			columns: columns,
+			"language": {
+				"decimal": "",
+				"emptyTable": "Tabla vacia.",
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"infoPostFix": "",
+				"thousands": ",",
+				"lengthMenu": "Mostrar _MENU_ entradas",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"search": "Buscar ",
+				"zeroRecords": "No se encontraron registros coincidentes.",
+				"paginate": {
+					"first": "Primero",
+					"last": "Final",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"aria": {
+					"sortAscending": ": activar para ordenar la columna ascendente.",
+					"sortDescending": ": activar para ordenar la columna descendente."
+				}
+			},
+			destroy: true,
+
+
+		});
+
+	}
+
+
+	function Cargar_Total_Cuentas_x_Cobrar(){
         $.ajax({
             url:BASE_URL+'movimiento/salida/Cobrar/Total_x_Cobrar',
             type:'POST',
@@ -231,6 +333,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
+	function sumardeudad(){
+		$.ajax({
+			url:BASE_URL+'movimiento/salida/Cobrar/Total_x_Cobrar',
+			type:'POST',
+			dataType:'JSON',
+			success:function(response){
+				$('#total_x_cobrar').html(response.TOTAL);
+			}
+		});
+	}
+
 
     function descontarDeuda(){
         var deuda_actual = $('#deuda_actual').val();
@@ -327,5 +440,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
         return window.location.reload(true);
     }
+    function cancelarfiltro() {
+		location.reload();
+
+	}
 
 </script>
