@@ -78,6 +78,19 @@ class Pagar extends CI_Controller{
         $result = $this->db->query("SELECT FORMAT(ROUND(SUM(ing.ing_deuda),1),2) as TOTAL FROM ingreso as ing");
         return $result->row_array();
     }
+    public function buscar_x_proveedores(){
+    	$proveedor=$this->input->post("proveedor");
+    	$data=$this->ingreso_model->buscar_x_proveedores($proveedor);
+    	$result=array('hecho','si','lista_proveedor'=>$data);
+    	echo json_encode($result);
+	}
+	public function listarProveedorXID($idproveedor){
+
+		$data= $this->ingreso_model->listarProveedorXID($idproveedor);
+		$suma=$this->ingreso_model->sumardeudadProveedor($idproveedor);
+		$data = array('hecho' => 'SI', 'data' => $data, 'data_totales' => $suma);
+		echo  json_encode($data);
+	}
 
 
 }

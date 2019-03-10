@@ -25,6 +25,7 @@ class Salida_model extends CI_Model {
 			'".$data['sal_numero_doc_cliente']."'
 			)");
         $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado, @out_sal_id_salida as sal_id_salida");
+
         return $result->row();
     }
 	function mbuscar_one($sal_id_salida) {
@@ -94,7 +95,7 @@ class Salida_model extends CI_Model {
 		$consulta = $this->db->query ("SELECT s.sal_fecha_doc_cliente, s.sal_deuda, 
         s.sal_id_salida, em.emp_razon_social FROM salida as s, pcliente as cli, 
         empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND 
-        cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0 and cli.pcl_id_pcliente=$idcliente");
+        cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0 and s.pcl_id_cliente=$idcliente");
 
 		foreach ($consulta->result() as $lis) {
 
@@ -104,7 +105,7 @@ class Salida_model extends CI_Model {
 	}
 	public function sumardeudad($idcliente){
 
-		$sql = $this->db->query("SELECT  SUM(s.sal_deuda) as sumadeudad FROM salida as s, pcliente as cli, empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0 and cli.pcl_id_pcliente=$idcliente");
+		$sql = $this->db->query("SELECT IFNULL(SUM(s.sal_deuda),0)  as sumadeudad FROM salida as s, pcliente as cli, empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0 and s.pcl_id_cliente=$idcliente");
 		foreach ($sql->result() as $row) {
 			return $row;
 		}
