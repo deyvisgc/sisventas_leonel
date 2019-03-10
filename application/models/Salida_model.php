@@ -228,7 +228,7 @@ class Salida_model extends CI_Model {
     }
 
     public function Total_Cuentas_x_Cobrar(){
-        $result = $this->db->query("SELECT FORMAT(ROUND(SUM(sal.sal_deuda),1),2) as TOTAL FROM salida as sal where sal.t_venta=\'deuda\'");
+        $result = $this->db->query("SELECT FORMAT(ROUND(SUM(sal.sal_deuda),1),2) as TOTAL FROM salida as sal where sal.t_venta=\"deuda\"");
         return $result->row_array();
     }
 }
