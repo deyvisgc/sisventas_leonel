@@ -15,7 +15,7 @@ class Reporte_model extends CI_Model
 			IFNULL((SELECT cc.cla_nombre FROM clase cc WHERE cc.cla_id_clase=p.cla_subclase),'') subclase_nombre, 
 			pro_codigo, 
 			pro_nombre, 
-			FORMAT(pro_cantidad, 0, 'de_DE') pro_cantidad, 
+			pro_cantidad, 
 			pro_val_compra pro_val_compra, 
 			pro_val_venta pro_val_venta, 
 			FORMAT(pro_cantidad_min, 0, 'de_DE') pro_cantidad_min 
