@@ -470,8 +470,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						{
 							data: null,
 							"render": function ( data, type, full, meta ) {
-								return '<button class="btn btn-danger  btn-sm" type="button" onclick="func_quitar_producto(event)"><i class="fa fa-times" aria-hidden="true"></i> Quitar</button>'+
-									'<input type="hidden" name="pro_id_producto" value="'+full.pro_id_producto+'">'+'<input type="hidden" name="pro_id_kilo" value="'+full.kilogramo+'">';
+								return ;
 							}
 						}
 					],

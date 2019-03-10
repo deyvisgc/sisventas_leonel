@@ -74,6 +74,42 @@ class Salida_model extends CI_Model {
         $datos = $this->db->query($consulta);
         return $datos->result_array();
     }
+    public function buscar_cliente($descripcion){
+		$list = array();
+    	$consulta=$this->db->query("SELECT pcliente.pcl_id_pcliente,em.emp_razon_social
+                                    FROM pcliente ,empresa as em 
+                                    WHERE pcliente.emp_id_empresa=em.emp_id_empresa and pcliente.pcl_tipo=1 
+                                      and em.emp_razon_social LIKE '%".$descripcion."%'");
+
+		foreach ($consulta->result() as $row) {
+			$row->value = $row->emp_razon_social;
+			$list[] = $row;
+		}
+
+    	return $list;
+
+	}
+	public function listarClienteXID($idcliente){
+		$lista1 = [];
+		$consulta = $this->db->query ("SELECT s.sal_fecha_doc_cliente, s.sal_deuda, 
+        s.sal_id_salida, em.emp_razon_social FROM salida as s, pcliente as cli, 
+        empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND 
+        cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0 and cli.pcl_id_pcliente=$idcliente");
+
+		foreach ($consulta->result() as $lis) {
+
+			$lista1[] = $lis;
+		}
+		return $lista1;
+	}
+	public function sumardeudad($idcliente){
+
+		$sql = $this->db->query("SELECT  SUM(s.sal_deuda) as sumadeudad FROM salida as s, pcliente as cli, empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0 and cli.pcl_id_pcliente=$idcliente");
+		foreach ($sql->result() as $row) {
+			return $row;
+		}
+		return array('suma' => '0.00');
+	}
 
   
 
