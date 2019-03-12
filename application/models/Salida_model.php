@@ -66,9 +66,9 @@ class Salida_model extends CI_Model {
 		return false;
 	}
 
-	
-	public function listarCliente(){
-        $consulta = "SELECT s.sal_fecha_doc_cliente, s.sal_deuda, 
+
+    public function listarCliente(){
+        $consulta = "SELECT DATE_FORMAT(s.sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente , s.sal_deuda, 
         s.sal_id_salida, em.emp_razon_social FROM salida as s, pcliente as cli, 
         empresa as em WHERE cli.emp_id_empresa=em.emp_id_empresa AND 
         cli.pcl_id_pcliente=s.pcl_id_cliente AND s.t_venta=\"deuda\" AND sal_deuda > 0";
@@ -153,7 +153,7 @@ class Salida_model extends CI_Model {
     }
 
     function listar_compras_x_cliente($id){
-        $consulta="SELECT sa.pcl_id_cliente, sa.sal_id_salida, sa.sal_fecha_doc_cliente,sa.sal_monto,sa.sal_numero_doc_cliente,sa.sal_observacion,sa.sal_chofer,sa.sal_camion FROM salida as sa WHERE sa.pcl_id_cliente='$id'";
+        $consulta="SELECT sa.pcl_id_cliente, sa.sal_id_salida, DATE_FORMAT(sa.sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente,sa.sal_monto,sa.sal_numero_doc_cliente,sa.sal_observacion,sa.sal_chofer,sa.sal_camion FROM salida as sa WHERE sa.pcl_id_cliente='$id'";
         $data = $this->db->query($consulta);
         return $data->result_array();
 
@@ -194,7 +194,7 @@ class Salida_model extends CI_Model {
         return $result;
     }
     function listarVentas_Guia(){
-        $consulta = "SELECT s.sal_id_salida,s.sal_fecha_doc_cliente,e.emp_razon_social,s.sal_monto
+        $consulta = "SELECT s.sal_id_salida,DATE_FORMAT(s.sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente,e.emp_razon_social,s.sal_monto
         FROM pcliente as c, empresa as e, salida as s 
         WHERE e.emp_id_empresa=c.emp_id_empresa 
         AND c.pcl_id_pcliente=s.pcl_id_cliente 

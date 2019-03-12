@@ -22,8 +22,8 @@ class Ingreso_model extends CI_Model {
 		return $result->row();
 	}
 	public function listarProveedores(){
-        $consulta = "SELECT ing.ing_id_ingreso, em.emp_razon_social ,
-        ing.ing_fecha_doc_proveedor,ing.ing_deuda,ing.pcl_id_proveedor
+        $consulta = "SELECT  ing.ing_id_ingreso, em.emp_razon_social ,
+        DATE_FORMAT( ing.ing_fecha_doc_proveedor,'%d-%m-%Y') as ing_fecha_doc_proveedor,ing.ing_deuda,ing.pcl_id_proveedor
         FROM ingreso as ing, pcliente as cli, empresa as em
         WHERE cli.emp_id_empresa=em.emp_id_empresa
          AND cli.pcl_id_pcliente=ing.pcl_id_proveedor 

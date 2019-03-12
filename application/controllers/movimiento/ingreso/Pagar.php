@@ -69,7 +69,6 @@ class Pagar extends CI_Controller{
 			'ma_descripcion' => $this->input->post('ma_descripcion'),
 			'idprovedor'=>$this->input->post('idprovedor'),
 			'ma_haber'=>'0.0',
-
 		);
 		$data=$this->ingreso_model->registra_pago($data_ingreso_pago);
 		echo json_encode($data);

@@ -53,7 +53,7 @@ class Reporte_model extends CI_Model
         $list = array();
         $query = $this->db->query("SELECT 
 			  ing_fecha_doc_proveedor, 
-			  ing_fecha_registro, 
+			  DATE_FORMAT(ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro, 
 			  tdo_id_tipo_documento, 
 			  IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=ing.tdo_id_tipo_documento),'') tdo_nombre, 
 			  ing_numero_doc_proveedor, 
@@ -91,7 +91,7 @@ class Reporte_model extends CI_Model
         $query = $this->db->query("SELECT sa.sal_id_salida, 
 		GROUP_CONCAT(DISTINCT pro_nombre ORDER BY pro_nombre ASC SEPARATOR ' - ') as PRODUCTO,
         GROUP_CONCAT(sad_cantidad ORDER BY pro_nombre ASC SEPARATOR ' - ') as CANTIDAD,
-        sal_fecha_doc_cliente,sal_fecha_registro, tdo_id_tipo_documento, IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre,sal_numero_doc_cliente, 
+       DATE_FORMAT(sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente, DATE_FORMAT(sal_fecha_registro,'%d-%m-%Y') as sal_fecha_registro, tdo_id_tipo_documento, IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre,sal_numero_doc_cliente, 
 		(SELECT emp.emp_razon_social FROM pcliente pcl INNER JOIN empresa emp ON pcl.emp_id_empresa=emp.emp_id_empresa WHERE pcl.pcl_id_pcliente=sal.pcl_id_cliente) emp_razon_social,FORMAT(sal_monto, 2, 'de_DE') sal_monto ,c.caj_descripcion
 		FROM salida sal INNER JOIN caja as c ON sal.caj_id_caja=c.caj_id_caja INNER JOIN salida_detalle as sa on sa.sal_id_salida=sal.sal_id_salida INNER JOIN producto as p on sa.pro_id_producto=p.pro_id_producto 
 		WHERE STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
@@ -185,8 +185,8 @@ class Reporte_model extends CI_Model
     {
         $list = array();
         $query = $this->db->query("SELECT 
-			  sal_fecha_doc_cliente, 
-			  sal_fecha_registro, 
+			   DATE_FORMAT(sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente, 
+			 DATE_FORMAT(sal_fecha_registro,'%d-%m-%Y') as sal_fecha_registro, 
 			  tdo_id_tipo_documento, 
 			  IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre, 
 			  sal_numero_doc_cliente, 
@@ -223,7 +223,7 @@ class Reporte_model extends CI_Model
     public function rporte_model_ganancias($fecha_ini, $fecha_fin)
     {
         $lis = array();
-        $query = $this->db->query("SELECT s.sal_fecha_doc_cliente,sd.sad_cantidad,s.sal_numero_doc_cliente, em.emp_razon_social,sd.sad_valor,sd.pro_id_producto, pro.pro_nombre,sd.sad_ganancias FROM salida_detalle as sd , salida as s,producto as pro, empresa as em, pcliente as cli
+        $query = $this->db->query("SELECT DATE_FORMAT(s.sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente,sd.sad_cantidad,s.sal_numero_doc_cliente, em.emp_razon_social,sd.sad_valor,sd.pro_id_producto, pro.pro_nombre,sd.sad_ganancias FROM salida_detalle as sd , salida as s,producto as pro, empresa as em, pcliente as cli
 		WHERE sd.sal_id_salida=s.sal_id_salida and s.pcl_id_cliente=cli.pcl_id_pcliente 
 		and em.emp_id_empresa=cli.emp_id_empresa and sd.pro_id_producto=pro.pro_id_producto 
 		and STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') 
