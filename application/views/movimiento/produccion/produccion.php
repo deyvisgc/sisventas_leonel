@@ -23,7 +23,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="col-md-12 col-lg-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs pull-right" style="background-color: #f7d800">
-                        <li><a href="#dv_panel_pago" data-toggle="tab" id="a_panel_pago">Pago productos</a></li>
                         <li class="active"><a href="#dv_panel_eleccion" data-toggle="tab" id="a_panel_eleccion">Eleccion
                                 productos</a></li>
                         <li class="pull-left header"><i class="fa fa-cart-arrow-down"></i> <span id="sp_etiqueta">Productos.</span>
@@ -88,12 +87,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     </div>
                                                     <br>
                                                     <input type="hidden" id="in_pro_id_producto" value="">
-                                                    <button class="btn btn-success btn-lg" id="bt_agregar_producto"
-                                                            ><i class="fa fa fa-edit"></i> Agregar
-                                                    </button>
-                                                    <button class="btn btn-default btn-lg" id="bt_cancelar_producto"
-                                                            ><i class="fa fa-times"></i> Cancelar
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -168,183 +161,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         </div><!-- ./col -->
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-11">
-                                            <div class="box box-primary">
-                                                <div class="box-header">
-                                                    <h3 class="box-title">Lista de Productos</h3>
-                                                </div>
-                                                <div class="box-body table-responsive">
-                                                    <table id="tb_ingreso_detalle" class="table table-hover">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>Codigo</th>
-                                                            <th>Descripcion</th>
-                                                            <th>#Lote</th>
-                                                            <th>Fecha V.</th>
-                                                            <th>U. M.</th>
-                                                            <th>Cant.</th>
-                                                            <th>Precio U.</th>
-                                                            <th>Monto</th>
-                                                            <th>Operacion</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                     <br>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- PAGO -->
-                        <div class="tab-pane" id="dv_panel_pago">
-                            <div class="row">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Proveedor <i
-                                                                class="fa fa-search"></i></span>
-                                                    <input type="text" class="form-control cliente"
-                                                           id="in_texto_proveedor"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           disabled="">
-                                                    <input type="hidden" id="in_pcl_id_proveedor" value="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">RUC <i
-                                                                class="fa fa-search"></i></span>
-                                                    <input type="text" class="form-control ruc" id="in_texto_ruc"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           disabled="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Fecha <i
-                                                                class="fa fa-calendar"></i></span>
-                                                    <input type="date" class="form-control fecha"
-                                                           id="in_ing_fecha_doc_proveedor"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           disabled="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Documento <i
-                                                                class="fa fa-file"></i></span>
-                                                    <select class="form-control custom-select"
-                                                            id="sl_tdo_id_tipo_documento" disabled=""></select>
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Numero <i
-                                                                class="fa fa-barcode"></i></span>
-                                                    <input type="text" class="form-control numero"
-                                                           id="in_ing_numero_doc_proveedor"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           disabled="">
-                                                </div>
-                                                <br>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Efectivo  S/. <i
-                                                                class="fa fa-money"></i></span>
-                                                    <input type="number" class="form-control descuento"
-                                                           id="in_ing_monto_efectivo"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           value="" placeholder="0.00" disabled="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Debito  S/. <i
-                                                                class="fa fa-credit-card"></i></span>
-                                                    <input type="number" class="form-control descuento"
-                                                           id="in_ing_monto_tar_debito"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           value="" placeholder="0.00" disabled="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Credito  S/. <i
-                                                                class="fa fa-credit-card"></i></span>
-                                                    <input type="number" onkeyup="restardeuda();"
-                                                           class="form-control descuento" id="in_ing_monto_tar_credito"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           value="" placeholder="0.00" disabled="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Deuda  S/. <i
-                                                                class="fa fa-credit-card"></i></span>
-                                                    <input type="number" readonly class="form-control descuento"
-                                                           id="in_ing_monto_deuda"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                                           value="0.00" disabled="">
-                                                </div>
-                                                <p></p>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Tipo de Compra </span>
-                                                    <select class="form-control custom-select" id="in_tipo"
-                                                            name="in_tipo">
-                                                        <option value="contado">Al contado</option>
-                                                        <option value="deuda">Por pagar</option>
-                                                    </select>
-                                                </div>
-                                                <br>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <!-- small box -->
-                                        <div class="small-box bg-aqua">
-                                            <div class="inner">
-                                                <h3>
-                                                    <div>S/. <span class="sp_sum_total">0.00</span></div>
-                                                </h3>
-                                                <p>Total</p>
-                                            </div>
-                                            <div class="icon">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </div>
-                                            <a href="#" class="small-box-footer">
-                                                <div id="num_ticket">Caja: <span class="sp_caja_nombre"></span></div>
-                                            </a>
-                                            <a href="#" class="small-box-footer">
-                                                <div id="total_articulos">Total de Productos: <span
-                                                            class="sp_count_productos">0.00</span></div>
-                                            </a>
-                                        </div>
-                                        <div class="btn-group">
-                                            <button class="btn  btn-success btn-lg" id="bt_pagar_productos" disabled="">
-                                                <i class="fa fa-money"></i> Pagar
-                                            </button>
-                                        </div>
-                                    </div><!-- ./col -->
-                                </div>
-                                <br>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
