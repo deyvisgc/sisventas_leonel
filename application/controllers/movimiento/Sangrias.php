@@ -32,5 +32,16 @@ class Sangrias extends CI_Controller{
         $this->load->view('movimiento/sangrias');
         $this->load->view('footer',$data_footer);
     }
+	public function buscarCagas()
+	{
+		is_logged_in_or_exit($this);
+
+		$texto = $this->input->post('caja');
+		$list_ventas = $this->Sangria_model->buscarCagas($texto);
+		$data = array('hecho' => 'SI', 'list_cajas' => $list_ventas);
+
+		echo json_encode($data);
+	}
+
 
 }

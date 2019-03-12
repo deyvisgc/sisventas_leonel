@@ -55,4 +55,31 @@ class Caja extends CI_Controller{
         );
         echo json_encode($data);
     }
+    public function buscarCaja(){
+		is_logged_in_or_exit($this);
+
+		$list_documento = $this->Sangria_model->buscarCaja();
+
+		$data = array('hecho' => 'SI', 'list_documento' => $list_documento);
+		echo json_encode($data);
+	}
+	public function buscarCajaXCaja($caja){
+		is_logged_in_or_exit($this);
+		$fecha_ini = $this->input->post('fecha1');
+		$fecha_fin = $this->input->post('fecha2');
+		$list_Caga = $this->Sangria_model->buscarCajaXCaja($fecha_ini, $fecha_fin,$caja);
+		$data=array('hecho','si','data'=>$list_Caga);
+		echo json_encode($data);
+
+
+
+	}
+	public function buscarCajaXCaja_Ingreso($caja){
+		is_logged_in_or_exit($this);
+		$fecha_ini = $this->input->post('fecha1');
+		$fecha_fin = $this->input->post('fecha2');
+		$list_Caga = $this->Sangria_model->buscarCajaXCaja_Ingreso($fecha_ini, $fecha_fin,$caja);
+		$data=array('hecho','si','data'=>$list_Caga);
+		echo json_encode($data);
+	}
 }

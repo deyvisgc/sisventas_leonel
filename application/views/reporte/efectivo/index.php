@@ -47,6 +47,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <hr>
                                 <div class="form-group col-md-12">
                                     <button type="button" class="btn btn-danger pull-right" onclick="imprimir();"><i class="fa fa-print"></i> Imprimir </button>
+										<button type="button" style="margin-left: 30px" class="btn btn-info" data-toggle="modal" data-target="#md_retiro"  id="btn_retiro"><i class="fas fa-eye"></i> RETIRO</button>
+										<button type="button" class="btn btn-warning"  id="btn_ingreso" data-toggle="modal" data-target="#md_ingreso"><i class="fas fa-eye"></i> INGRESO</button>
                                 </div><br>
                                 <div id="imprimir">
                                 <div class="row" style="margin: 16px;">
@@ -98,11 +100,165 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
     </section><!-- /.content -->
 </div><!-- /.content-wrapper -->
+<!--modal tabla detalle retiro-->
+<div class="modal" id="md_retiro">
+	<div class="modal-dialog modal-lg " style="text-align: center">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="text-capitalize" id="md_titulo" style="padding-left: 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif ;color: #0c0c0c">Detalle del Retiro</h4>
+
+			</div>
+
+			<!-- Modal body -->
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<br>
+						<div class="row col-md-12">
+							<div class="form-group col-md-4">
+								<div class="input-group">
+									<span class="input-group-addon bg-gray ">Desde: </span>
+									<input type="date" id="in_fecha_desde" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
+								</div>
+							</div>
+							<div class="form-group col-md-4" >
+								<div class="input-group">
+									<span class="input-group-addon bg-gray">Hasta: </span>
+									<input type="date" id="in_fecha_hasta" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
+								</div>
+							</div>
+							<div class="form-group col-md-3">
+								<div class="input-group" >
+									<span class="input-group-addon bg-gray">Caja: </span>
+									<select class="form-control custom-select" required id="fcaja" name="caja_form">
+
+									</select>
+
+								</div>
+							</div>
+							<div class="form-group col-md-1">
+								<div class="input-group">
+									<button class="btn btn-facebook" type="button" onclick="cargar_detalle();"> Consultar </button>
+								</div>
+							</div>
+						</div>
+						<table id="tabla_retiro" class="table table-striped">
+							<thead>
+							<tr>
+								<th>Caja</th>
+								<th>Monto</th>
+								<th>Fecha</th>
+								<th>Tipo Sangría</th>
+								<th>Motivo</th>
+								<th>Usuario</th>
+							</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			</div>
+			</div>
+
+			<!-- Modal footer -->
+
+
+		</div>
+	</div>
+<!--modal tabla detalle retiro finish-->
+<!--modal tabla detalle ingreso-->
+<div class="modal" id="md_ingreso">
+	<div class="modal-dialog modal-lg " style="text-align: center">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="text-capitalize" id="md_titulo" style="padding-left: 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #0c0c0c">Detalle del Ingreso</h4>
+
+			</div>
+
+			<!-- Modal body -->
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<br>
+						<div class="row col-md-12">
+							<div class="form-group col-md-4">
+								<div class="input-group">
+									<span class="input-group-addon bg-gray ">Desde: </span>
+									<input type="date" id="in_fecha_desde2" name="fecha_ini2" class="form-control" value="" placeholder="Fecha inicio">
+								</div>
+							</div>
+							<div class="form-group col-md-4" >
+								<div class="input-group">
+									<span class="input-group-addon bg-gray">Hasta: </span>
+									<input type="date" id="in_fecha_hasta2" name="fecha_fin2" class="form-control" value="" placeholder="Fecha fin">
+								</div>
+							</div>
+							<div class="form-group col-md-3">
+								<div class="input-group" >
+									<span class="input-group-addon bg-gray">Caja: </span>
+									<select class="form-control custom-select" required id="fcaja2" name="caja_form">
+
+									</select>
+
+								</div>
+							</div>
+							<div class="form-group col-md-1">
+								<div class="input-group">
+									<button class="btn btn-facebook" type="button" onclick="cargar_detalle_ingreso();"> Consultar </button>
+								</div>
+							</div>
+						</div>
+						<table id="tabla_ingreso" class="table table-striped">
+							<thead>
+							<tr>
+								<th>Caja</th>
+								<th>Monto</th>
+								<th>Fecha</th>
+								<th>Tipo Sangría</th>
+								<th>Motivo</th>
+								<th>Usuario</th>
+							</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+
+		<!-- Modal footer -->
+
+
+	</div>
+</div>
+<!--modal tabla detalle ingreso finish-->
+
 <script>
     function init_deuda() {
-        var fecha_actual_hoy = get_fhoy();
-        $('#date_ini').val(fecha_actual_hoy);
-        $('#date_fin').val(fecha_actual_hoy);
+
+		var fecha_actual_hoy = get_fhoy();
+		fecha1=	$('#date_ini').val(fecha_actual_hoy);
+		fecha2=	$('#date_fin').val(fecha_actual_hoy);
+		var fecha_Actual = get_fhoy();
+		$('#in_fecha_desde').val(fecha_Actual);
+	    $('#in_fecha_hasta').val(fecha_Actual);
+	    $('#in_fecha_desde2').val(fecha_Actual);
+	    $('#in_fecha_hasta2').val(fecha_Actual);
+
 
         var mov_diario_id_tabla2 = "tb_efectivo";
         var mov_diario_url2 = "<?php echo base_url(); ?>reporte/efectivo/Caja/movimiento_efectivo";
@@ -132,7 +288,152 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         ];
         generar_tabla_ajx3(mov_diario_id_tabla2, mov_diario_url2, 'POST', mov_diario_data2, mov_diario_dataSrc2, mov_diario_columns2);
 
+
+
+		cargarcaja();
     }
+    function cargarcaja() {
+     $.ajax({
+		 type: "POST",
+		 url: BASE_URL+"reporte/efectivo/Caja/buscarCaja",
+		 dataType: 'json',
+		 success:function (data) {
+			 if(data.hecho == 'SI') {
+				 var select = $('#fcaja');
+				 var select2 = $('#fcaja2');
+				 select.empty();
+				 data.list_documento.forEach(function(documento) {
+					 select.append('<option value="'+documento.caj_descripcion+'" >'+documento.caj_descripcion+'</option>');
+					 select2.append('<option value="'+documento.caj_descripcion+'" >'+documento.caj_descripcion+'</option>');
+
+				 });
+			 }
+		 }
+	 });
+
+	}
+	function cargar_detalle_ingreso() {
+		$cja2=$('#fcaja2').val();
+		var url2=BASE_URL + 'reporte/efectivo/Caja/buscarCajaXCaja_Ingreso/' + $cja2;
+		var fecha_caja_data_2 = function() {
+			var data1={};
+			data1.fecha1=$('#in_fecha_desde2').val();
+			data1.fecha2=$('#in_fecha_hasta2').val();
+			return data1;
+		};
+
+		var columns = [
+			{data: "caj_descripcion"},
+			{data: "monto"},
+			{data: "fecha"},
+			{data: "tipo_sangria"},
+			{data: "san_motivo"},
+			{data: "usu_nombre"},
+
+		];
+		generar_tabla_detalle_caja_ingreso(url2, 'POST',fecha_caja_data_2,columns);
+	}
+	function generar_tabla_detalle_caja_ingreso( url, type, data, columns) {
+		$('#tabla_ingreso').DataTable({
+			order:( [ 0, 'desc' ] ),
+			ajax: {
+				url: url,
+				type: type,
+				data: data
+			},
+			columns: columns,
+			"language": {
+				"decimal": "",
+				"emptyTable": "Tabla vacia.",
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"infoPostFix": "",
+				"thousands": ",",
+				"lengthMenu": "Mostrar _MENU_ entradas",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"search": "Buscar  ",
+				"zeroRecords": "No se encontraron registros coincidentes.",
+				"paginate": {
+					"first": "Primero",
+					"last": "Final",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"aria": {
+					"sortAscending": ": activar para ordenar la columna ascendente.",
+					"sortDescending": ": activar para ordenar la columna descendente."
+				}
+			},
+			destroy:true
+
+		});
+	}
+	function cargar_detalle() {
+		$cja=$('#fcaja').val();
+		var url=BASE_URL + 'reporte/efectivo/Caja/buscarCajaXCaja/' + $cja;
+		var fecha_caja_data = function() {
+			var data1={};
+			data1.fecha1=$('#in_fecha_desde').val();
+			data1.fecha2=$('#in_fecha_hasta').val();
+			return data1;
+		};
+
+		var columns = [
+			{data: "caj_descripcion"},
+			{data: "monto"},
+			{data: "fecha"},
+			{data: "tipo_sangria"},
+			{data: "san_motivo"},
+			{data: "usu_nombre"},
+
+		];
+		generar_tabla_detalle_caja_retiro(url, 'POST',fecha_caja_data,columns);
+
+
+
+	}
+
+	function generar_tabla_detalle_caja_retiro( url, type, data, columns) {
+		$('#tabla_retiro').DataTable({
+			order:( [ 0, 'desc' ] ),
+			ajax: {
+				url: url,
+				type: type,
+				data: data
+			},
+			columns: columns,
+			"language": {
+				"decimal": "",
+				"emptyTable": "Tabla vacia.",
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"infoPostFix": "",
+				"thousands": ",",
+				"lengthMenu": "Mostrar _MENU_ entradas",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"search": "Buscar  ",
+				"zeroRecords": "No se encontraron registros coincidentes.",
+				"paginate": {
+					"first": "Primero",
+					"last": "Final",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"aria": {
+					"sortAscending": ": activar para ordenar la columna ascendente.",
+					"sortDescending": ": activar para ordenar la columna descendente."
+				}
+			},
+			destroy:true
+
+		});
+	}
+
+
     function generar_tabla_ajx3(id_tabla, url, type, data, dataSrc, columns) {
         $('#'+id_tabla).DataTable({
             order:( [ 0, 'desc' ] ),
@@ -173,6 +474,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function filtrar_movimiento_diario_salida() {
         $('#tb_efectivo').DataTable().ajax.reload();
     }
+
     function imprimir() {
         $('#titulo').show();
         $('#titulo').css({"margin-bottom":"10px","font-size":"35px","font-weight":"bold"});
@@ -189,4 +491,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         return window.location.reload(true);
     }
+
+
 </script>
