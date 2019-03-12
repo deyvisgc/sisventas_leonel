@@ -158,4 +158,54 @@ class Sangria_model extends CI_Model {
         $data = $this->db->query($consulta,array($data));
         return $data->row_array();
     }
+    /*
+    public function buscarCagas($texto){
+    	$list=array();
+		$query =$this->db->query("select c.caj_descripcion from caja as c where c.caj_descripcion like '%".$texto."%'");
+		foreach ($query->result() as $row) {
+			$row->value = $row->caj_descripcion;
+			$list[] = $row;
+		}
+		return $list;
+	}
+    */
+	public function buscarCaja(){
+		$list = array();
+		$query = $this->db->query("SELECT * FROM caja WHERE est_id_estado=11 ORDER BY caj_id_caja ASC");
+		foreach ($query->result() as $row)
+		{
+			$list[] = $row;
+		}
+		return $list;
+	}
+	public function buscarCajaXCaja($fecha_ini, $fecha_fin,$caja){
+		$lista=array();
+		$consulta=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+        FROM sangria AS s, caja as c,usuario as u
+        WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'  and s.tipo_sangria='retiro'
+        AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
+        AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.fecha DESC");
+		foreach ($consulta->result() as $row) {
+			$lista[] = $row;
+		}
+		return $lista;
+
+
+	}
+	public function buscarCajaXCaja_Ingreso($fecha_ini, $fecha_fin,$caja){
+		$lista1=array();
+		$consulta=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+        FROM sangria AS s, caja as c,usuario as u
+        WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'  and s.tipo_sangria='ingreso'
+        AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
+        AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.fecha DESC");
+		foreach ($consulta->result() as $row) {
+			$lista1[] = $row;
+		}
+		return $lista1;
+
+
+	}
+
+
 }

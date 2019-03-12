@@ -61,6 +61,7 @@ class Sangria extends CI_Controller{
         echo json_encode($data);
     }
 
+
     public function cargar_cajas_combobox(){
         $data=$this->Sangria_model->listar_cajas_combobox();
         echo json_encode($data);

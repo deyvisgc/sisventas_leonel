@@ -196,6 +196,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 															</div>
 															<p></p>
 															<div class="input-group">
+																<span class="input-group-addon bg-gray">prueba <i class="fa fa-barcode"></i></span>
+																<input type="text" class="form-control numero" id="prueba" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+															</div>
+															<p></p>
+															<div class="input-group">
 																<span class="input-group-addon bg-gray">Numero <i class="fa fa-barcode"></i></span>
 																<input type="text" class="form-control numero" id="in_sal_numero_doc_cliente" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
 															</div>
@@ -565,7 +570,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							select.empty();
 							datos.list_documento.forEach(function(documento) {
 								select.append('<option value="'+documento.tdo_id_tipo_documento+'" >'+documento.tdo_nombre+'</option>');
+
 							});
+
 						}
 					}
 				});
