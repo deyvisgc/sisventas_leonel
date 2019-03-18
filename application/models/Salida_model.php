@@ -152,13 +152,6 @@ class Salida_model extends CI_Model {
         return $datos->result_array();
     }
 
-    function listar_compras_x_cliente($id){
-        $consulta="SELECT sa.pcl_id_cliente, sa.sal_id_salida, sa.sal_fecha_doc_cliente,sa.sal_monto,sa.sal_numero_doc_cliente,sa.sal_observacion,sa.sal_chofer,sa.sal_camion FROM salida as sa WHERE sa.pcl_id_cliente='$id'";
-        $data = $this->db->query($consulta);
-        return $data->result_array();
-
-    }
-
     function detalle_compra_x_cliente($id_compra){
         $list = array();
         $consulta="SELECT p.pro_nombre,sd.sad_cantidad, sd.sad_valor,sd.sad_monto,sd.sad_ganancias,sal.sal_numero_doc_cliente 
@@ -193,6 +186,17 @@ class Salida_model extends CI_Model {
         )");
         return $result;
     }
+
+	function listar_compras_x_cliente($idcliente){
+		$consulta=$this->db->query("call listarClienteXid(
+         ".$idcliente['idclinete'].")");
+
+		$data =$consulta;
+		return $data->result_array();
+
+	}
+
+
     function listarVentas_Guia(){
         $consulta = "SELECT s.sal_id_salida,s.sal_fecha_doc_cliente,e.emp_razon_social,s.sal_monto
         FROM pcliente as c, empresa as e, salida as s 

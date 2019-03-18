@@ -20,6 +20,8 @@ immediately after the control sidebar -->
 <!-- <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> -->
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="http://momentjs.com/downloads/moment.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.19/dataRender/datetime.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="<?= base_url() ?>../resources/js/bootstrap.min.js"></script>
 <!-- Script AjaxForms-->

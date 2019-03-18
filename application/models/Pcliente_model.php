@@ -105,7 +105,10 @@ class Pcliente_model extends CI_Model {
 		return $datos->result_array();
 	}
 	function Buscar_compras_provedor($pcl_id_pcliente){
-		$sql="SELECT ing.ing_id_ingreso,ing.ing_monto,ing.ing_fecha_doc_proveedor FROM ingreso as ing ,pcliente as pc WHERE
+		$sql="SELECT ing.ing_id_ingreso,ing.ing_monto,DATE_FORMAT(ing.ing_fecha_doc_proveedor, '%d-%m-%Y') as fecha
+
+
+FROM ingreso as ing ,pcliente as pc WHERE
                       ing.pcl_id_proveedor=pc.pcl_id_pcliente and ing.pcl_id_proveedor=$pcl_id_pcliente";
 		$datos = $this->db->query($sql);
 		return $datos->result_array();
