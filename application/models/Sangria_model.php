@@ -12,7 +12,7 @@ class Sangria_model extends CI_Model {
         return $result;
     }
     function sangria_x_caja($caja){
-        $query="SELECT s.id_sangria, c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+        $query="SELECT s.id_sangria, c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion 
         LIKE '%".$caja."%' ";
@@ -22,7 +22,7 @@ class Sangria_model extends CI_Model {
 
     function listar_sagria_x_fecha_caja($fecha_ini,$fecha_fin,$caja){
         $list=array();
-        $query=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+        $query=$this->db->query("SELECT c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'
         AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
@@ -95,8 +95,8 @@ class Sangria_model extends CI_Model {
     function mmovimiento_diario_salida($fecha_ini, $fecha_fin,$caja) {
         $list = array();
         $query = $this->db->query("SELECT 
-			  sal_fecha_doc_cliente, 
-			  sal_fecha_registro, 
+			  DATE_FORMAT(sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente, 
+			  DATE_FORMAT(sal_fecha_registro,'%d-%m-%Y') as sal_fecha_registro, 
 			  tdo_id_tipo_documento,
 			  c.caj_descripcion, 
 			  IFNULL((SELECT tdo.tdo_nombre FROM tipo_documento tdo WHERE tdo.tdo_id_tipo_documento=sal.tdo_id_tipo_documento),'') tdo_nombre, 
