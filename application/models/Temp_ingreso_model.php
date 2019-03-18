@@ -19,12 +19,13 @@ class Temp_ingreso_model extends CI_Model
     }
     function magregar_producto($data){
 		$result = $this->db->query("call registrarProducto(
-			" . $data['valor'] . ", 
-			" . $data['valor_venta'] . ", 
-			" . $data['cantidad'] . ", 
-			'" . $data['numero_lote'] . "', 
-			'" . $data['nombre_product'] . "', 
-			'" . $data['fecha_vencimiento'] . "' 
+			".$data['id_producto'].", 
+			".$data['valor'] .", 
+			".$data['valor_venta'].", 
+			".$data['cantidad'].", 
+			'".$data['numero_lote']."', 
+			'".$data['nombre_product']."', 
+			'".$data['fecha_vencimiento']."' 
 			)");
 
 		return $result;

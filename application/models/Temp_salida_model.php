@@ -99,7 +99,7 @@ class Temp_salida_model extends CI_Model {
 			  and unm.est_id_estado=11 
 			where 
              pro.pro_lote=$lote and
-			  pro.pro_nombre like '%%' OR pro.pro_codigo like '%".$descripcion."%'   and 
+			  pro.pro_nombre like '%".$descripcion."%' OR pro.pro_codigo like '%".$descripcion."%'   and 
 			  pro.pro_cantidad <> 1 and 
 			  pro.pro_cantidad > (SELECT IFNULL(SUM(temp_cantidad),0) FROM temp t WHERE t.temp_tipo_movimiento='SALIDA' AND t.pro_id_producto=pro.pro_id_producto) and 
 			  pro.pro_id_producto not in (SELECT t.pro_id_producto FROM temp t WHERE t.temp_tipo_movimiento='SALIDA' AND t.usu_id_usuario=".$usu_id_usuario.") 

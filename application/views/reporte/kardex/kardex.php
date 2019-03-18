@@ -90,17 +90,42 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                         <h4 class="text-center">PRODUCTO</h4>
                         <h2 id="pro_nombre" class="text-center">AFRECHO X 40</h2><br>
+                        <div class="row">
+                            <div class="col-md-12 col-md-offset-3">
+                                <div class="text-center">
+                                    <div class="col-md-6 col-lg-6 col-xs-12">
+                                        <table class="table table-hover table-sm" id="tb_existencias" style="width: 100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">EXISTENCIAS</th>
+                                            </tr>
+                                            <tr>
+
+                                                <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
+                                                <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
+                                                <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
-                            <div class="col-md-4 col-lg-4 col-xs-12">
+                            <div class="col-md-6 col-lg-6 col-xs-12">
                                 <table class="table table-hover table-sm" id="tb_entradas" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
-                                        <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+                                        <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
                                     </tr>
                                     <tr>
 
+                                        <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
+                                        <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
@@ -110,20 +135,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="3" class=" alinear_derecha">&nbsp;Total</th>
+                                        <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
                                         <th class=" alinear_derecha"><span id="total_ingreso">00.00</span></th>
                                     </tfoot>
                                 </table>
                             </div>
-                            <div class="col-md-4 col-lg-4 col-xs-12">
+                            <div class="col-md-6 col-lg-6 col-xs-12">
                                 <table class="table table-hover table-sm" id="tb_salidas" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
-                                        <th class="text-center" colspan="3" style="background-color: #B03A2E;color: white;">SALIDAS</th>
+                                        <th class="text-center" colspan="5" style="background-color: #B03A2E;color: white;">SALIDAS</th>
                                     </tr>
                                     <tr>
-
+                                        <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
+                                        <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
@@ -133,27 +159,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="3" class=" alinear_derecha">&nbsp;Total</th>
+                                        <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
                                         <th class=" alinear_derecha"><span id="total_salidas">00.00</span></th>
                                     </tfoot>
-                                </table>
-                            </div>
-                            <div class="col-md-4 col-lg-4 col-xs-12">
-                                <table class="table table-hover table-sm" id="tb_existencias" style="width: 100%">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">EXISTENCIAS</th>
-                                    </tr>
-                                    <tr>
-
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="text-center">
-                                    </tbody>
-                                </table>
+                                </table><br><br><br><br>
                             </div>
                         </div>
                     </div>
@@ -241,6 +250,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
         $('#tb_salidas').DataTable({
             ajax:{
+                oreder:[[0,'desc']],
                 url:BASE_URL+'reporte/kardex/kardex/Kardex_Salidas/'+pro_id_producto,
                 type:'post',
                 dataType:'json',

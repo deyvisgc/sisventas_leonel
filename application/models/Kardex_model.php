@@ -12,11 +12,11 @@ class Kardex_model extends CI_Model
     }
 
     function Kardex_Entradas($idprodcuto){
-        $query = $this->db->query(
-            "SELECT DATE_FORMAT(ing.ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro,ingd.ind_cantidad,ingd.ind_valor, FORMAT(ROUND((ingd.ind_valor * ingd.ind_cantidad),1),2) AS precio_compra 
-            FROM ingreso as ing, ingreso_detalle as ingd,producto as p 
-            where ingd.ing_id_ingreso=ing.ing_id_ingreso AND p.pro_id_producto=ingd.pro_id_producto
-            AND ingd.pro_id_producto = $idprodcuto"
+        $query = $this->db->query("SELECT DATE_FORMAT(ing.ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro,ingd.ind_cantidad,ingd.ind_valor, 
+FORMAT(ROUND((ingd.ind_valor * ingd.ind_cantidad),1),2) AS precio_compra,  ing.ing_numero_doc_proveedor,ingd.ind_numero_lote
+        FROM ingreso as ing, ingreso_detalle as ingd,producto as p 
+        WHERE ingd.ing_id_ingreso=ing.ing_id_ingreso AND p.pro_id_producto=ingd.pro_id_producto
+        AND ingd.pro_id_producto = $idprodcuto ORDER BY ing.ing_fecha_registro DESC"
         );
         return $query->result_array();
     }
@@ -36,11 +36,11 @@ class Kardex_model extends CI_Model
     function Kardex_Salidas($idprodcuto){
         $query = $this->db->query(
             "SELECT DATE_FORMAT(sal.sal_fecha_registro,'%d-%m-%Y') as sal_fecha_registro,
-            sd.sad_cantidad, sad_valor,FORMAT(ROUND((sd.sad_cantidad * sd.sad_valor),1),2) as total_venta 
+            sd.sad_cantidad, sad_valor,FORMAT(ROUND((sd.sad_cantidad * sd.sad_valor),1),2) as total_venta,sal.sal_numero_doc_cliente,sd.sad_numero_lote 
             FROM producto as p, salida as sal, salida_detalle as sd
             WHERE sal.sal_id_salida=sd.sal_id_salida
             AND p.pro_id_producto = sd.pro_id_producto
-            AND sd.pro_id_producto=$idprodcuto"
+            AND sd.pro_id_producto=$idprodcuto ORDER BY sal.sal_fecha_registro DESC"
         );
         return $query->result_array();
     }

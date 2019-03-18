@@ -81,6 +81,7 @@ class Detalle extends CI_Controller
     public function registrar_producto(){
 		is_logged_in_or_exit($this);
 		$data = array(
+		    'id_producto' => $this->input->post('id_producto'),
 			'valor' => $this->input->post('valor'),
 			'valor_venta' => $this->input->post('valor_venta'),
 			'cantidad' => $this->input->post('cantidad'),

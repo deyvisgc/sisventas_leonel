@@ -64,12 +64,14 @@ class Kardex  extends CI_Controller
 
 	    foreach ($entradas as $key =>$value){
             $fecha = $value['ing_fecha_registro'];
+            $doc = $value['ing_numero_doc_proveedor'];
+            $lote = $value['ind_numero_lote'];
             $cantidad = $value['ind_cantidad'];
             $precio = $value['ind_valor'];
             $stotal = $value['precio_compra'];
 
             $result['data'][$key]=array(
-                $fecha,$cantidad,$precio,$stotal
+                $fecha,$doc,$lote,$cantidad,$precio,$stotal
             );
         }
 
@@ -85,12 +87,14 @@ class Kardex  extends CI_Controller
 
         foreach ($salidas as $key =>$value){
             $fecha = $value['sal_fecha_registro'];
+            $doc = $value['sal_numero_doc_cliente'];
+            $lote = $value['sad_numero_lote'];
             $cantidad = $value['sad_cantidad'];
             $precio = $value['sad_valor'];
             $stotal = $value['total_venta'];
 
             $result['data'][$key]=array(
-                $fecha,$cantidad,$precio,$stotal
+                $fecha,$doc,$lote,$cantidad,$precio,$stotal
             );
         }
 
