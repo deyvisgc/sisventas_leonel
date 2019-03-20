@@ -92,18 +92,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <h2 id="pro_nombre" class="text-center">AFRECHO X 40</h2><br>
 
                         <div class="row">
-                            <div class="col-md-4 col-lg-4 col-xs-12">
+                            <div class="col-md-5 col-lg-5 col-xs-12">
                                 <table class="table table-hover table-sm" id="tb_entradas" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
-                                        <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+                                        <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
                                     </tr>
                                     <tr>
 
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
                                         <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+										<th class="text-center" style="color: white;background-color: #E74C3C;">Tipo Entrada</th>
+
+
                                     </tr>
                                     </thead>
                                     <tbody class="text-center">

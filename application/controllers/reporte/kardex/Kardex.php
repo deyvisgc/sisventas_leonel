@@ -56,10 +56,8 @@ class Kardex  extends CI_Controller
 
     public function Kardex_Entrada($id_producto){
 	    is_logged_in_or_exit($this);
-
-	    $entradas = $this->kardex_model->Kardex_Entradas($id_producto);
 	    $totales_entrada = $this->kardex_model->Kardex_Entradas_Total($id_producto);
-
+		$entradas = $this->kardex_model->Kardex_Entradas($id_producto);
         $result = array('data'=>array(),'totales_entrada'=>$totales_entrada);
 
 	    foreach ($entradas as $key =>$value){
@@ -67,9 +65,10 @@ class Kardex  extends CI_Controller
             $cantidad = $value['ind_cantidad'];
             $precio = $value['ind_valor'];
             $stotal = $value['precio_compra'];
+			$tipo_entrada = $value['tipo_entrada'];
 
             $result['data'][$key]=array(
-                $fecha,$cantidad,$precio,$stotal
+                $fecha,$cantidad,$precio,$stotal,$tipo_entrada
             );
         }
 

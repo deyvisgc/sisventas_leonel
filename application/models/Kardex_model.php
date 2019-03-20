@@ -11,24 +11,29 @@ class Kardex_model extends CI_Model
         return $query->result_array();
     }
 
-    function Kardex_Entradas($idprodcuto){
-        $query = $this->db->query(
-            "SELECT DATE_FORMAT(ing.ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro,ingd.ind_cantidad,ingd.ind_valor, FORMAT(ROUND((ingd.ind_valor * ingd.ind_cantidad),1),2) AS precio_compra 
+    function Kardex_Entradas($id_producto){
+        $query = $this->db->query("
+        
+        SELECT DATE_FORMAT(ing.ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro,ingd.ind_cantidad,ingd.ind_valor, FORMAT(ROUND((ingd.ind_valor * ingd.ind_cantidad),1),2) AS precio_compra,ingd.tipo_entrada
             FROM ingreso as ing, ingreso_detalle as ingd,producto as p 
             where ingd.ing_id_ingreso=ing.ing_id_ingreso AND p.pro_id_producto=ingd.pro_id_producto
-            AND ingd.pro_id_producto = $idprodcuto"
-        );
-        return $query->result_array();
+            AND ingd.pro_id_producto =$id_producto  UNION ALL
+            
+            SELECT   DATE_FORMAT(ingreso_detalle.ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro,ingreso_detalle.ind_cantidad,ingreso_detalle.ind_valor,ingreso_detalle.ind_monto,ingreso_detalle.tipo_entrada FROM ingreso_detalle WHERE ingreso_detalle.tipo_entrada=\"produccion\" and ingreso_detalle.pro_id_producto=$id_producto;
+       
+        ");
+		$data =$query;
+        return $data->result_array();
     }
 
-    function Kardex_Entradas_Total($idprodcuto){
-        $query = $this->db->query(
-            "SELECT FORMAT(ROUND(SUM(ingd.ind_valor * ingd.ind_cantidad),1),2) AS total_entradas 
-            FROM ingreso as ing, ingreso_detalle as ingd,producto as p 
-            where ingd.ing_id_ingreso=ing.ing_id_ingreso AND p.pro_id_producto=ingd.pro_id_producto
-            AND ingd.pro_id_producto = $idprodcuto"
-        );
-        return $query->row_array();
+
+    function Kardex_Entradas_Total($id_producto){
+		$query = $this->db->query("SELECT FORMAT(ROUND(SUM(ingd.ind_cantidad*ingd.ind_valor),1),2) AS total_entradas 
+            FROM  ingreso_detalle as ingd,producto as p 
+            WHERE p.pro_id_producto=ingd.pro_id_producto
+            AND ingd.pro_id_producto=$id_producto");
+		$data =$query;
+        return $data->row_array();
     }
 
 

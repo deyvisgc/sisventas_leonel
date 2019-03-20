@@ -79,6 +79,7 @@ class Producto extends CI_Controller {
 		    	'pro_kilogramo' => $this->input->post('pro_kilogramos'),
 			    'pro_lote' => $this->input->post('pro_lote'),
 				'pro_eliminado' => 'NO');
+
 		$pro_id_producto = $this->producto_model->mregistrar($data);
 		
 		$data_movimiento = array(
