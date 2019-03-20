@@ -121,8 +121,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <tr>
                                                     <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
 
-                                                    <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
-                                                    <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+                                                    <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS DE COMPRAS</th>
+
 
                                                 </tr>
                                                 <tr>
@@ -132,7 +132,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Tipo Entrada</th>
+
 
 
                                                 </tr>
@@ -147,23 +147,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             </table>
                                         </div>
                                         <div class="col-md-6 col-lg-6 col-xs-12">
-                                            <table class="table table-hover table-sm" id="tb_entradas" style="width: 100%">
+                                            <table class="table table-hover table-sm" id="tb_entradas_produccion" style="width: 100%">
                                                 <thead>
                                                 <tr>
                                                     <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
 
-                                                    <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
-                                                    <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+                                                    <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS DE PRODUCCION</th>
 
                                                 </tr>
                                                 <tr>
 
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
                                                     <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Tipo Entrada</th>
+
 
 
                                                 </tr>
@@ -172,8 +170,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 </tbody>
                                                 <tfoot>
                                                 <tr>
-                                                    <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
-                                                    <th class=" alinear_derecha"><span id="total_ingreso">00.00</span></th>
+                                                    <th colspan="4" class=" alinear_derecha">&nbsp;Total</th>
+                                                    <th class=" alinear_derecha"><span id="total_ingreso_produccion">00.00</span></th>
                                                 </tfoot>
                                             </table>
                                         </div>
@@ -319,7 +317,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "ordering": false
         });
 
-        $('#tb_existencias').DataTable({
+
+		$('#tb_entradas_produccion').DataTable({
+			ajax:{
+				url:BASE_URL+'reporte/kardex/kardex/Kardex_EntradaXproduccion/'+pro_id_producto,
+				type:'post',
+				dataType:'json',
+				dataSrc:function(res){
+					$('#total_ingreso_produccion').text(res.totales_entrada.total_entradas);
+					return res.data;
+				}
+			},
+			"language": {
+				"decimal": "",
+				"emptyTable": "Tabla vacia.",
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"infoPostFix": "",
+				"thousands": ",",
+				"lengthMenu": "Mostrar _MENU_ entradas",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"search": "Buscar",
+				"zeroRecords": "No se encontraron registros coincidentes.",
+				"paginate": {
+					"first": "Primero",
+					"last": "Final",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"aria": {
+					"sortAscending": ": activar para ordenar la columna ascendente.",
+					"sortDescending": ": activar para ordenar la columna descendente."
+				}
+			},
+			destroy:true,
+			"ordering": false
+		});
+        $('#tb_salidas').DataTable({
+
             ajax:{
                 url:BASE_URL+'reporte/kardex/kardex/Kardex_Existencias/'+pro_id_producto,
                 type:'post',

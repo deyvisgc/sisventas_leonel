@@ -59,7 +59,6 @@ class Kardex  extends CI_Controller
 
         $entradas = $this->kardex_model->Kardex_Entradas($id_producto);
         $totales_entrada = $this->kardex_model->Kardex_Entradas_Total($id_producto);
-
         $result = array('data'=>array(),'totales_entrada'=>$totales_entrada);
 
         foreach ($entradas as $key =>$value){
@@ -77,6 +76,28 @@ class Kardex  extends CI_Controller
 
         echo json_encode($result);
     }
+
+    public function Kardex_EntradaXproduccion($id_producto){
+		is_logged_in_or_exit($this);
+
+		$entradasxproduccion = $this->kardex_model->Kardex_EntradasXPRODUCCION($id_producto);
+		$totales_entrada = $this->kardex_model->Kardex_Entradas_Total_SUMAS($id_producto);
+		$result = array('data'=>array(),'totales_entrada'=>$totales_entrada);
+
+		foreach ($entradasxproduccion as $key =>$value){
+			$fecha = $value['ing_fecha_registro'];
+			$lote = $value['ind_numero_lote'];
+			$cantidad = $value['ind_cantidad'];
+			$precio = $value['ind_valor'];
+			$stotal = $value['precio_compra'];
+
+			$result['data'][$key]=array(
+				$fecha,$lote,$cantidad,$precio,$stotal
+			);
+		}
+
+		echo json_encode($result);
+	}
 
     public function Kardex_Salidas($id_producto){
         is_logged_in_or_exit($this);
