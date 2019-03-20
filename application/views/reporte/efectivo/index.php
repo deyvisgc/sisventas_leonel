@@ -47,8 +47,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <hr>
                                 <div class="form-group col-md-12">
                                     <button type="button" class="btn btn-danger pull-right" onclick="imprimir();"><i class="fa fa-print"></i> Imprimir </button>
-										<button type="button" style="margin-left: 30px" class="btn btn-info" data-toggle="modal" data-target="#md_retiro"  id="btn_retiro"><i class="fas fa-eye"></i> RETIRO</button>
-										<button type="button" class="btn btn-warning"  id="btn_ingreso" data-toggle="modal" data-target="#md_ingreso"><i class="fas fa-eye"></i> INGRESO</button>
+										<button type="button"  class="btn btn-success" data-toggle="modal" data-target="#md_retiro"  id="btn_retiro"><i class="fas fa-eye"></i> Retiro</button>
+										<button type="button" class="btn btn-facebook"  id="btn_ingreso" data-toggle="modal" data-target="#md_ingreso"><i class="fas fa-eye"></i> Ingreso</button>
                                 </div><br>
                                 <div id="imprimir">
                                 <div class="row" style="margin: 16px;">

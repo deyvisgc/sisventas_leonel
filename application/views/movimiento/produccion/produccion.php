@@ -33,6 +33,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="tab-pane active" id="dv_panel_eleccion">
                             <div class="container">
 
+
                                 <div class="row" >
                                         <div class="col-md-12 grid-margin">
                                             <div>
@@ -58,43 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<input type="number" class="form-control precios" id="in_valor_venta" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
 															</div>
 														</div>
-
 													</div><br>
-													<div class="row">
-														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12" >
-															<div class="input-group">
-																<span class="input-group-addon bg-gray">Cant:</span>
-																<input type="number" class="form-control cantidades"
-																	   id="in_cantidad"
-																	   style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-																	   data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-																>
-															</div>
-														</div>
-														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-															<div class="input-group">
-																<span class="input-group-addon bg-gray">#Lote:</span>
-																<input type="text" class="form-control cantidades"
-																	   id="in_numero_lote"
-																	   style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-																	   data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-																>
-															</div>
-														</div>
-														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-															<div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Cad <i class="fa fa-calendar"></i></span>
-																<input type="date" class="form-control cantidades"
-																	   id="in_fecha_vencimiento"
-																	   style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-																	   data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
-															</div>
-														</div>
-														<br>
-													</div>
-                                                    <input type="hidden" id="in_pro_id_producto" value="">
-
-                                            </div><br>
 												<div class="row">
 													<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12" >
 														<div class="input-group">
@@ -136,7 +101,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div><!-- /.content-wrapper -->
 
 <script>
-    function init_produccion(){
+    function init_produccion() {
 
         $("#in_descripcion_p").autocomplete({
             source: function (request, response) {
@@ -292,6 +257,7 @@ function mostrarSublase(subclase){
         $('#in_ing_monto_tar_credito').val('');
         $('#in_ing_monto_tar_debito').val('');
     }
+
     function func_cancelar_producto(e) {
         $('#in_descripcion_p').val('');
         $('#in_valor').prop('disabled', true);
@@ -308,6 +274,7 @@ function mostrarSublase(subclase){
         $('#sp_uni_med_nombre').text('...');
         $('#sp_stock').text('0.00');
     }
+
     function func_quitar_producto(e) {
         var tr = $(e.target).closest('tr');
         var pro_id_producto = tr.find('input[name="pro_id_producto"]').val();
@@ -329,73 +296,81 @@ function mostrarSublase(subclase){
             }
         });
     }
-	function func_registrar_producto(){
+    function func_registrar_producto() {
 
-		var nombre_product=$('#in_descripcion_p').val();
-		var valor = $('#in_valor').val();
-		if (valor == '') {
-			add_mensaje(null, '!!! ', ' Ingrese precio.', 'warning');
-			return;
-		}
-		var valor_venta=$('#in_valor_venta').val();
-		if (valor_venta == '') {
-			add_mensaje(null, '!!! ', ' Ingrese precio de venta.', 'warning');
-			return;
-		}
-		var cantidad = $('#in_cantidad').val();
-		if (cantidad == '') {
-			add_mensaje(null, '!!! ', ' Ingrese cantidad.', 'warning');
-			return;
-		}
-		var numero_lote = $('#in_numero_lote').val();
-		if (numero_lote == '') {
-			add_mensaje(null, '!!! ', ' Ingrese #Lote.', 'warning');
-			return;
-		}
-		var fecha_vencimiento = $('#in_fecha_vencimiento').val();
-		if (!$('#in_fecha_vencimiento').prop('disabled')) {
-			if (fecha_vencimiento == '') {
-				add_mensaje(null, '!!! ', ' Ingrese fecha de vencimiento.', 'warning');
-				return;
-			}
-		}
-		var data = {};
-		data.id_producto = $('#in_pro_id_producto').val();
-		data.valor = valor;
-		data.valor_venta = valor_venta;
-		data.cantidad = cantidad;
-		data.numero_lote = numero_lote;
-		data.fecha_vencimiento = fecha_vencimiento;
-		data.nombre_product=nombre_product;
+        var nombre_product = $('#in_descripcion_p').val();
+        var id_producto = $('#in_pro_id_producto').val();
+
+
+        var valor = $('#in_valor').val();
+
+        if (valor == '') {
+            add_mensaje(null, '!!! ', ' Ingrese precio.', 'warning');
+            return;
+        }
+        var valor_venta = $('#in_valor_venta').val();
+        if (valor_venta == '') {
+            add_mensaje(null, '!!! ', ' Ingrese precio.', 'warning');
+            return;
+        }
+        var cantidad = $('#in_cantidad').val();
+        if (cantidad == '') {
+            add_mensaje(null, '!!! ', ' Ingrese cantidad.', 'warning');
+            return;
+        }
+        var numero_lote = $('#in_numero_lote').val();
+        if (numero_lote == '') {
+            add_mensaje(null, '!!! ', ' Ingrese #Lote.', 'warning');
+            return;
+        }
+        var fecha_vencimiento = $('#in_fecha_vencimiento').val();
+        if (!$('#in_fecha_vencimiento').prop('disabled')) {
+            if (fecha_vencimiento == '') {
+                add_mensaje(null, '!!! ', ' Ingrese fecha de vencimiento.', 'warning');
+                return;
+            }
+        }
+        var data = {};
+        data.id_producto = id_producto;
+        data.valor = valor;
+        data.valor_venta = valor_venta;
+        data.cantidad = cantidad;
+        data.numero_lote = numero_lote;
+        data.fecha_vencimiento = fecha_vencimiento;
+        data.nombre_product = nombre_product;
 		data.nom_Clase=$('#clase').val();
 		data.sub_Clase=$('#subclase').val();
 		data.codigo=$('#codigo').val();
 
-		$.ajax({
-			type: "POST",
-			url: BASE_URL + "movimiento/ingreso/detalle/registrar_producto",
-			dataType: 'json',
-			data: data,
-			success: function (datos) {
 
-				Swal.fire({
-					position: 'center',
-					type: 'success',
-					title: 'Proceso Completado',
-					showConfirmButton: false,
-					timer: 1500
-				});
+        $.ajax({
+            type: "POST",
+            url: BASE_URL + "movimiento/ingreso/detalle/registrar_producto",
+            dataType: 'json',
+            data: data,
+            success: function (datos) {
 
-               $('#in_descripcion_p').val("");
-				$('#in_valor').val("");
-				$('#in_valor_venta').val("");
-				$('#in_cantidad').val("");
-				$('#in_numero_lote').val("");
-				$('#in_fecha_vencimiento').val("");
+                Swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Proceso Completado',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                $('#in_descripcion_p').val("");
+                $('#in_valor').val("");
+                $('#in_valor_venta').val("");
+                $('#in_cantidad').val("");
+                $('#in_numero_lote').val("");
+                $('#in_fecha_vencimiento').val("");
 				$('#codigo').val("");
-			}
-		});
-	}
+            }
+        });
+    }
+
+
+
     function func_agregar_producto(e) {
         var pro_id_producto = $('#in_pro_id_producto').val();
         if (pro_id_producto == '') {
@@ -430,6 +405,8 @@ function mostrarSublase(subclase){
         data.cantidad = cantidad;
         data.numero_lote = numero_lote;
         data.fecha_vencimiento = fecha_vencimiento;
+
+
         $.ajax({
             type: "POST",
             url: BASE_URL + "movimiento/ingreso/detalle/agregar_producto",

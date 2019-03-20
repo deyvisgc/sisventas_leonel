@@ -64,9 +64,14 @@ class Producto_model extends CI_Model
 			from producto p 
 			  inner join unidad_medida um 
 			  on p.unm_id_unidad_medida=um.unm_id_unidad_medida 
-			  inner join estado e 
+			  inner join clase cc 
+              on cc.cla_id_clase = p.cla_clase
+              inner join clase ccc
+              on ccc.cla_id_clase = p.cla_subclase
+              inner join estado e 
 			  on p.est_id_estado=e.est_id_estado 
-			where p.pro_eliminado='NO' AND p.est_id_estado=11");
+			where p.pro_eliminado='NO' AND p.est_id_estado=11
+			GROUP BY p.cla_clase,p.cla_subclase,p.pro_nombre;");
         foreach ($query->result() as $row) {
             $list[] = $row;
         }

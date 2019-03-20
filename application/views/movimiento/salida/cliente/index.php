@@ -375,7 +375,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							}
 						} );
 					},
-					delay: 900,
+					delay: 100,
 					minLength: 1,
 					select: function( event, ui ) {
 

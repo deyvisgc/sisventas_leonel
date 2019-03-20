@@ -24,7 +24,8 @@ class Detalle extends CI_Controller {
 		echo json_encode($data);
 	}
 	public function buscar_productos_x_descripcion($lote) {
-		is_logged_in_or_exit($this);
+
+	    is_logged_in_or_exit($this);
 
 		$descripcion = $this->input->post('descripcion');
 		$usuario = get_usuario($this);

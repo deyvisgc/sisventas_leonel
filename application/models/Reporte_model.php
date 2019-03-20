@@ -18,8 +18,10 @@ class Reporte_model extends CI_Model
 			pro_cantidad, 
 			pro_val_compra pro_val_compra, 
 			pro_val_venta pro_val_venta, 
+			p.pro_kilogramo,
+			p.pro_codigo,
 			FORMAT(pro_cantidad_min, 0, 'de_DE') pro_cantidad_min 
-			FROM producto p WHERE p.pro_cantidad >= 1 GROUP BY p.cla_clase,p.cla_subclase,p.pro_nombre");
+			FROM producto p WHERE p.pro_cantidad >= 1 GROUP BY p.cla_clase,p.cla_subclase,p.pro_nombre  ORDER BY p.pro_kilogramo DESC ");
         foreach ($query->result() as $row) {
             $list[] = $row;
         }
@@ -332,9 +334,22 @@ class Reporte_model extends CI_Model
     public function Totales_Stock()
     {
         $sql = $this->db->query("SELECT  SUM(p.pro_cantidad) as cantidad, FORMAT(ROUND(SUM(p.pro_cantidad * p.pro_val_compra),1),2) as t_compra,
-FORMAT(ROUND(SUM(p.pro_cantidad * p.pro_val_venta),1),2) as t_venta  FROM producto AS p where p.pro_nombre != 'MAIZ NACIONAL'");
+        FORMAT(ROUND(SUM(p.pro_cantidad * p.pro_val_venta),1),2) as t_venta  FROM producto AS p where p.pro_nombre != 'MAIZ NACIONAL'");
         return $sql->row_array();
+    }
 
+    public function Total_Salida_Produccion($fecha_ini,$fecha_fin){
+        $sql = $this->db->query("SELECT SUM(pro_monto) as monto from salida_produccion where STR_TO_DATE(pro_fecha, '%Y-%m-%d') 
+        BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')");
+        return $sql->row_array();
+    }
+
+    public function Salida_Productos_Produccion($fecha_ini,$fecha_fin){
+        $query = $this->db->query("SELECT p.pro_nombre, ps.pro_cantidad,ps.pro_monto, DATE_FORMAT(ps.pro_fecha,'%d-%m-%Y') as pro_fecha 
+        FROM producto as p, salida_produccion as ps WHERE p.pro_id_producto = ps.pro_id_producto AND STR_TO_DATE(ps.pro_fecha, '%Y-%m-%d') 
+        BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')");
+
+        return $query->result_array();
     }
 }
 

@@ -1,70 +1,78 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Sangria_model extends CI_Model {
 
-    function registrarSangria($data) {
+class Sangria_model extends CI_Model
+{
+
+    function registrarSangria($data)
+    {
         $result = $this->db->query("call MANAGE_SANGRIA(
-			".$data['usu_id_usuario'].",
-			".$data['monto'].",
-			'".$data['tipo_sangria']."',
-			'".$data['san_motivo']."'
+			" . $data['usu_id_usuario'] . ",
+			" . $data['monto'] . ",
+			'" . $data['tipo_sangria'] . "',
+			'" . $data['san_motivo'] . "'
 			)");
         return $result;
     }
-    function sangria_x_caja($caja){
-        $query="SELECT s.id_sangria, c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+
+    function sangria_x_caja($caja)
+    {
+        $query = "SELECT s.id_sangria, c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion 
-        LIKE '%".$caja."%' ";
-        $data=$this->db->query($query);
+        LIKE '%" . $caja . "%' ";
+        $data = $this->db->query($query);
         return $data->result_array();
     }
 
-    function listar_sagria_x_fecha_caja($fecha_ini,$fecha_fin,$caja){
-        $list=array();
-        $query=$this->db->query("SELECT c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+    function listar_sagria_x_fecha_caja($fecha_ini, $fecha_fin, $caja)
+    {
+        $list = array();
+        $query = $this->db->query("SELECT c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'
         AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.fecha DESC");
 
-        foreach ($query->result() as $row)
-        {
+        foreach ($query->result() as $row) {
             $list[] = $row;
         }
         return $list;
     }
 
-    function sumar_total_ingreso_sangria_x_fecha($fecha_ini,$fecha_fin){
-        $query=$this->db->query("
+    function sumar_total_ingreso_sangria_x_fecha($fecha_ini, $fecha_fin)
+    {
+        $query = $this->db->query("
         SELECT ifnull(round(SUM(monto),2),0) as monto_ingreso FROM sangria AS s 
         WHERE s.tipo_sangria='ingreso' 
         AND STR_TO_DATE(s.fecha, '%Y-%m-%d') 
         BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d');
         ");
-        foreach ($query->result() as $row){
+        foreach ($query->result() as $row) {
             return $row;
         }
-        return array('monto_ingreso'=>'0.00');
+        return array('monto_ingreso' => '0.00');
     }
 
-    function sumar_total_ingreso_sangria_x_fecha_caja($fecha_ini,$fecha_fin,$caja){
-        $query=$this->db->query("
+    function sumar_total_ingreso_sangria_x_fecha_caja($fecha_ini, $fecha_fin, $caja)
+    {
+        $query = $this->db->query("
         SELECT ifnull(round(SUM(monto),2),0) as monto_ingreso FROM sangria AS s, caja as c 
         WHERE c.caj_id_caja=s.caj_id_caja AND c.caj_descripcion='$caja' AND s.tipo_sangria='ingreso' 
         AND  STR_TO_DATE(s.fecha, '%Y-%m-%d') 
         BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d');
         ");
-        foreach ($query->result() as $row){
+        foreach ($query->result() as $row) {
             return $row;
         }
-        return array('monto_ingreso'=>'0.00');
+        return array('monto_ingreso' => '0.00');
     }
 
-    function sumar_total_salida_sangria_x_fecha($fecha_ini,$fecha_fin){
-        $query=$this->db->query("
+    function sumar_total_salida_sangria_x_fecha($fecha_ini, $fecha_fin)
+    {
+        $query = $this->db->query("
         SELECT ifnull(round(SUM(monto),2),0) as monto_retiro 
         FROM sangria AS s 
         WHERE s.tipo_sangria='retiro' 
@@ -72,13 +80,15 @@ class Sangria_model extends CI_Model {
         BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d');
         ");
-        foreach ($query->result() as $row){
+        foreach ($query->result() as $row) {
             return $row;
         }
-        return array('monto_retiro'=>'00.00');
+        return array('monto_retiro' => '00.00');
     }
-    function sumar_total_salida_sangria_x_fecha_caja($fecha_ini,$fecha_fin,$caja){
-        $query=$this->db->query("
+
+    function sumar_total_salida_sangria_x_fecha_caja($fecha_ini, $fecha_fin, $caja)
+    {
+        $query = $this->db->query("
         SELECT ifnull(round(SUM(monto),2),0) as monto_retiro 
         FROM sangria AS s,caja AS c
         WHERE c.caj_id_caja=s.caj_id_caja AND c.caj_descripcion='$caja' AND s.tipo_sangria='retiro'
@@ -86,13 +96,14 @@ class Sangria_model extends CI_Model {
         BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d');
         ");
-        foreach ($query->result() as $row){
+        foreach ($query->result() as $row) {
             return $row;
         }
-        return array('monto_retiro'=>'00.00');
+        return array('monto_retiro' => '00.00');
     }
 
-    function mmovimiento_diario_salida($fecha_ini, $fecha_fin,$caja) {
+    function mmovimiento_diario_salida($fecha_ini, $fecha_fin, $caja)
+    {
         $list = array();
         $query = $this->db->query("SELECT 
 			  DATE_FORMAT(sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente, 
@@ -106,14 +117,14 @@ class Sangria_model extends CI_Model {
 			FROM salida sal, caja as c 
 			WHERE sal.caj_id_caja=c.caj_id_caja AND c.caj_descripcion='$caja' AND STR_TO_DATE(sal_fecha_doc_cliente, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
 			ORDER BY sal_fecha_registro DESC ");
-        foreach ($query->result() as $row)
-        {
+        foreach ($query->result() as $row) {
             $list[] = $row;
         }
         return $list;
     }
 
-    function mmovimiento_diario_totales_salida($fecha_ini, $fecha_fin,$caja) {
+    function mmovimiento_diario_totales_salida($fecha_ini, $fecha_fin, $caja)
+    {
         $query = $this->db->query("SELECT 
 			  IFNULL(sal_monto,0) sal_monto 
 			FROM (SELECT
@@ -125,8 +136,7 @@ class Sangria_model extends CI_Model {
 			    AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') 
 			  ) sal_monto 
 			) tabla ");
-        foreach ($query->result() as $row)
-        {
+        foreach ($query->result() as $row) {
             return $row;
         }
         return array('ing_valor' => '00.00',
@@ -134,19 +144,21 @@ class Sangria_model extends CI_Model {
             'total' => '00.00');
     }
 
-    function listar_cajas_combobox(){
-        $query="select c.caj_descripcion from caja as c";
+    function listar_cajas_combobox()
+    {
+        $query = "select c.caj_descripcion from caja as c";
         $data = $this->db->query($query);
         return $data->result_array();
     }
 
 
-    function editar_monto_sangria($data){
+    function editar_monto_sangria($data)
+    {
         $result = $this->db->query("call editar_monto_sangria
-        (   ".$data["id_sangria"].", 
-			'".$data["tipo_sangria"]."', 
-			".$data["monto"].", 
-			'".$data["san_motivo"]."' 
+        (   " . $data["id_sangria"] . ", 
+			'" . $data["tipo_sangria"] . "', 
+			" . $data["monto"] . ", 
+			'" . $data["san_motivo"] . "' 
 		)");
         return $result;
     }
@@ -155,57 +167,51 @@ class Sangria_model extends CI_Model {
     {
         $consulta = "SELECT s.id_sangria,s.monto,s.tipo_sangria,s.san_motivo FROM sangria as s WHERE id_sangria='$data'";
 
-        $data = $this->db->query($consulta,array($data));
+        $data = $this->db->query($consulta, array($data));
         return $data->row_array();
     }
-    /*
-    public function buscarCagas($texto){
-    	$list=array();
-		$query =$this->db->query("select c.caj_descripcion from caja as c where c.caj_descripcion like '%".$texto."%'");
-		foreach ($query->result() as $row) {
-			$row->value = $row->caj_descripcion;
-			$list[] = $row;
-		}
-		return $list;
-	}
-    */
-	public function buscarCaja(){
-		$list = array();
-		$query = $this->db->query("SELECT * FROM caja WHERE est_id_estado=11 ORDER BY caj_id_caja ASC");
-		foreach ($query->result() as $row)
-		{
-			$list[] = $row;
-		}
-		return $list;
-	}
-	public function buscarCajaXCaja($fecha_ini, $fecha_fin,$caja){
-		$lista=array();
-		$consulta=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+
+    public function buscarCaja()
+    {
+        $list = array();
+        $query = $this->db->query("SELECT * FROM caja WHERE est_id_estado=11 ORDER BY caj_id_caja ASC");
+        foreach ($query->result() as $row) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    public function buscarCajaXCaja($fecha_ini, $fecha_fin, $caja)
+    {
+        $lista = array();
+        $consulta = $this->db->query("SELECT c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'  and s.tipo_sangria='retiro'
         AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.fecha DESC");
-		foreach ($consulta->result() as $row) {
-			$lista[] = $row;
-		}
-		return $lista;
+        foreach ($consulta->result() as $row) {
+            $lista[] = $row;
+        }
+        return $lista;
 
 
-	}
-	public function buscarCajaXCaja_Ingreso($fecha_ini, $fecha_fin,$caja){
-		$lista1=array();
-		$consulta=$this->db->query("SELECT c.caj_descripcion,s.monto,s.fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
+    }
+
+    public function buscarCajaXCaja_Ingreso($fecha_ini, $fecha_fin, $caja)
+    {
+        $lista1 = array();
+        $consulta = $this->db->query("SELECT c.caj_descripcion,s.monto,DATE_FORMAT(s.fecha,'%d-%m-%Y') as fecha,s.tipo_sangria,s.san_motivo,u.usu_nombre 
         FROM sangria AS s, caja as c,usuario as u
         WHERE s.caj_id_caja=c.caj_id_caja AND s.usu_id_usuario=u.usu_id_usuario AND c.caj_descripcion='$caja'  and s.tipo_sangria='ingreso'
         AND STR_TO_DATE(s.fecha, '%Y-%m-%d') BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d')
         AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY s.fecha DESC");
-		foreach ($consulta->result() as $row) {
-			$lista1[] = $row;
-		}
-		return $lista1;
+        foreach ($consulta->result() as $row) {
+            $lista1[] = $row;
+        }
+        return $lista1;
 
 
-	}
+    }
 
 
 }
