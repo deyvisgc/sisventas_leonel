@@ -78,13 +78,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h2 class="modal-title" id="detalle_kardex">KARDEX</h2>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="nav-tabs-custom">
-                            <ul class="nav nav-tabs pull-right" style="background-color: #00ca6d">
+                            <ul class="nav nav-tabs pull-right" style="background-color: #3ca4f3">
                                 <li><a href="#dv_salidas" data-toggle="tab" id="a_salidas" >Salidas</a></li>
                                 <li><a href="#dv_entradas" data-toggle="tab" id="a_entradas">Entradas</a></li>
                                 <li class="active"><a href="#dv_existencias" data-toggle="tab" id="a_general">Existencias</a></li>
@@ -98,13 +97,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <table class="table table-hover table-sm" id="tb_existencias" style="width: 100%">
                                                 <thead>
                                                 <tr>
-                                                    <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">EXISTENCIAS</th>
+                                                    <th class="text-center" colspan="3" style="background-color:#0d47a1;color: white;">EXISTENCIAS</th>
                                                 </tr>
                                                 <tr>
 
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                                    <th class="text-center" style="color: white;background-color:#304ffe;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color:#304ffe;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color:#304ffe;">Valor Total</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody class="text-center">
@@ -183,20 +182,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                                 <div class="tab-pane" id="dv_salidas">
                                     <div class="row">
-
                                         <div class="col-md-6 col-lg-6 col-xs-12">
                                             <table class="table table-hover table-sm" id="tb_salidas" style="width: 100%">
                                                 <thead>
                                                 <tr>
-                                                    <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
-                                                    <th class="text-center" colspan="5" style="background-color: #B03A2E;color: white;">SALIDAS</th>
+                                                    <th class="text-center" style="padding-bottom: 25px; background-color: #1f05d4; color: white" rowspan="2" >FECHA</th>
+                                                    <th class="text-center" colspan="5" style="background-color: #1f05d4;color: white;">SALIDAS VENTAS</th>
                                                 </tr>
                                                 <tr>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
-                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                                    <th class="text-center" style="color: white;background-color: #1978f3;">N° DOC</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">LOTE</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">Valor Total</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody class="text-center">
@@ -205,6 +203,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <tr>
                                                     <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
                                                     <th class=" alinear_derecha"><span id="total_salidas">00.00</span></th>
+                                                    </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-xs-12">
+                                            <table class="table table-hover table-sm" id="tb_salidas_produccion" style="width: 100%">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center" style="padding-bottom: 25px; background-color: #1f05d4; color: white" rowspan="2" >FECHA</th>
+                                                    <th class="text-center" colspan="5" style="background-color: #1f05d4;color: white;">SALIDAS VENTAS</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" style="color: white;background-color: #1978f3;">N° DOC</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">LOTE</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color:  #1978f3;">Valor Total</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
+                                                    <th class=" alinear_derecha"><span id="total_salidas_produccion">00.00</span></th>
                                                 </tfoot>
                                             </table>
                                         </div>
@@ -296,6 +318,76 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             destroy:true,
             "ordering": false
         });
+
+        $('#tb_existencias').DataTable({
+            ajax:{
+                url:BASE_URL+'reporte/kardex/kardex/Kardex_Existencias/'+pro_id_producto,
+                type:'post',
+                dataType:'json'
+            },
+            "language": {
+                "decimal": "",
+                "emptyTable": "Tabla vacia.",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                "infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+                "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ entradas",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar",
+                "zeroRecords": "No se encontraron registros coincidentes.",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Final",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna ascendente.",
+                    "sortDescending": ": activar para ordenar la columna descendente."
+                }
+            },
+            destroy:true
+        });
+
+        $('#tb_salidas_produccion').DataTable({
+            ajax:{
+                url:BASE_URL+'reporte/kardex/kardex/Kardex_Salidas_Produccion/'+pro_id_producto,
+                type:'post',
+                dataType:'json',
+                dataSrc:function(res){
+                    $('#total_salidas_produccion').text(res.totales_salidas_produccion.total_salidas_produccion);
+                    return res.data;
+                }
+            },
+            "language": {
+                "decimal": "",
+                "emptyTable": "Tabla vacia.",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                "infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
+                "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ entradas",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "zeroRecords": "No se encontraron registros coincidentes.",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Final",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna ascendente.",
+                    "sortDescending": ": activar para ordenar la columna descendente."
+                }
+            },
+            destroy:true,
+            ordering:false
+        });
         $('#tb_salidas').DataTable({
             ajax:{
                 oreder:[[0,'desc']],
@@ -335,38 +427,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             destroy:true,
             "ordering": false
         });
-        $('#tb_existencias').DataTable({
-            ajax:{
-                url:BASE_URL+'reporte/kardex/kardex/Kardex_Existencias/'+pro_id_producto,
-                type:'post',
-                dataType:'json'
-            },
-            "language": {
-                "decimal": "",
-                "emptyTable": "Tabla vacia.",
-                "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
-                "infoEmpty": "Mostrando 0 a 0 de 0 entradas.",
-                "infoFiltered": "(filtrado de _MAX_ entradas totales)",
-                "infoPostFix": "",
-                "thousands": ",",
-                "lengthMenu": "Mostrar _MENU_ entradas",
-                "loadingRecords": "Cargando...",
-                "processing": "Procesando...",
-                "search": "Buscar",
-                "zeroRecords": "No se encontraron registros coincidentes.",
-                "paginate": {
-                    "first": "Primero",
-                    "last": "Final",
-                    "next": "Siguiente",
-                    "previous": "Anterior"
-                },
-                "aria": {
-                    "sortAscending": ": activar para ordenar la columna ascendente.",
-                    "sortDescending": ": activar para ordenar la columna descendente."
-                }
-            },
-            destroy:true
-        });
-
     }
 </script>

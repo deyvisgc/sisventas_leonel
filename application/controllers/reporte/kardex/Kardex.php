@@ -120,4 +120,25 @@ class Kardex  extends CI_Controller
 
         echo json_encode($result);
     }
+
+    public function Kardex_Salidas_Produccion($id_producto){
+        is_logged_in_or_exit($this);
+
+        $salida_produccion = $this->kardex_model->kardex_salida_produccion($id_producto);
+        $totales_salidas_produccion = $this->kardex_model->Kardex_Salidas_Total_Produccion($id_producto);
+        $result = array('data'=>array(),'totales_salidas_produccion'=>$totales_salidas_produccion);
+
+        foreach ($salida_produccion as $key => $item) {
+            $fecha=$item['pro_fecha'];
+            $doc = '000';
+            $lote = $item['pro_lote'];
+            $cantidad = $item['pro_cantidad'];
+            $v_unitario = $item['pro_val_compra'];
+            $v_total = $item['pro_monto'];
+            $result['data'][$key]=array(
+                $fecha,$doc,$lote,$cantidad,$v_unitario,$v_total
+            );
+        }
+        echo json_encode($result);
+    }
 }

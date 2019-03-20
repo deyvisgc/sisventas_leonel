@@ -63,4 +63,19 @@ FORMAT(ROUND((ingd.ind_valor * ingd.ind_cantidad),1),2) AS precio_compra,  ing.i
         );
         return $query->result_array();
     }
+
+    function kardex_salida_produccion($idproducto){
+        $query=$this->db->query("SELECT sp.pro_cantidad,sp.pro_monto,date_format(sp.pro_fecha,'%d-%m-%Y') AS pro_fecha,p.pro_lote,p.pro_val_compra
+        FROM salida_produccion AS sp, producto AS p where p.pro_id_producto=sp.pro_id_producto AND sp.pro_id_producto=$idproducto ORDER BY pro_fecha DESC");
+
+        return $query->result_array();
+    }
+
+    function Kardex_Salidas_Total_Produccion($idproducto){
+        $query = $this->db->query(
+            "SELECT FORMAT(ROUND(SUM(pro_monto),1),2) AS total_salidas_produccion
+            FROM salida_produccion WHERE pro_id_producto=$idproducto"
+        );
+        return $query->row_array();
+    }
 }
