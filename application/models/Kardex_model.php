@@ -7,7 +7,7 @@ class Kardex_model extends CI_Model
     {
         $query = $this->db->query("SELECT p.pro_id_producto,IFNULL((SELECT cc.cla_nombre FROM clase cc WHERE cc.cla_id_clase=p.cla_clase),'') clase_nombre, 
 			  IFNULL((SELECT cc.cla_nombre FROM clase cc WHERE cc.cla_id_clase=p.cla_subclase),'') subclase_nombre, pro_nombre, 
-			  FORMAT(pro_cantidad, 0, 'de_DE') pro_cantidad, pro_val_compra pro_val_compra, pro_val_venta pro_val_venta
+			  FORMAT(pro_cantidad, 0, 'de_DE') pro_cantidad, pro_val_compra pro_val_compra, pro_val_venta pro_val_venta,pro_lote
 			FROM producto p where p.pro_cantidad >=1 GROUP BY clase_nombre,subclase_nombre,pro_nombre");
         return $query->result_array();
     }
@@ -89,6 +89,15 @@ class Kardex_model extends CI_Model
         $query = $this->db->query(
             "SELECT p.pro_cantidad,p.pro_val_compra,FORMAT(ROUND((p.pro_cantidad*p.pro_val_compra),1),2) as total_compra 
             FROM producto as p WHERE p.pro_id_producto=$idprodcuto"
+
+        );
+        return $query->result_array();
+    }
+
+    function Kardex_Existencias_Historial($idprodcuto)
+    {
+        $query = $this->db->query(
+            "SELECT DATE_FORMAT(fecha,'%d-%m-%Y') as fecha, cantidad_anterior,cantidad_entrante,cantidad_actual from mov_producto where pro_id_producto=$idprodcuto ORDER BY fecha DESC"
 
         );
         return $query->result_array();

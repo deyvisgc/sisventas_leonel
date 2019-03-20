@@ -39,6 +39,7 @@ class Kardex  extends CI_Controller
             $clase = $value['clase_nombre'];
             $subclase = $value['subclase_nombre'];
             $producto = $value['pro_nombre'];
+            $lote = $value['pro_lote'];
             $cantidad = $value['pro_cantidad'];
             $pcompra = $value['pro_val_compra'];
             $pventa = $value['pro_val_venta'];
@@ -48,7 +49,7 @@ class Kardex  extends CI_Controller
 	        ';
 
             $result['data'][$key]=array(
-                $clase,$subclase,$producto,$cantidad,$pcompra,$pventa,$button
+                $clase,$subclase,$producto,$lote,$cantidad,$pcompra,$pventa,$button
             );
         }
         echo json_encode($result);
@@ -136,6 +137,27 @@ class Kardex  extends CI_Controller
 
             $result['data'][$key]=array(
                 $cantidad,$precio,$stotal
+            );
+        }
+
+        echo json_encode($result);
+    }
+
+    public function Kardex_Existencias_Historial($id_producto){
+        is_logged_in_or_exit($this);
+
+        $result = array('data'=>array());
+
+        $existencias = $this->kardex_model->Kardex_Existencias_Historial($id_producto);
+
+        foreach ($existencias as $key =>$value){
+            $fecha = $value['fecha'];
+            $anterior= $value['cantidad_anterior'];
+            $entrante = $value['cantidad_entrante'];
+            $actual = $value['cantidad_actual'];
+
+            $result['data'][$key]=array(
+                $fecha,$anterior,$entrante,$actual
             );
         }
 
