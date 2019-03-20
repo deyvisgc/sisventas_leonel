@@ -81,98 +81,135 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h2 class="modal-title" id="detalle_kardex">KARDEX</h2>
             </div>
             <div class="modal-body">
-                <div class="row" style="margin: 16px;">
-                    <div class="col-sm-12 table-responsive">
-                        <!--style="background-color: #1fc8db;
-                        background-image: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
-                        color: white;opacity: 0.95;"-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs pull-right" style="background-color: #00ca6d">
+                                <li><a href="#dv_salidas" data-toggle="tab" id="a_salidas" >Salidas</a></li>
+                                <li><a href="#dv_entradas" data-toggle="tab" id="a_entradas">Entradas</a></li>
+                                <li class="active"><a href="#dv_existencias" data-toggle="tab" id="a_general">Existencias</a></li>
+                                <li class="pull-left header" id="pro_nombre" style="color:white;"><i class="fa fa-calculator"></i></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="dv_existencias">
+                                    <div class="row">
+                                        <br>
+                                        <div class="col-md-6 col-lg-6 col-xs-12">
+                                            <table class="table table-hover table-sm" id="tb_existencias" style="width: 100%">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">EXISTENCIAS</th>
+                                                </tr>
+                                                <tr>
 
-
-                        <h4 class="text-center">PRODUCTO</h4>
-                        <h2 id="pro_nombre" class="text-center">AFRECHO X 40</h2><br>
-                        <div class="row">
-                            <div class="col-md-12 col-md-offset-3">
-                                <div class="text-center">
-                                    <div class="col-md-6 col-lg-6 col-xs-12">
-                                        <table class="table table-hover table-sm" id="tb_existencias" style="width: 100%">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-center" colspan="3" style="background-color: #E74C3C;color: white;">EXISTENCIAS</th>
-                                            </tr>
-                                            <tr>
-
-                                                <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
-                                                <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
-                                                <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody class="text-center">
-                                            </tbody>
-                                        </table>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
+                                <div class="tab-pane" id="dv_entradas">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-xs-12">
+                                            <table class="table table-hover table-sm" id="tb_entradas" style="width: 100%">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
 
-                            <div class="col-md-5 col-lg-5 col-xs-12">
+                                                    <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+                                                    <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
 
-                            <div class="col-md-6 col-lg-6 col-xs-12">
+                                                </tr>
+                                                <tr>
 
-                                <table class="table table-hover table-sm" id="tb_entradas" style="width: 100%">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
-
-                                        <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
-                                        <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
-
-                                    </tr>
-                                    <tr>
-
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
-										<th class="text-center" style="color: white;background-color: #E74C3C;">Tipo Entrada</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Tipo Entrada</th>
 
 
-                                    </tr>
-                                    </thead>
-                                    <tbody class="text-center">
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
-                                        <th class=" alinear_derecha"><span id="total_ingreso">00.00</span></th>
-                                    </tfoot>
-                                </table>
-                            </div>
-                            <div class="col-md-6 col-lg-6 col-xs-12">
-                                <table class="table table-hover table-sm" id="tb_salidas" style="width: 100%">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
-                                        <th class="text-center" colspan="5" style="background-color: #B03A2E;color: white;">SALIDAS</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
-                                        <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="text-center">
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
-                                        <th class=" alinear_derecha"><span id="total_salidas">00.00</span></th>
-                                    </tfoot>
-                                </table><br><br><br><br>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
+                                                    <th class=" alinear_derecha"><span id="total_ingreso">00.00</span></th>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-xs-12">
+                                            <table class="table table-hover table-sm" id="tb_entradas" style="width: 100%">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
+
+                                                    <th class="text-center" colspan="4" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+                                                    <th class="text-center" colspan="5" style="background-color: #E74C3C;color: white;">ENTRADAS</th>
+
+                                                </tr>
+                                                <tr>
+
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Tipo Entrada</th>
+
+
+                                                </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
+                                                    <th class=" alinear_derecha"><span id="total_ingreso">00.00</span></th>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="dv_salidas">
+                                    <div class="row">
+
+                                        <div class="col-md-6 col-lg-6 col-xs-12">
+                                            <table class="table table-hover table-sm" id="tb_salidas" style="width: 100%">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center" style="padding-bottom: 25px; background-color: #B03A2E; color: white" rowspan="2" >FECHA</th>
+                                                    <th class="text-center" colspan="5" style="background-color: #B03A2E;color: white;">SALIDAS</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">N° DOC</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">LOTE</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Cantidad</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Unitario</th>
+                                                    <th class="text-center" style="color: white;background-color: #E74C3C;">Valor Total</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th colspan="5" class=" alinear_derecha">&nbsp;Total</th>
+                                                    <th class=" alinear_derecha"><span id="total_salidas">00.00</span></th>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
