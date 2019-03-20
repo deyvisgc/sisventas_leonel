@@ -19,7 +19,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="stylesheet" href="<?= base_url() ?>../resources/css/main.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="<?= base_url() ?>../resources/dist/css/ionicons.css">
-    <link rel="stylesheet" href="<?= base_url();?>../vendors/iconfonts/mdi/css/materialdesignicons.min.css">
     <!-- iCheck -->
     <link rel="stylesheet" href="<?= base_url() ?>../resources/plugins/iCheck/square/blue.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

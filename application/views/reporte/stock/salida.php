@@ -147,7 +147,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "sortAscending": ": activar para ordenar la columna ascendente.",
                     "sortDescending": ": activar para ordenar la columna descendente."
                 }
-            }
+            },
+            "ordering":false
 
         });
     }

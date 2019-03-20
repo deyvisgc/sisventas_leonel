@@ -304,7 +304,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         tb = $('#tb_mov_compras').DataTable({
             'ajax': BASE_URL + 'reporte/Mcliente/listar_compras_x_cliente/' + id_cliente,
-
+            order: ([0, 'desc']),
             language: {
                 "decimal": "",
                 "emptyTable": "No hay información",
@@ -326,8 +326,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             },
             destroy: true,
-			"ordering": false
-
+            ordering:false
         });
 
         tb = $('#tb_mov_pagos').DataTable({

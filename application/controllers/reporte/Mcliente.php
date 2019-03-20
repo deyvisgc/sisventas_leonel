@@ -60,12 +60,9 @@ class Mcliente extends CI_Controller
     public function listar_compras_x_cliente($id_cliente){
         is_logged_in_or_exit($this);
         $result = array('data'=>array());
-        $idcliente=array(
-        	'idclinete'=>$id_cliente
-		);
-        $data = $this->salida_model->listar_compras_x_cliente($idcliente);
+        $data = $this->salida_model->listar_compras_x_cliente($id_cliente);
         foreach($data as $key =>$value){
-			$fecha=$value['fecha'];
+            $fecha=$value['sal_fecha_doc_cliente'];
             $total=$value['sal_monto'];
             $buttons='
             <div class="text-center">

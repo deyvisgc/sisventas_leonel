@@ -246,7 +246,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "sortDescending": ": activar para ordenar la columna descendente."
                 }
             },
-            destroy:true
+            destroy:true,
+            "ordering": false
         });
         $('#tb_salidas').DataTable({
             ajax:{
@@ -284,7 +285,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "sortDescending": ": activar para ordenar la columna descendente."
                 }
             },
-            destroy:true
+            destroy:true,
+            "ordering": false
         });
         $('#tb_existencias').DataTable({
             ajax:{

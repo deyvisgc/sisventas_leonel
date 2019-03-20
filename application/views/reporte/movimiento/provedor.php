@@ -277,7 +277,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						"previous": "Anterior"
 					}
 				},
-				destroy:true
+				destroy:true,
+                "ordering": false
 			});
 		} else {
 			alert('Error al cargar las compras del provedor');

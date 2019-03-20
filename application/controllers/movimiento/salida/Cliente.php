@@ -34,33 +34,32 @@ class Cliente extends CI_Controller {
 		$this->load->view('footer', $data_footer);
 		
 	}
-	public function registrar()
-	{
-		is_logged_in_or_exit($this);
-		
-		$usuario = get_usuario($this);
-		$data = array(
-			'usu_id_usuario' => $usuario['usu_id_usuario'],
-			'pcl_id_cliente' => $this->input->post('pcl_id_cliente'),
-			'sal_fecha_doc_cliente' => $this->input->post('sal_fecha_doc_cliente'),
-			'tdo_id_tipo_documento' => $this->input->post('tdo_id_tipo_documento'),
-			'sal_monto_efectivo' => $this->input->post('sal_monto_efectivo'),
-			'sal_monto_tar_credito' => $this->input->post('sal_monto_tar_credito'),
-			'sal_monto_tar_debito' => $this->input->post('sal_monto_tar_debito'),
-			'sal_descuento' => $this->input->post('sal_descuento'),
-			'sal_motivo' => $this->input->post('sal_motivo'),
-			'sal_vuelto'=>$this->input->post('sal_vuelto'),
-		    't_venta' => $this->input->post('t_venta'),
+    public function registrar()
+    {
+        is_logged_in_or_exit($this);
+
+        $usuario = get_usuario($this);
+        $data = array(
+            'usu_id_usuario' => $usuario['usu_id_usuario'],
+            'pcl_id_cliente' => $this->input->post('pcl_id_cliente'),
+            'sal_fecha_doc_cliente' => $this->input->post('sal_fecha_doc_cliente'),
+            'tdo_id_tipo_documento' => $this->input->post('tdo_id_tipo_documento'),
+            'sal_monto_efectivo' => $this->input->post('sal_monto_efectivo'),
+            'sal_monto_tar_credito' => $this->input->post('sal_monto_tar_credito'),
+            'sal_monto_tar_debito' => $this->input->post('sal_monto_tar_debito'),
+            'sal_descuento' => $this->input->post('sal_descuento'),
+            'sal_motivo' => $this->input->post('sal_motivo'),
+            't_venta' => $this->input->post('t_venta'),
             'sal_deuda' => $this->input->post('sal_deuda'),
-			'sal_chofer'=>$this->input->post('sal_chofer'),
-			'sal_camion' => $this->input->post('sal_camion'),
-			'sal_observacion' => $this->input->post('sal_observacion'),
-			'sal_numero_doc_cliente' => $this->input->post('in_sal_numero_doc_cliente'),
-            );
-		$result = $this->salida_model->mregistrar($data);
-		
-		echo json_encode($result);
-	}
+            'sal_chofer'=>$this->input->post('sal_chofer'),
+            'sal_camion' => $this->input->post('sal_camion'),
+            'sal_observacion' => $this->input->post('sal_observacion'),
+            'sal_numero_doc_cliente' => $this->input->post('in_sal_numero_doc_cliente'),
+        );
+        $result = $this->salida_model->mregistrar($data);
+
+        echo json_encode($result);
+    }
 	public function mostrar_documento()
 	{
 		is_logged_in_or_exit($this);

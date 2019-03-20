@@ -62,7 +62,7 @@ class Proveedor extends CI_Controller
 
 		foreach ($data as $key => $value){
 			$monto=$value['ing_monto'];
-			$fecha=$value['fecha'];
+			$fecha=$value['ing_fecha_doc_proveedor'];
 			$buttons = '
             <div class="text-center">
             <button type="button" onclick="Detalles('.$value['ing_id_ingreso'].')" data-toggle="modal" data-target="#detalles_compras"

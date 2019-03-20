@@ -16,7 +16,6 @@ class Salida_model extends CI_Model {
 			".$data['sal_monto_tar_debito'].", 
 			".$data['sal_descuento'].",
 			'".$data['sal_motivo']."',
-			'".$data['sal_vuelto']."',
 			'".$data['t_venta']."',
 			'".$data['sal_deuda']."',
 			'".$data['sal_chofer']."',
@@ -25,7 +24,6 @@ class Salida_model extends CI_Model {
 			'".$data['sal_numero_doc_cliente']."'
 			)");
         $result = $this->db->query("SELECT @out_hecho as hecho, @out_estado as estado, @out_sal_id_salida as sal_id_salida");
-
         return $result->row();
     }
 	function mbuscar_one($sal_id_salida) {
@@ -143,7 +141,7 @@ class Salida_model extends CI_Model {
     }
 
     function listarVentas(){
-        $consulta = "SELECT e.emp_razon_social,s.sal_id_salida,s.sal_fecha_doc_cliente,s.sal_monto
+        $consulta = "SELECT e.emp_razon_social,s.sal_id_salida,DATE_FORMAT(s.sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente,s.sal_monto
         FROM pcliente as c, empresa as e, salida as s 
         WHERE e.emp_id_empresa=c.emp_id_empresa 
         AND c.pcl_id_pcliente=s.pcl_id_cliente 
@@ -154,11 +152,12 @@ class Salida_model extends CI_Model {
 
     function detalle_compra_x_cliente($id_compra){
         $list = array();
-        $consulta="SELECT p.pro_nombre,sd.sad_cantidad, sd.sad_valor,sd.sad_monto,sd.sad_ganancias,sal.sal_numero_doc_cliente 
+        $consulta="SELECT p.pro_nombre,sd.sad_cantidad, sd.sad_valor,sd.sad_monto,sd.sad_ganancias,
+        sal.sal_numero_doc_cliente 
         FROM producto as p, salida_detalle as sd,salida as sal
         WHERE p.pro_id_producto=sd.pro_id_producto 
         AND sal.sal_id_salida=sd.sal_id_salida  
-        AND sd.sal_id_salida=$id_compra";
+        AND sd.sal_id_salida=$id_compra ORDER BY ";
         $data = $this->db->query($consulta);
         foreach ($data -> result() as $row){
             $list[] = $row;
@@ -187,14 +186,15 @@ class Salida_model extends CI_Model {
         return $result;
     }
 
-	function listar_compras_x_cliente($idcliente){
-		$consulta=$this->db->query("call listarClienteXid(
-         ".$idcliente['idclinete'].")");
+    function listar_compras_x_cliente($id){
+        $consulta="SELECT sa.pcl_id_cliente, sa.sal_id_salida,
+ DATE_FORMAT(sa.sal_fecha_doc_cliente,'%d-%m-%Y') as sal_fecha_doc_cliente,sa.sal_monto,
+ sa.sal_numero_doc_cliente,sa.sal_observacion,sa.sal_chofer,sa.sal_camion FROM salida as sa 
+ WHERE sa.pcl_id_cliente='$id' ORDER BY sa.sal_fecha_doc_cliente DESC";
+        $data = $this->db->query($consulta);
+        return $data->result_array();
 
-		$data =$consulta;
-		return $data->result_array();
-
-	}
+    }
 
 
 

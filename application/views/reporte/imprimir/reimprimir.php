@@ -167,7 +167,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         "next": "Siguiente",
                         "previous": "Anterior"
                     }
-                }
+                },
+
+                "ordering": false
             });
 
             var mytable = $("#tb_generar_guias").DataTable({

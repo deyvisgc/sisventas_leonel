@@ -43,7 +43,6 @@ class Producto_model extends CI_Model
 			  p.pro_val_compra, 
 			  p.pro_val_venta, 
 			  p.pro_cantidad, 
-              p.pro_cantidad, 
 			  p.pro_cantidad_min, 
 			  p.est_id_estado, 
 			  p.pro_foto, 
@@ -70,8 +69,8 @@ class Producto_model extends CI_Model
               on ccc.cla_id_clase = p.cla_subclase
               inner join estado e 
 			  on p.est_id_estado=e.est_id_estado 
-			where p.pro_eliminado='NO' AND p.est_id_estado=11
-			GROUP BY p.cla_clase,p.cla_subclase,p.pro_nombre;");
+			where p.pro_eliminado='NO' AND p.est_id_estado=11 AND p.pro_cantidad >= 1
+			GROUP BY p.cla_clase,p.cla_subclase,p.pro_nombre");
         foreach ($query->result() as $row) {
             $list[] = $row;
         }

@@ -347,7 +347,7 @@ class Reporte_model extends CI_Model
     public function Salida_Productos_Produccion($fecha_ini,$fecha_fin){
         $query = $this->db->query("SELECT p.pro_nombre, ps.pro_cantidad,ps.pro_monto, DATE_FORMAT(ps.pro_fecha,'%d-%m-%Y') as pro_fecha 
         FROM producto as p, salida_produccion as ps WHERE p.pro_id_producto = ps.pro_id_producto AND STR_TO_DATE(ps.pro_fecha, '%Y-%m-%d') 
-        BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d')");
+        BETWEEN STR_TO_DATE('$fecha_ini', '%Y-%m-%d') AND STR_TO_DATE('$fecha_fin', '%Y-%m-%d') ORDER BY ps.pro_fecha DESC");
 
         return $query->result_array();
     }
