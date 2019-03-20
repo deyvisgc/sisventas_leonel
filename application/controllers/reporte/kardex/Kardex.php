@@ -56,8 +56,9 @@ class Kardex  extends CI_Controller
 
     public function Kardex_Entrada($id_producto){
 	    is_logged_in_or_exit($this);
-	    $totales_entrada = $this->kardex_model->Kardex_Entradas_Total($id_producto);
 		$entradas = $this->kardex_model->Kardex_Entradas($id_producto);
+	    $totales_entrada = $this->kardex_model->Kardex_Entradas_Total($id_producto);
+
         $result = array('data'=>array(),'totales_entrada'=>$totales_entrada);
 
 	    foreach ($entradas as $key =>$value){

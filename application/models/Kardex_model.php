@@ -28,13 +28,13 @@ class Kardex_model extends CI_Model
 		$data = $query;
 		return $data->result_array();
 
-		function Kardex_Entradas($idprodcuto)
+		function Kardex_Entradas($id_producto)
 		{
 			$query = $this->db->query("SELECT DATE_FORMAT(ing.ing_fecha_registro,'%d-%m-%Y') as ing_fecha_registro,ingd.ind_cantidad,ingd.ind_valor, 
 FORMAT(ROUND((ingd.ind_valor * ingd.ind_cantidad),1),2) AS precio_compra,  ing.ing_numero_doc_proveedor,ingd.ind_numero_lote
         FROM ingreso as ing, ingreso_detalle as ingd,producto as p 
         WHERE ingd.ing_id_ingreso=ing.ing_id_ingreso AND p.pro_id_producto=ingd.pro_id_producto
-        AND ingd.pro_id_producto = $idprodcuto ORDER BY ing.ing_fecha_registro DESC"
+        AND ingd.pro_id_producto = $id_producto ORDER BY ing.ing_fecha_registro DESC"
 			);
 			return $query->result_array();
 
