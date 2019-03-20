@@ -81,16 +81,30 @@ class Detalle extends CI_Controller
     public function registrar_producto(){
 		is_logged_in_or_exit($this);
 		$data = array(
+			'id_producto' => $this->input->post('id_producto'),
+
 		    'id_producto' => $this->input->post('id_producto'),
+
 			'valor' => $this->input->post('valor'),
 			'valor_venta' => $this->input->post('valor_venta'),
 			'cantidad' => $this->input->post('cantidad'),
 			'numero_lote' => $this->input->post('numero_lote'),
 			'nombre_product' => $this->input->post('nombre_product'),
-			'fecha_vencimiento' => $this->input->post('fecha_vencimiento'));
+			'fecha_vencimiento' => $this->input->post('fecha_vencimiento'),
+			'cla_clase'=>$this->input->post("nom_Clase"),
+			'cla_subclase'=>$this->input->post("sub_Clase"),
+		    'pro_codigo'=>$this->input->post("codigo"));
 
 		$result = $this->temp_ingreso_model->magregar_producto($data);
 		$data=array('succes'=>true);
+		echo json_encode($data);
+	}
+	public function buscar_clases(){
+		is_logged_in_or_exit($this);
+
+		$list_clase = $this->temp_ingreso_model->buscar_all_clases();
+
+		$data = array('hecho' => 'SI', 'list_clase' => $list_clase);
 		echo json_encode($data);
 	}
 }

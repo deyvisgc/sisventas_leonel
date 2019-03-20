@@ -20,12 +20,24 @@ class Temp_ingreso_model extends CI_Model
     function magregar_producto($data){
 		$result = $this->db->query("call registrarProducto(
 			".$data['id_producto'].", 
+<<<<<<< HEAD
+			" . $data['valor'] . ", 
+			" . $data['valor_venta'] . ", 
+			" . $data['cantidad'] . ", 
+			'" . $data['numero_lote'] . "', 
+			'" . $data['nombre_product'] . "', 
+			'" . $data['fecha_vencimiento'] . "' ,
+			'" . $data['cla_clase'] . "', 
+			'" . $data['cla_subclase'] . "' ,
+			'" . $data['pro_codigo'] . "' 
+=======
 			".$data['valor'] .", 
 			".$data['valor_venta'].", 
 			".$data['cantidad'].", 
 			'".$data['numero_lote']."', 
 			'".$data['nombre_product']."', 
 			'".$data['fecha_vencimiento']."' 
+>>>>>>> 48032def86c1af76f671ff1fe1d521543cc07b96
 			)");
 
 		return $result;
@@ -176,6 +188,23 @@ class Temp_ingreso_model extends CI_Model
         }
         return $list;
     }
+    public function buscar_all_clases(){
+		$list = array();
+		$query = $this->db->query("select 
+			  cla_id_clase, 
+			  cla_nombre, 
+			  IFNULL(cla_id_clase_superior, '') cla_id_clase_superior, 
+			  IFNULL((select cla_nombre from clase cs where cs.cla_id_clase=c.cla_id_clase_superior), '') cla_nombre_superior 
+			from clase c 
+			where est_id_estado=11 
+			  and cla_eliminado='NO' 
+			order by cla_nombre_superior, cla_nombre");
+		foreach ($query->result() as $row)
+		{
+			$list[] = $row;
+		}
+		return $list;
+	}
 }
 
 ?>
