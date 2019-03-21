@@ -43,7 +43,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																<div class="input-group-btn">
 																	<button type="button" class="btn btn-success" id="bt_descripcion" disabled=""><i class="fa fa-search"></i></button>
 																</div>
-																<input type="text" class="form-control" autofocus="autofocus" id="in_descripcion_p" placeholder="Descripcion..." style="font-size:20px; text-align:center; color: blue; font-weight: bold;">
+																<input type="text" class="form-control" autofocus="autofocus" id="in_descripcion_p" placeholder="Producto" style="font-size:20px; text-align:center; color: blue; font-weight: bold;">
 																<input type="hidden" id="in_pro_id_producto" value="">
 															</div>
 														</div>
@@ -141,24 +141,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     }
                 });
             },
-            delay: 900,
+            delay: 100,
             minLength: 1,
             select: function (event, ui) {
-                $('#in_valor').prop('disabled', false);
-                $('#in_valor').val('');
-                $('#in_cantidad').prop('disabled', false);
-                $('#in_cantidad').val('');
-                $('#in_pro_id_producto').val(ui.item.pro_id_producto);
-                $('#in_numero_lote').prop('disabled', false);
-                $('#in_numero_lote').val('');
-                if (ui.item.pro_perecible === 'SI') {
-                    $('#in_fecha_vencimiento').prop('disabled', false);
-                    $('#in_fecha_vencimiento').val(get_fhoy());
-                }
-                $('#img_foto').attr("src", ui.item.pro_foto);
-                $('#sp_precio_unitario').text(ui.item.pro_val_compra);
-                $('#sp_uni_med_nombre').text(ui.item.unm_nombre_corto);
-                $('#sp_stock').text(ui.item.pro_cantidad);
+                 $('#in_pro_id_producto').val(ui.item.pro_id_producto);
             }
         });
 

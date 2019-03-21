@@ -105,7 +105,7 @@ class Temp_ingreso_model extends CI_Model
         $list = array();
         $query = $this->db->query("select 
 			  pro.pro_id_producto, 
-			  pro.pro_nombre, 
+			  CONCAT(pro.pro_nombre,'(',pro_lote,')') as pro_nombre, 
 			  unm.unm_id_unidad_medida, 
 			  unm.unm_nombre_corto, 
 			  pro.pro_val_compra, 
