@@ -28,87 +28,96 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <li class="pull-left header"><i class="fa fa-cart-arrow-down"></i> <span id="sp_etiqueta">Productos.</span>
                         </li>
                     </ul>
-                    <div class="tab-content"
-                    ">
-                    <!-- TAB ELECCION -->
-                    <div class="tab-pane active" id="dv_panel_eleccion">
-                        <div class="row">
-                            <div class="col-md-12 col-lg-12 col-xs-12">
-                                <div>
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                                <div class="input-group">
-                                                    <div class="input-group-btn">
-                                                        <button type="button" class="btn btn-success"
-                                                                id="bt_descripcion" disabled=""><i
-                                                                    class="fa fa-search"></i></button>
-                                                    </div>
-                                                    <input type="text" class="form-control" autofocus="autofocus"
-                                                           id="in_descripcion_p" placeholder="Descripcion..."
-                                                           style="font-size:20px; text-align:center; color: blue; font-weight: bold;">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Precio Producción </span>
-                                                    <input type="number" class="form-control precios" id="in_valor"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12" style="margin-left: -3px">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Precio Venta </span>
-                                                    <input type="number" class="form-control precios"
-                                                           id="in_valor_venta"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Clase</span>
-                                                    <select class="form-control" id="clase" name="clase"
-                                                            onchange="mostrarSublase(null)">
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">SubClase</span>
-                                                    <select class="form-control" id="subclase" name="sublcase">
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon bg-gray">Codigo</span>
-                                                    <input type="text" class="form-control cantidades"
-                                                           id="codigo"
-                                                           style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
-                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <center>
-                                            <div class="btn-group">
-                                                <button class="btn  btn-success" id="bt_registrar_producto"><i
-                                                            class="fa fa-money"></i> Registrar
-                                                </button>
-                                            </div>
-                                        </center>
-                                    </div><!-- ./col -->
+                    <div class="tab-content"">
+                        <!-- TAB ELECCION -->
+                        <div class="tab-pane active" id="dv_panel_eleccion">
+
+
+                                <div class="row" >
+                                        <div class="col-md-12 grid-margin">
+                                            <div>
+                                                <div>
+													<div class="row">
+														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+															<div class="input-group">
+																<div class="input-group-btn">
+																	<button type="button" class="btn btn-success" id="bt_descripcion" disabled=""><i class="fa fa-search"></i></button>
+																</div>
+																<input type="text" class="form-control" autofocus="autofocus" id="in_descripcion_p" placeholder="Descripcion..." style="font-size:20px; text-align:center; color: blue; font-weight: bold;">
+																<input type="hidden" id="in_pro_id_producto" value="">
+															</div>
+														</div>
+														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Precio Producción </span>
+																<input type="number" class="form-control precios" id="in_valor" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+															</div>
+														</div>
+														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12" style="margin-left: -3px">
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Precio Venta </span>
+																<input type="number" class="form-control precios" id="in_valor_venta" style="font-size: 20px; text-align: right; color: blue; font-weight: bold;" data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+															</div>
+														</div>
+													</div><br>
+												<div class="row">
+
+													<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+														<div class="input-group">
+															<span class="input-group-addon bg-gray"><i class="fa fa-calendar"></i></span>
+															<input type="date" class="form-control cantidades"
+																   id="in_fecha_vencimiento"
+																   style="font-size: 20px; text-align: right; color: blue; font-weight: bold;"
+																   data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+														</div>
+													</div>
+													<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12" >
+														<div class="input-group">
+															<span class="input-group-addon bg-gray">Clase</span>
+															<select class="form-control" id="clase" name="clase" onchange="mostrarSublase(null)">
+															</select>
+														</div>
+													</div>
+													<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+														<div class="input-group">
+															<span class="input-group-addon bg-gray">SubClase</span>
+															<select class="form-control" id="subclase" name="sublcase">
+															</select>
+														</div>
+													</div>
+												</div><br>
+													<div class="row">
+														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Codigo</span>
+																<input type="text" class="form-control cantidades" id="codigo">
+															</div>
+														</div>
+														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Cantidad</span>
+																<input type="text" class="form-control cantidades" id="in_cantidad">
+															</div>
+														</div>
+														<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+															<div class="input-group">
+																<span class="input-group-addon bg-gray">Lote</span>
+																<input type="text" class="form-control cantidades" id="in_numero_lote">
+															</div>
+														</div>
+													</div><br>
+												<center>
+													<div class="btn-group">
+										<button class="btn  btn-success" id="bt_registrar_producto"><i class="fa fa-money"></i> Registrar</button>
+													</div></center>
+                                        </div><!-- ./col -->
+                                    	</div>
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                 </div>
-            </div>
+        </div>
     </section><!-- /.content -->
 </div><!-- /.content-wrapper -->
 
@@ -194,70 +203,71 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $('#bt_registrar_producto').click(func_registrar_producto);
         add_mensaje(null, 'OK ', ' Ingrese sus productos.', 'info');
 
-        func_clase();
-    }
-
-    function func_clase(clases, subclase) {
-        if (clases == null) {
-            clases = '';
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url(); ?>movimiento/ingreso/detalle/buscar_clases",
-            dataType: 'json',
-            success: function (datos) {
-                if (datos.hecho == 'SI') {
-                    var select = $('#clase');
-                    select.empty();
-                    vlista_clases = [];
-                    datos.list_clase.forEach(function (clase) {
-                        var selecedt = '';
-                        if (clases == clase.cla_id_clase) {
-                            selecedt = 'selected';
-                        }
-
-                        if (clase.cla_id_clase_superior == '') {
-                            select.append('<option value="' + clase.cla_id_clase + '" ' + selecedt + '>' + clase.cla_nombre + '</option>');
-                        }
-                        else {
-                            vlista_clases.push({
-                                cla_id_clase: clase.cla_id_clase,
-                                cla_nombre: clase.cla_nombre,
-                                cla_id_clase_superior: clase.cla_id_clase_superior
-                            });
-                        }
-
-                    });
-                    mostrarSublase(subclase);
-
-
-                }
-            }
-        });
+		func_clase();
+		var fecha_actual_hoy = get_fhoy();
+		$('#in_fecha_vencimiento').val(fecha_actual_hoy);
 
     }
+function func_clase(clases ,subclase){
+    	if (clases==null){
+			clases='';
+		}
 
-    function mostrarSublase(subclase) {
-        if (subclase == null) {
-            subclase = '';
-            var nombre_clase = $('#clase').val();
-            var select = $('#subclase');
-            select.empty();
-            vlista_clases.forEach(function (clase) {
-                var selected = '';
-                if (subclase == clase.cla_id_clase) {
-                    selected = 'selected';
-                }
-                if (nombre_clase == clase.cla_id_clase_superior) {
-                    select.append('<option value="' + clase.cla_id_clase + '" ' + selected + '>' + clase.cla_nombre + '</option>');
-                }
-            });
+    	$.ajax({
+			type: "POST",
+			url: "<?php echo base_url(); ?>movimiento/ingreso/detalle/buscar_clases",
+			dataType: 'json',
+			success: function (datos) {
+				if (datos.hecho=='SI'){
+					var select=$('#clase');
+					select.empty();
+					vlista_clases = [];
+                   datos.list_clase.forEach(function (clase) {
+                   	var selecedt='';
+                   	if (clases==clase.cla_id_clase){
+						selecedt = 'selected';
+					}
+
+					   if (clase.cla_id_clase_superior == '') {
+						   select.append('<option value="' + clase.cla_id_clase + '" ' + selecedt + '>' + clase.cla_nombre + '</option>');
+					   }
+					   else {
+						   vlista_clases.push({
+							   cla_id_clase: clase.cla_id_clase,
+							   cla_nombre: clase.cla_nombre,
+							   cla_id_clase_superior: clase.cla_id_clase_superior
+						   });
+					   }
+					   
+				   });
+                   mostrarSublase(subclase);
 
 
-        }
+				}
+			}
+		});
 
-    }
+}
+function mostrarSublase(subclase){
+    	if(subclase== null){
+    		subclase= '';
+    		var nombre_clase=$('#clase').val();
+    		var select=$('#subclase');
+    		select.empty();
+			vlista_clases.forEach(function (clase) {
+				var selected = '';
+				if (subclase == clase.cla_id_clase) {
+					selected = 'selected';
+				}
+				if (nombre_clase == clase.cla_id_clase_superior) {
+					select.append('<option value="' + clase.cla_id_clase + '" ' + selected + '>' + clase.cla_nombre + '</option>');
+				}
+			});
+
+
+		}
+
+}
 
 
     function func_cancelar_todo(e) {
@@ -310,7 +320,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
-
     function func_registrar_producto() {
 
         var nombre_product = $('#in_descripcion_p').val();
@@ -353,9 +362,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         data.numero_lote = numero_lote;
         data.fecha_vencimiento = fecha_vencimiento;
         data.nombre_product = nombre_product;
-        data.nom_Clase = $('#clase').val();
-        data.sub_Clase = $('#subclase').val();
-        data.codigo = $('#codigo').val();
+		data.nom_Clase=$('#clase').val();
+		data.sub_Clase=$('#subclase').val();
+		data.codigo=$('#codigo').val();
 
 
         $.ajax({
@@ -379,10 +388,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $('#in_cantidad').val("");
                 $('#in_numero_lote').val("");
                 $('#in_fecha_vencimiento').val("");
-                $('#codigo').val("");
+				$('#codigo').val("");
             }
         });
     }
+
 
 
     function func_agregar_producto(e) {

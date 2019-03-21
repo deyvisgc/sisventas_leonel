@@ -82,9 +82,6 @@ class Detalle extends CI_Controller
 		is_logged_in_or_exit($this);
 		$data = array(
 			'id_producto' => $this->input->post('id_producto'),
-
-		    'id_producto' => $this->input->post('id_producto'),
-
 			'valor' => $this->input->post('valor'),
 			'valor_venta' => $this->input->post('valor_venta'),
 			'cantidad' => $this->input->post('cantidad'),
@@ -94,11 +91,16 @@ class Detalle extends CI_Controller
 			'cla_clase'=>$this->input->post("nom_Clase"),
 			'cla_subclase'=>$this->input->post("sub_Clase"),
 		    'pro_codigo'=>$this->input->post("codigo"));
-
 		$result = $this->temp_ingreso_model->magregar_producto($data);
 		$data=array('succes'=>true);
 		echo json_encode($data);
 	}
+
+
+
+
+
+
 	public function buscar_clases(){
 		is_logged_in_or_exit($this);
 
